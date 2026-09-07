@@ -1,0 +1,175 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   Design-Tokens
+   ---------------------------------------------------------------------------
+   Als RGB-Tripel notiert, damit Tailwind daraus Deckkraft-Varianten wie
+   `text-ink/60` bauen kann.
+
+   Leitregel der Palette: Bordeaux ist die einzige gesättigte Farbe der Seite.
+   Alles andere ist neutral. Genau dadurch trifft der Akzent.
+
+   Die Kontrastwerte in den Kommentaren sind gegen den jeweiligen Untergrund
+   gerechnet. Wo „nur gross" steht, erfüllt der Wert die 3:1-Schwelle für
+   Grossschrift, aber nicht die 4,5:1 für Fliesstext — solche Töne dürfen
+   ausschliesslich in Display-Graden vorkommen.
+--------------------------------------------------------------------------- */
+
+@layer base {
+  :root {
+    /* Bordeaux-Familie */
+    --c-wine: 74 14 28; /* #4A0E1C — Hero-Grund, Verlaufsstop */
+    --c-oxblood: 123 16 35; /* #7B1023 — Glow, gefüllte Schaltflächen (Papier darauf 9,5:1) */
+    --c-ember: 194 54 75; /* #C2364B — Akzent auf Dunkel, 3,7:1 → nur gross und für Bedienelemente */
+    --c-ember-lift: 228 102 122; /* #E4667A — Akzent für Kleintext auf Dunkel, 6,0:1 */
+
+    /* Heller Grund */
+    --c-paper: 242 240 237; /* #F2F0ED */
+    --c-paper-sunk: 232 229 225; /* #E8E5E1 — eingelassene Flächen */
+    --c-hairline: 216 212 207; /* #D8D4CF — Trennlinien */
+
+    /* Text auf Hell */
+    --c-ink: 20 10 12; /* #140A0C — nie reines Schwarz, hält die Seite warm */
+    --c-ink-soft: 74 67 64; /* #4A4340 — Fliesstext, 8,5:1 */
+    --c-muted: 107 100 97; /* #6B6461 — Kleintext, 5,1:1 */
+    --c-chalk: 138 132 128; /* #8A8480 — zweite Hälfte der Headlines, 3,3:1 → nur gross */
+
+    /* Text auf Dunkel */
+    --c-smoke: 126 115 112; /* #7E7370 — zweite Hälfte der Headlines auf Dunkel, 4,3:1 */
+
+    /* Der Hero-Grund ist kein flaches Bordeaux, sondern ein Lichtschein:
+       warmer Kern hinter dem Portrait, der zu den Rändern in Fast-Schwarz abfällt. */
+    --hero-bloom:
+      radial-gradient(78% 62% at 50% 8%, rgb(var(--c-oxblood) / 0.55) 0%, transparent 62%),
+      radial-gradient(120% 88% at 50% 0%, rgb(var(--c-wine) / 0.92) 0%, rgb(var(--c-ink)) 68%);
+  }
+
+  * {
+    @apply border-hairline;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Ankersprünge dürfen nicht unter der schwebenden Navigation landen. */
+    scroll-padding-top: 7rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-paper font-sans text-ink-soft antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Ein einziger, überall gleicher Fokusring. Sichtbar auf hellem wie dunklem
+     Grund, weil er mit einem hellen Versatz gedoppelt wird. */
+  :focus-visible {
+    outline: 2px solid rgb(var(--c-ember));
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: rgb(var(--c-oxblood));
+    color: rgb(var(--c-paper));
+  }
+
+  /* Anker-Ziele der Sections */
+  [id] {
+    scroll-margin-top: 7rem;
+  }
+}
+
+@layer components {
+  /* Zentrierte Inhaltsspalte. Alle Sections nutzen dieselbe, damit die linken
+     Kanten über die ganze Seite hinweg fluchten. */
+  .shell {
+    @apply mx-auto w-full max-w-shell px-gutter;
+  }
+
+  .section {
+    @apply py-section;
+  }
+
+  /* Das kleine Label über jeder Headline. Monospace, weil es bei einem
+     Entwickler-Portfolio zur Sprache des Fachs gehört. */
+  .eyebrow {
+    @apply font-mono text-eyebrow uppercase tracking-[0.18em];
+  }
+
+  .display {
+    @apply font-display font-black uppercase;
+  }
+
+  /* ---------------------------------------------------------------------
+     Das Riesenwort im Hero.
+
+     Eine feste Obergrenze (clamp(…, 16rem)) funktioniert hier nicht: die
+     Schriftgrösse muss von der Wortlänge abhängen, sonst läuft ein langes
+     Wort wie „ENGINEER" seitlich aus der Spalte — und die Länge steht im
+     CMS, ist zur Bauzeit also unbekannt.
+
+     Deshalb rechnet die Breite selbst: `100cqi` ist die Innenbreite der
+     Spalte, `--chars` die Zeichenzahl, und 0,66 die mittlere Dickte der
+     Archivo-Grossbuchstaben abzüglich der negativen Laufweite. Das Wort
+     füllt damit immer genau die Spalte, egal ob es „DEV" oder
+     „ARCHITEKTIN" heisst.
+
+     `--cap` deckelt die Grösse nach oben. Der Hero belässt es beim Standard,
+     das Hintergrundwort der Stimmen-Section hebt ihn an, weil es breiter als
+     die davorliegenden Kreise stehen muss.
+  --------------------------------------------------------------------- */
+  .fit-word {
+    container-type: inline-size;
+  }
+
+  .fit-word > * {
+    font-size: min(var(--cap, 16rem), calc(100cqi / (var(--chars, 8) * 0.66)));
+  }
+}
+
+@layer utilities {
+  /* Der Lichtschein hinter dem Hero. */
+  .bg-hero-bloom {
+    background-image: var(--hero-bloom);
+  }
+
+  /* Die grosse Hero-Typo wird von hinten angeleuchtet statt flach weiss gefüllt.
+     Zwei gestaffelte Schatten: ein enger, heller Kern und ein weiter,
+     bordeauxfarbener Hof. */
+  .text-lit {
+    text-shadow:
+      0 0 1px rgb(var(--c-paper) / 0.9),
+      0 0 24px rgb(var(--c-paper) / 0.28),
+      0 0 90px rgb(var(--c-ember) / 0.45);
+  }
+
+  /* Weiche Kante am unteren Rand des Laufbands und der Bildkacheln. */
+  .mask-fade-x {
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Bewegungsreduktion
+   ---------------------------------------------------------------------------
+   Framer Motion wird pro Komponente über useReducedMotion abgefangen. Was hier
+   steht, deckt die rein per CSS animierten Teile ab — vor allem das Laufband,
+   das sonst dauerhaft weiterliefe.
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
