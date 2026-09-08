@@ -30,7 +30,15 @@ export default function Picture({
   if (!image) return null
 
   const remote = image.asset ? urlForImage(image.asset, { width, height }) : null
-  const src = remote ?? image.fallbackSrc
+
+  // Der Basispfad muss hier von Hand davor. `next/image` ergaenzt ihn zwar bei
+  // der eigenen Bildoptimierung, aber die Platzhalter laufen mit `unoptimized`
+  // daran vorbei und wuerden auf GitHub Pages unter /placeholder/... statt
+  // /portfolio-website/placeholder/... gesucht — und dort mit 404 enden.
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
+  const lokal = image.fallbackSrc ? `${basePath}${image.fallbackSrc}` : undefined
+
+  const src = remote ?? lokal
 
   if (!src) return null
 
