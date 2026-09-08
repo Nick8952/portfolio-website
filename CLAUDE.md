@@ -77,7 +77,16 @@ gegen einen Webhook-Setup-Schritt, den der Betreiber sonst manuell machen müsst
 `/api/contact` mit einer freundlichen Meldung statt einem 500er, und loggt die
 Anfrage serverseitig. Der Build bricht nie an einer fehlenden Env-Var ab.
 
-**AE-6 — Bilder.** Sanity Image Assets mit Hotspot/Crop, ausgeliefert über
+**AE-6 — Seed-Skript statt Handarbeit.** `scripts/seed.mjs` schreibt
+`content/inhalte.json` in einer Transaktion nach Sanity und lädt dabei Dateien aus
+`content/bilder/` hoch. Dokument-IDs sind fest (`siteSettings`, `hero`, `about`,
+`sectionCopy`, sowie `stat-1`, `tool-1`, … ) und müssen zu den IDs in
+`sanity/structure.ts` passen — sonst zeigt die Seitenleiste auf leere Dokumente.
+Assets werden über ihren sha1 erkannt, der Lauf ist damit idempotent.
+`--dry-run` baut alles ohne Token und ohne Netz und legt das Ergebnis als
+`content/.seed-vorschau.json` ab.
+
+**AE-7 — Bilder.** Sanity Image Assets mit Hotspot/Crop, ausgeliefert über
 `next/image` mit `remotePatterns` auf `cdn.sanity.io` (siehe `next.config.mjs`).
 Platzhalterbilder liegen als lokale SVGs in `public/placeholder/`.
 
@@ -139,6 +148,11 @@ Abgeleitet aus `design-reference.png`. Tokens leben als CSS-Variablen in
 **Farbe** — Bordeaux ist die *einzige* gesättigte Farbe der Seite. Alles andere
 ist neutral. Genau dadurch trifft der Akzent.
 
+Die Kontrastwerte sind gegen den jeweiligen Untergrund gerechnet und stehen als
+Kommentar an jedem Token in `globals.css`. Der Grauton der Vorlage lag bei 2,6:1
+und hätte selbst die 3:1-Schwelle für Grossschrift gerissen — `chalk` ist deshalb
+dunkler als im Referenzbild. Wer ihn aufhellt, bricht die Barrierefreiheit.
+
 | Token | Hex | Rolle |
 |---|---|---|
 | `wine` | `#4A0E1C` | Kern-Bordeaux, Hero-Grund |
@@ -146,7 +160,10 @@ ist neutral. Genau dadurch trifft der Akzent.
 | `ember` | `#C2364B` | Links, Pfeile, Signal auf Dunkel |
 | `ink` | `#140A0C` | Fast-Schwarz mit Rotstich (nie `#000`) |
 | `paper` | `#F2F0ED` | Heller Sectiongrund |
-| `chalk` | `#9A9490` | Zweiter Ton der Headlines, Muted-Text |
+| `chalk` | `#8A8480` | Zweiter Ton der Headlines — 3,3:1, **nur in Display-Graden** |
+| `muted` | `#6B6461` | Kleintext auf Hell — 5,1:1 |
+| `ember-lift` | `#E4667A` | Kleintext-Akzent auf Dunkel — 6,0:1 |
+| `smoke` | `#7E7370` | Zweiter Headline-Ton auf Dunkel — 4,3:1 |
 
 **Typografie** — drei Rollen:
 - `font-display` **Archivo** (700/800/900) — Riesen-Headlines, `tracking-tight`
@@ -199,6 +216,7 @@ hell = *wer ich bin* (Über mich, Zahlen, Tools, Werdegang, Testimonials, Kontak
 | `NEXT_PUBLIC_SANITY_DATASET` | nein | Default `production` |
 | `NEXT_PUBLIC_SANITY_API_VERSION` | nein | Default `2024-10-01` |
 | `SANITY_API_READ_TOKEN` | nein | Nur für Draft-Vorschau nötig |
+| `SANITY_API_WRITE_TOKEN` | nein | Nur für `npm run seed`. Rein lokal, gehört nicht nach Vercel |
 | `RESEND_API_KEY` | nein* | Ohne Key nimmt das Formular an und loggt nur |
 | `CONTACT_TO_EMAIL` | nein | Empfängeradresse der Formularmails |
 | `CONTACT_FROM_EMAIL` | nein | Default `onboarding@resend.dev` |
@@ -234,7 +252,7 @@ Danach in `sanity.io/manage` unter *API -> CORS origins* die Domains
 
 ## 10. Offene Punkte
 
-- [ ] Echte Inhalte einpflegen — Checkliste in `INHALTE-BENOETIGT.md`
+- [ ] Echte Inhalte einpflegen — `content/inhalte.json` ausfüllen, dann `npm run seed`
 - [ ] Sanity-Projekt anlegen und CORS-Origins setzen
 - [ ] Resend-Domain verifizieren (bis dahin läuft `onboarding@resend.dev`)
 - [ ] Portrait, Projektbilder, CV-PDF hochladen

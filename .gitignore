@@ -36,3 +36,8 @@ Thumbs.db
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Quelldateien fuer den Seed-Lauf — liegen nach dem Upload in Sanity
+content/bilder/*
+!content/bilder/HIER-BILDER-ABLEGEN.md
+content/.seed-vorschau.json

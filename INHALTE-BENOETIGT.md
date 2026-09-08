@@ -1,11 +1,32 @@
 # Inhalte, die noch gebraucht werden
 
 Die Website steht und ist deploybar. Was noch fehlt, sind **deine** Inhalte.
-Alles unten wird im Studio unter `/studio` eingetragen — kein Code nötig.
+Zwei Wege führen dorthin: einzeln im Studio unter `/studio`, oder alles auf
+einmal über eine Datei (siehe unten). Programmieren musst du in beiden Fällen
+nichts.
 
 Solange etwas fehlt, zeigt die Seite einen Platzhalter in `[ECKIGEN KLAMMERN]`.
 Nichts davon ist erfunden: es stehen bewusst keine falschen Jahreszahlen,
 Firmennamen oder Kennzahlen drin.
+
+---
+
+## Der schnelle Weg
+
+Statt alles im Studio anzuklicken: **[`content/inhalte.json`](./content/inhalte.json)
+ausfüllen, Bilder nach `content/bilder/` legen, dann**
+
+```bash
+npm run seed -- --dry-run   # prüfen
+npm run seed                # schreiben
+```
+
+Das legt alle Dokumente auf einmal an und lädt die Bilder hoch. Der Befehl ist
+beliebig oft wiederholbar. Details in der
+[README](./README.md#inhalte-auf-einen-schlag-einspielen).
+
+Die Abschnitte unten erklären, **was** in die jeweiligen Felder gehört — egal ob
+du sie in der JSON oder im Studio ausfüllst. Die Feldnamen sind dieselben.
 
 **Tipp zur Reihenfolge:** Grundeinstellungen und Hero zuerst — danach ist die
 Seite bereits vorzeigbar. Der Rest lässt sich nachziehen.

@@ -15,6 +15,7 @@ unter `/studio`. Ausgelegt auf Deployment über **Vercel**.
 
 - [Schnellstart](#schnellstart)
 - [Sanity einrichten](#sanity-einrichten)
+- [Inhalte auf einen Schlag einspielen](#inhalte-auf-einen-schlag-einspielen)
 - [Kontaktformular einrichten](#kontaktformular-einrichten)
 - [Umgebungsvariablen](#umgebungsvariablen)
 - [Deployment auf Vercel](#deployment-auf-vercel)
@@ -83,9 +84,55 @@ mit **Allow credentials**:
 
 Ohne diesen Schritt lädt das Studio auf der jeweiligen Adresse nicht.
 
-**5. Inhalte anlegen.** Die Reihenfolge in der Studio-Seitenleiste entspricht der
-Seite von oben nach unten. Was gebraucht wird, steht in
-[`INHALTE-BENOETIGT.md`](./INHALTE-BENOETIGT.md).
+**5. Inhalte anlegen.** Entweder von Hand im Studio — oder auf einen Schlag,
+siehe nächster Abschnitt.
+
+---
+
+## Inhalte auf einen Schlag einspielen
+
+Rund zwei Dutzend Dokumente einzeln im Studio anzuklicken ist stumpfe Arbeit.
+Stattdessen: **eine Datei ausfüllen, ein Befehl.**
+
+**1.** [`content/inhalte.json`](./content/inhalte.json) im Editor öffnen und
+ausfüllen. Alle Felder sind bereits mit Platzhaltern vorbelegt — du ersetzt nur
+die Werte.
+
+**2.** Bilder, Logos und den Lebenslauf nach `content/bilder/` legen. In der JSON
+steht jeweils nur der **Dateiname**:
+
+```json
+"portrait": { "datei": "portrait.png", "alt": "Portraitfoto von Max Muster" }
+```
+
+**3.** Einen Schreib-Token anlegen — sanity.io/manage → *API → Tokens →
+Add API token*, Berechtigung **Editor** — und in `.env.local` eintragen:
+
+```env
+SANITY_API_WRITE_TOKEN=sk...
+```
+
+**4.** Erst trocken prüfen, dann schreiben:
+
+```bash
+npm run seed -- --dry-run   # zeigt, was passieren würde; schreibt nichts
+npm run seed                # schreibt wirklich
+```
+
+Gut zu wissen:
+
+- **Beliebig oft wiederholbar.** Dokumente haben feste IDs und werden ersetzt,
+  nicht dupliziert. Bilder werden über ihre Prüfsumme erkannt und nicht doppelt
+  hochgeladen.
+- **Alles oder nichts.** Der Schreibvorgang läuft in einer Transaktion — ein
+  halb befülltes CMS kann nicht entstehen.
+- **Fehlende Dateien sind kein Fehler.** Das Feld bleibt leer und die Website
+  zeigt dort ihren Platzhalter.
+- **Ab dann im Studio pflegen.** Ein erneuter Seed-Lauf würde Änderungen
+  überschreiben, die du im Studio gemacht hast. Das Skript ist zum Befüllen
+  gedacht, nicht zum Pflegen.
+
+Welches Feld was bedeutet, steht in [`INHALTE-BENOETIGT.md`](./INHALTE-BENOETIGT.md).
 
 ---
 
@@ -132,6 +179,7 @@ Alle Variablen sind optional; keine davon blockiert den Build.
 | `NEXT_PUBLIC_SANITY_DATASET` | Dataset | `production` |
 | `NEXT_PUBLIC_SANITY_API_VERSION` | API-Datum | `2024-10-01` |
 | `SANITY_API_READ_TOKEN` | Token für Entwurfsvorschau | nur veröffentlichte Inhalte |
+| `SANITY_API_WRITE_TOKEN` | nur für `npm run seed`, rein lokal | Seed-Lauf bricht mit Hinweis ab |
 | `RESEND_API_KEY` | Mailversand | Formular protokolliert nur |
 | `CONTACT_TO_EMAIL` | Empfänger der Formularmails | Formular protokolliert nur |
 | `CONTACT_FROM_EMAIL` | Absenderadresse | `onboarding@resend.dev` |
@@ -221,6 +269,8 @@ Ausführlich — inklusive Architekturentscheidungen und Designsystem — in
 | `npm run lint` | ESLint |
 | `npm run typecheck` | TypeScript ohne Ausgabe prüfen |
 | `npm run sanity:init` | Sanity-Projekt anlegen, schreibt in `.env.local` |
+| `npm run seed` | `content/inhalte.json` ins CMS schreiben, inkl. Bild-Uploads |
+| `npm run seed -- --dry-run` | Dasselbe trocken — zeigt nur, was passieren würde |
 
 ---
 

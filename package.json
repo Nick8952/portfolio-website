@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "sanity:init": "sanity init --env .env.local",
     "sanity:deploy": "sanity deploy",
-    "sanity:graphql": "sanity graphql deploy"
+    "sanity:graphql": "sanity graphql deploy",
+    "seed": "node scripts/seed.mjs"
   },
   "dependencies": {
     "@sanity/client": "^7.27.0",
