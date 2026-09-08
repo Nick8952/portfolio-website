@@ -28,9 +28,10 @@ Seite ist nie kaputt, nur weil ein Dokument im CMS noch fehlt.
 | Sprache | TypeScript (strict) | — |
 | Styling | Tailwind CSS 3.4 + CSS-Variablen | Hauskonvention der anderen Projekte |
 | Animation | Framer Motion 12 | Scroll-Reveals, Signature-Headline |
+| 3D | three 0.185 + @react-three/fiber 9 | WebGL-Hero, lazy geladen |
 | CMS | Sanity 4.22.1 + next-sanity 11 | Embedded Studio unter `/studio` |
 | Mailversand | Resend 6 via Route Handler | Läuft nativ auf Vercel |
-| Deployment | Vercel | GitHub-Import ohne Nacharbeit |
+| Deployment | Vercel (voll) + GitHub Pages (statisch) | siehe AE-8 |
 
 ### Versions-Fallstrick (bitte nicht blind aktualisieren)
 
@@ -85,6 +86,37 @@ Anfrage serverseitig. Der Build bricht nie an einer fehlenden Env-Var ab.
 Assets werden über ihren sha1 erkannt, der Lauf ist damit idempotent.
 `--dry-run` baut alles ohne Token und ohne Netz und legt das Ergebnis als
 `content/.seed-vorschau.json` ab.
+
+**AE-8 — Zwei Deploy-Ziele, ein Quellcode.** `next.config.mjs` schaltet über
+`STATIC_EXPORT=true` in den Export-Modus (`output: 'export'`, `trailingSlash`,
+`basePath`, `images.unoptimized`). Gesetzt wird das nur in
+`.github/workflows/deploy.yml`. Auf Vercel bleibt alles beim Alten: SSR, ISR und
+die echte `/api/contact`.
+
+Konsequenzen des statischen Modus, die man kennen muss:
+- **Kein `/api/contact`.** GitHub Pages führt keinen Server aus. Ein fetch
+  dorthin bekäme die 404-HTML-Seite und würde beim `response.json()` mit einem
+  Parse-Fehler scheitern. `Contact.tsx` prüft deshalb
+  `NEXT_PUBLIC_STATIC_EXPORT` und öffnet stattdessen das Mailprogramm; der tote
+  fetch wird vom Bundler ganz entfernt.
+- **`dynamic = 'force-static'`** ist Pflicht in `sitemap.ts`, `robots.ts` und
+  `opengraph-image.tsx`, und die Studio-Catch-all-Route braucht ein
+  `generateStaticParams`. Ohne das bricht der Export ab.
+- **Basispfad von Hand.** `next/image` ergänzt den `basePath` nur auf dem Weg
+  durch die eigene Bildoptimierung. Die Platzhalter-SVGs laufen mit
+  `unoptimized` daran vorbei — `Picture.tsx` setzt ihn deshalb selbst davor.
+  Ohne das: 404 auf GitHub Pages, lokal unsichtbar.
+- **`NOINDEX=true`** im Workflow hält die Platzhalter-Vorschau aus dem
+  Suchindex. Beim Umstieg auf echte Inhalte entfernen.
+
+**AE-9 — 3D sparsam und abschaltbar.** `components/three/HeroScene.tsx` ist ein
+einzelnes InstancedMesh (ein Draw-Call für 576 Stäbe), das über
+`HeroSceneLazy.tsx` per `next/dynamic` erst nach dem Seitenaufbau lädt — die
+Startseite bleibt dadurch bei rund 164 kB First Load statt three.js ins
+Initial-Bundle zu ziehen. Es wird nur gerendert, solange der Hero im Bild ist
+(IntersectionObserver), bei `prefers-reduced-motion` bleibt ein Standbild
+stehen, und ohne WebGL rendert es gar nichts — dann trägt der CSS-Lichtschein
+allein.
 
 **AE-7 — Bilder.** Sanity Image Assets mit Hotspot/Crop, ausgeliefert über
 `next/image` mit `remotePatterns` auf `cdn.sanity.io` (siehe `next.config.mjs`).
@@ -171,6 +203,17 @@ dunkler als im Referenzbild. Wer ihn aufhellt, bricht die Barrierefreiheit.
 - `font-mono` **JetBrains Mono** — Eyebrows, Jahreszahlen, Marquee, Stat-Labels.
   Monospace ist bei einem Entwickler-Portfolio Vernakular, keine Dekoration.
 
+**3D als Fortsetzung des Lichtkonzepts, nicht als Deko.** Der WebGL-Hero zeigt
+kein rotierendes Objekt, sondern ein Gitter aus Stäben, über das eine Welle
+läuft, gestreift von genau *einem* warmen Licht — dieselbe Leitidee wie im
+CSS-Verlauf: Bordeaux ist eine Lichtquelle. Die Kämme fangen Licht, die Täler
+bleiben schwarz. Es liegt dunkel und flach unter der Schrift, damit die
+Typografie Hauptdarstellerin bleibt.
+
+Die 3D-Karten (`TiltCard.tsx`) tragen dasselbe Licht: das Glanzlicht, das dem
+Zeiger folgt, ist derselbe Bordeaux-Ton. Eine Drehung ohne wanderndes Licht
+liest sich flach — das Glanzlicht ist das eigentliche Mittel, nicht die Drehung.
+
 **Signature-Element — die sich selbst lesende Headline.**
 `components/ui/ReadingHeadline.tsx`. Die zweifarbige Headline aus der Vorlage ist
 hier nicht statisch: Die Tongrenze wandert beim Scrollen wortweise durch den Satz
@@ -221,6 +264,9 @@ hell = *wer ich bin* (Über mich, Zahlen, Tools, Werdegang, Testimonials, Kontak
 | `CONTACT_TO_EMAIL` | nein | Empfängeradresse der Formularmails |
 | `CONTACT_FROM_EMAIL` | nein | Default `onboarding@resend.dev` |
 | `NEXT_PUBLIC_SITE_URL` | nein | Für Canonicals/Sitemap/OG. Default = Vercel-URL |
+| `STATIC_EXPORT` | nein | `true` schaltet auf GitHub-Pages-Export. Nur im Workflow |
+| `BASE_PATH` | nein | Unterordner beim statischen Export |
+| `NOINDEX` | nein | `true` hält die Seite aus dem Suchindex |
 
 \* Nicht build-blockierend, aber für den Produktivbetrieb gewollt.
 

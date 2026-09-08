@@ -4,6 +4,9 @@ Persönliche Portfolio-Website auf Basis von **Next.js 15** (App Router, TypeScr
 **Tailwind CSS**, **Framer Motion** und **Sanity CMS** mit eingebettetem Studio
 unter `/studio`. Ausgelegt auf Deployment über **Vercel**.
 
+**Live (Vorschau mit Platzhaltern):**
+<https://nick8952.github.io/portfolio-website/>
+
 > **Die Seite läuft sofort — auch ohne Sanity und ohne Mailversand.**
 > Fehlt die Sanity-Konfiguration, rendert sie mit klar erkennbaren Platzhaltern
 > (alles in `[ECKIGEN KLAMMERN]`). Ein GitHub-Import in Vercel funktioniert
@@ -18,7 +21,7 @@ unter `/studio`. Ausgelegt auf Deployment über **Vercel**.
 - [Inhalte auf einen Schlag einspielen](#inhalte-auf-einen-schlag-einspielen)
 - [Kontaktformular einrichten](#kontaktformular-einrichten)
 - [Umgebungsvariablen](#umgebungsvariablen)
-- [Deployment auf Vercel](#deployment-auf-vercel)
+- [Deployment](#deployment)
 - [Inhalte pflegen](#inhalte-pflegen)
 - [Projektstruktur](#projektstruktur)
 - [Skripte](#skripte)
@@ -184,13 +187,35 @@ Alle Variablen sind optional; keine davon blockiert den Build.
 | `CONTACT_TO_EMAIL` | Empfänger der Formularmails | Formular protokolliert nur |
 | `CONTACT_FROM_EMAIL` | Absenderadresse | `onboarding@resend.dev` |
 | `NEXT_PUBLIC_SITE_URL` | Basis für Canonicals, Sitemap, OG | Vercel-URL, lokal `localhost:3000` |
+| `STATIC_EXPORT` | `true` → statischer Export für GitHub Pages | voller Betrieb (Vercel) |
+| `BASE_PATH` | Unterordner beim statischen Export | `/portfolio-website` |
+| `NOINDEX` | `true` → Seite bleibt aus dem Suchindex | Seite ist auffindbar |
 
 `SANITY_API_READ_TOKEN` und `RESEND_API_KEY` sind **Geheimnisse** — niemals mit
 `NEXT_PUBLIC_` präfixen und nie committen. `.env.local` ist in `.gitignore`.
 
 ---
 
-## Deployment auf Vercel
+## Deployment
+
+Das Projekt hat **zwei Ziele**, und sie können nebeneinander laufen.
+
+### GitHub Pages — die Vorschau (läuft bereits)
+
+Bei jedem Push auf `main` baut `.github/workflows/deploy.yml` einen statischen
+Export und veröffentlicht ihn unter
+<https://nick8952.github.io/portfolio-website/>. Dafür ist nichts zu tun.
+
+**Was dort fehlt, und warum:** GitHub Pages liefert nur Dateien aus und kann
+keinen Server ausführen. Es gibt dort deshalb **kein `/api/contact`** — das
+Kontaktformular öffnet stattdessen das Mailprogramm mit fertig ausgefüllter
+Nachricht. Sanity und der echte Mailversand brauchen Vercel.
+
+Die Vorschau steht auf **`noindex`**, solange Platzhalter drinstehen. Zum
+Freigeben in `.github/workflows/deploy.yml` die Zeile `NOINDEX: 'true'`
+entfernen.
+
+### Vercel — der volle Betrieb
 
 1. Auf <https://vercel.com/new> das GitHub-Repository importieren.
    Vercel erkennt Next.js automatisch — Build-Command und Output-Verzeichnis
@@ -200,6 +225,9 @@ Alle Variablen sind optional; keine davon blockiert den Build.
 3. **Deploy** drücken.
 4. Nach dem ersten Deployment die Vercel-Adresse in Sanity als CORS-Origin
    nachtragen (siehe Schritt 4 oben), sonst lädt `/studio` in Produktion nicht.
+
+`STATIC_EXPORT` wird auf Vercel **nicht** gesetzt — dadurch bleiben
+Server-Rendering, ISR und der echte Mailversand aktiv.
 
 Inhaltsänderungen im Studio sind nach spätestens **60 Sekunden** live
 (Incremental Static Regeneration). Ein Webhook ist bewusst nicht nötig.
