@@ -74,11 +74,15 @@ export async function generateMetadata(): Promise<Metadata> {
       description: settings.seoDescription,
       ...(ogFromCms ? { images: [ogFromCms] } : {}),
     },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
-    },
+    // Passend zu app/robots.ts: die Platzhalter-Vorschau bleibt aus dem Index.
+    robots:
+      process.env.NEXT_PUBLIC_NOINDEX === 'true'
+        ? { index: false, follow: false }
+        : {
+            index: true,
+            follow: true,
+            googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
+          },
   }
 }
 

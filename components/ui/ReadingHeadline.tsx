@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion'
-import { useRef, type ElementType } from 'react'
+import { useRef } from 'react'
 
 import { cn, splitWords } from '@/lib/utils'
 
@@ -24,14 +24,22 @@ const TONES = {
 
 type Tone = keyof typeof TONES
 
+/**
+ * Bewusst eine enge Auswahl statt `ElementType`: Letzteres ist die Vereinigung
+ * *aller* Elementtypen, auch solcher ohne Kinder (etwa `br`). TypeScript
+ * schneidet die Props dieser Vereinigung und landet bei `never` — die Komponente
+ * liesse sich dann gar nicht mehr mit Inhalt aufrufen. Die vier Tags hier teilen
+ * dieselbe Prop-Form und decken jeden Einsatz auf der Seite ab.
+ */
+type HeadlineTag = 'h1' | 'h2' | 'h3' | 'p'
+
 type ReadingHeadlineProps = {
   lead: string
   trail?: string
   /** Auf welchem Grund die Headline sitzt — bestimmt beide Farbtöne. */
   tone?: Tone
-  as?: ElementType
+  as?: HeadlineTag
   className?: string
-  /** Wortabstand als eigenes Element, damit Zeilenumbrüche normal funktionieren. */
   id?: string
 }
 
@@ -61,11 +69,14 @@ export default function ReadingHeadline({
   lead,
   trail,
   tone = 'light',
-  as: Tag = 'h2',
+  as: tag = 'h2',
   className,
   id,
 }: ReadingHeadlineProps) {
-  const ref = useRef<HTMLElement>(null)
+  // Alle erlaubten Tags nehmen dieselben Props entgegen; die Festlegung auf
+  // einen konkreten Typ erspart TypeScript die Vereinigung über die Variante.
+  const Tag = tag as 'h2'
+  const ref = useRef<HTMLHeadingElement>(null)
   const prefersReducedMotion = useReducedMotion()
 
   // Startet, wenn der Kopf der Headline auf 85 % Viewporthöhe steht, und ist

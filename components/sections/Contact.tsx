@@ -9,16 +9,27 @@ import type { SectionCopy } from '@/types/content'
 
 type ContactProps = {
   copy: SectionCopy['contact']
+  /** Empfängeradresse — nur für den Mailto-Weg des statischen Builds nötig. */
+  email: string
 }
 
 type Status = 'idle' | 'sending' | 'sent' | 'error'
+
+/**
+ * Im GitHub-Pages-Build gibt es keinen Server und damit kein /api/contact.
+ * Ein fetch dorthin bekäme die 404-HTML-Seite von GitHub Pages zurück und
+ * würde beim Auswerten als JSON mit einem unverständlichen Parse-Fehler
+ * scheitern. Deshalb wird in diesem Build gar nicht erst gesendet, sondern
+ * das Mailprogramm mit fertig ausgefüllter Nachricht geöffnet.
+ */
+const IST_STATISCH = process.env.NEXT_PUBLIC_STATIC_EXPORT === 'true'
 
 const FIELD =
   'w-full border-0 border-b border-hairline bg-transparent px-0 pb-3 pt-2 text-[0.9375rem] ' +
   'text-ink placeholder:text-chalk transition-colors duration-200 ease-soft ' +
   'focus:border-oxblood focus:outline-none focus:ring-0'
 
-export default function Contact({ copy }: ContactProps) {
+export default function Contact({ copy, email }: ContactProps) {
   const [status, setStatus] = useState<Status>('idle')
   const [message, setMessage] = useState('')
   const [interests, setInterests] = useState<string[]>([])
@@ -36,6 +47,27 @@ export default function Contact({ copy }: ContactProps) {
 
     const form = event.currentTarget
     const data = new FormData(form)
+
+    if (IST_STATISCH) {
+      const betreff = String(data.get('subject') || '').trim()
+      const zeilen = [
+        String(data.get('message') || '').trim(),
+        '',
+        '—',
+        `Name: ${String(data.get('name') || '').trim()}`,
+        `E-Mail: ${String(data.get('email') || '').trim()}`,
+        interests.length > 0 ? `Themen: ${interests.join(', ')}` : null,
+      ].filter((zeile): zeile is string => zeile !== null)
+
+      window.location.href =
+        `mailto:${email}` +
+        `?subject=${encodeURIComponent(betreff || 'Anfrage über die Website')}` +
+        `&body=${encodeURIComponent(zeilen.join('\n'))}`
+
+      setStatus('sent')
+      setMessage('Dein Mailprogramm öffnet sich mit der fertigen Nachricht — einmal absenden, fertig.')
+      return
+    }
 
     try {
       const response = await fetch('/api/contact', {
@@ -200,7 +232,7 @@ export default function Contact({ copy }: ContactProps) {
                 disabled={status === 'sending'}
                 className="group inline-flex cursor-pointer items-center gap-2.5 rounded-pill bg-ink px-7 py-3.5 text-[0.9375rem] font-medium text-paper transition-colors duration-200 ease-soft hover:bg-oxblood disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {status === 'sending' ? 'Wird gesendet …' : 'Nachricht senden'}
+                {status === 'sending' ? 'Wird gesendet …' : IST_STATISCH ? 'Nachricht verfassen' : 'Nachricht senden'}
                 <svg
                   viewBox="0 0 16 16"
                   aria-hidden="true"

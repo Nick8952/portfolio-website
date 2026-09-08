@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 
+import HeroSceneLazy from '@/components/three/HeroSceneLazy'
 import Button from '@/components/ui/Button'
 import Picture from '@/components/ui/Picture'
 import type { Hero as HeroContent, SiteSettings } from '@/types/content'
@@ -26,8 +27,14 @@ export default function Hero({ hero, settings }: HeroProps) {
       id="top"
       className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-ink bg-hero-bloom text-paper"
     >
+      {/* Ebene 0 — die WebGL-Szene, ganz hinten und ohne Zeigerfang, damit die
+          Schaltflächen darüber bedienbar bleiben. */}
+      <div className="pointer-events-none absolute inset-0 z-0">
+        <HeroSceneLazy />
+      </div>
+
       {/* Ebene 1 — die grosse Typo */}
-      <div className="pointer-events-none absolute inset-x-0 top-[23%] z-0 md:top-[19%]">
+      <div className="pointer-events-none absolute inset-x-0 top-[23%] z-[1] md:top-[19%]">
         <div className="shell">
           <p className="display text-center text-[clamp(0.9rem,3.1vw,2.4rem)] leading-none tracking-[0.34em] text-paper/75">
             {hero.displayLead}

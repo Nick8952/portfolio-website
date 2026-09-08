@@ -127,6 +127,51 @@
   .fit-word > * {
     font-size: min(var(--cap, 16rem), calc(100cqi / (var(--chars, 8) * 0.66)));
   }
+
+  /* ---------------------------------------------------------------------
+     3D-Karten
+
+     Die Neigung kommt aus zwei CSS-Variablen, die components/ui/TiltCard.tsx
+     bei Zeigerbewegung direkt am Knoten setzt. Dass die Werte hier und nicht
+     im React-State liegen, ist Absicht: so laeuft die Bewegung im Compositor
+     und loest keine Neuberechnung des Baums aus.
+
+     `transform-style: preserve-3d` zusammen mit `perspective` macht aus der
+     Drehung eine echte perspektivische statt einer flachen Scherung.
+  --------------------------------------------------------------------- */
+  .tilt-card {
+    position: relative;
+    isolation: isolate;
+    transform: perspective(900px) rotateX(var(--neigung-x, 0deg)) rotateY(var(--neigung-y, 0deg));
+    transform-style: preserve-3d;
+    transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+
+  /* Das wandernde Glanzlicht — dasselbe warme Bordeaux wie im Hero. */
+  .tilt-glanz {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    opacity: var(--glanz-staerke, 0);
+    transition: opacity 300ms cubic-bezier(0.22, 1, 0.36, 1);
+    background: radial-gradient(
+      42% 42% at var(--glanz-x, 50%) var(--glanz-y, 50%),
+      rgb(var(--c-ember) / 0.16),
+      transparent 70%
+    );
+  }
+
+  /* Auf dunklem Grund traegt dasselbe Licht weiter und darf heller sein. */
+  .tilt-glanz--dunkel {
+    background: radial-gradient(
+      45% 45% at var(--glanz-x, 50%) var(--glanz-y, 50%),
+      rgb(var(--c-ember) / 0.3),
+      transparent 72%
+    );
+  }
 }
 
 @layer utilities {

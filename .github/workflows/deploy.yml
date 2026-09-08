@@ -1,0 +1,62 @@
+# Baut den statischen Export und veroeffentlicht ihn auf GitHub Pages.
+#
+# Wichtig: GitHub Pages liefert nur Dateien aus, es kann keinen Server
+# ausfuehren. Deshalb laeuft der Build hier mit STATIC_EXPORT=true, und in
+# diesem Modus gibt es kein /api/contact — das Kontaktformular oeffnet
+# stattdessen das Mailprogramm. Der volle Betrieb mit echtem Mailversand
+# laeuft ueber Vercel; dort wird STATIC_EXPORT nicht gesetzt.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      STATIC_EXPORT: 'true'
+      # Betrieb unter der GitHub-Pages-URL (kein DNS noetig):
+      #   https://nick8952.github.io/portfolio-website/
+      # Beim Umzug auf eine eigene Domain: public/CNAME anlegen, Custom Domain
+      # in Settings -> Pages setzen, dann hier
+      #   SITE_ORIGIN: https://deine-domain.ch
+      #   BASE_PATH: ''
+      # eintragen.
+      SITE_ORIGIN: https://nick8952.github.io
+      BASE_PATH: /portfolio-website
+      # Solange Platzhalter drinstehen, soll Google die Seite NICHT indexieren.
+      # Zum Freigeben diese Zeile entfernen (siehe README, Abschnitt Deployment).
+      NOINDEX: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

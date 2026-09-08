@@ -4,6 +4,18 @@ import Studio from './Studio'
 
 export const dynamic = 'force-static'
 
+/**
+ * Nötig für den statischen GitHub-Pages-Export: ein Catch-all-Segment braucht
+ * in `output: 'export'` mindestens einen Parametersatz. Ein leeres Array
+ * prärendert genau `/studio` selbst — die einzige Route, die ohne angebundenes
+ * Sanity-Projekt ohnehin sinnvoll ist (siehe SetupNotice unten).
+ * Auf Vercel schadet das nicht: dort bleiben Unterpfade wie /studio/desk
+ * weiterhin dynamisch, das hier kommt nur als zusätzliche statische Route dazu.
+ */
+export function generateStaticParams() {
+  return [{ tool: [] }]
+}
+
 export { metadata, viewport } from 'next-sanity/studio'
 
 /**

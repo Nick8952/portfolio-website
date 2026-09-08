@@ -65,7 +65,7 @@ export default async function HomePage() {
         <Marquee words={copy.marqueeWords} />
 
         <Testimonials copy={copy.testimonials} testimonials={testimonials} />
-        <Contact copy={copy.contact} />
+        <Contact copy={copy.contact} email={settings.email} />
       </main>
 
       <Footer settings={settings} />

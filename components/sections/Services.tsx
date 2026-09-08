@@ -3,6 +3,7 @@ import Button from '@/components/ui/Button'
 import Reveal from '@/components/ui/Reveal'
 import SectionHeader from '@/components/ui/SectionHeader'
 import ServiceIcon from '@/components/ui/ServiceIcon'
+import TiltCard from '@/components/ui/TiltCard'
 import type { SectionCopy, Service } from '@/types/content'
 
 type ServicesProps = {
@@ -46,34 +47,41 @@ export default function Services({ copy, services }: ServicesProps) {
             return (
               <li key={service._id}>
                 <Reveal delay={index * 0.08} className="h-full">
-                  <CardTag
-                    {...(service.href
-                      ? {
-                          href: service.href,
-                          ...(/^https?:\/\//.test(service.href)
-                            ? { target: '_blank', rel: 'noopener noreferrer' }
-                            : {}),
-                        }
-                      : {})}
-                    className={`group flex h-full flex-col rounded-card bg-paper p-7 transition-transform duration-300 ease-soft ${
-                      service.href ? 'cursor-pointer hover:-translate-y-1' : ''
-                    }`}
-                  >
-                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-paper-sunk text-ink">
-                      <ServiceIcon name={service.iconKey} className="h-6 w-6" />
-                    </span>
-
-                    <h3 className="mt-8 font-display text-xl font-bold tracking-tight text-ink">
-                      {service.title}
-                    </h3>
-                    <p className="mt-3 text-sm leading-relaxed text-muted">{service.description}</p>
-
-                    {service.href && (
-                      <span className="mt-8 flex justify-end">
-                        <ArrowBadge tone="onLight" />
+                  {/* Die Neigung ersetzt das frühere hover:-translate-y-1 —
+                      zwei konkurrierende Transforms auf demselben Knoten
+                      würden einander überschreiben. */}
+                  <TiltCard className="h-full rounded-card">
+                    <CardTag
+                      {...(service.href
+                        ? {
+                            href: service.href,
+                            ...(/^https?:\/\//.test(service.href)
+                              ? { target: '_blank', rel: 'noopener noreferrer' }
+                              : {}),
+                          }
+                        : {})}
+                      className={`group flex h-full flex-col rounded-card bg-paper p-7 ${
+                        service.href ? 'cursor-pointer' : ''
+                      }`}
+                    >
+                      <span className="grid h-12 w-12 place-items-center rounded-2xl bg-paper-sunk text-ink">
+                        <ServiceIcon name={service.iconKey} className="h-6 w-6" />
                       </span>
-                    )}
-                  </CardTag>
+
+                      <h3 className="mt-8 font-display text-xl font-bold tracking-tight text-ink">
+                        {service.title}
+                      </h3>
+                      <p className="mt-3 text-sm leading-relaxed text-muted">
+                        {service.description}
+                      </p>
+
+                      {service.href && (
+                        <span className="mt-8 flex justify-end">
+                          <ArrowBadge tone="onLight" />
+                        </span>
+                      )}
+                    </CardTag>
+                  </TiltCard>
                 </Reveal>
               </li>
             )
