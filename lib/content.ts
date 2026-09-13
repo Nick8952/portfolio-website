@@ -51,6 +51,8 @@ export type Website = {
   url: string
   /** Was an dieser Website bemerkenswert ist — ein Satz, keine Feature-Liste. */
   satz: string
+  /** Oberer Rand der Website ist hell → dunkle Glyphen in der iPhone-Statusleiste. */
+  hellerKopf?: boolean
 }
 
 export const websites: Website[] = [
@@ -85,6 +87,7 @@ export const websites: Website[] = [
     ort: 'Zürich',
     url: 'https://altec-elektro-website-ae0768.gitlab.io/',
     satz: 'Notfallnummer immer sichtbar, Referenzen als Belege statt als Galerie.',
+    hellerKopf: true,
   },
   {
     slug: 'fahrschul-center',

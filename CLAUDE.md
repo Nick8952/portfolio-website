@@ -28,6 +28,7 @@ app/                  layout (Fonts, Meta), page (Reihenfolge), robots, sitemap,
 components/layout     Nav, Footer
 components/sections   Hero, Websites, Ablauf, Preise, UeberMich, Anfrage
 components/motion     SmoothScroll (Lenis), Cursor (Kobalt-Ring), Magnetic
+components/ui/IPhone  Das iPhone aus Geometrie — Hero und Sheet nutzen dasselbe
 tools/screenshots.mjs Erzeugt public/websites/*.jpg aus den Live-Demos
 tools/websites-source.mjs  Adressen dafür — Slugs müssen zu content.ts passen
 ```
@@ -58,6 +59,9 @@ tools/websites-source.mjs  Adressen dafür — Slugs müssen zu content.ts passe
 - **Sheet und Lenis.** `SmoothScroll.tsx` legt die Lenis-Instanz auf `window.__lenis`
   (Typ in `types/global.d.ts`); das Sheet ruft `stop()`/`start()`, sonst scrollt die
   Seite hinter dem offenen Sheet weiter. Scrollbereich im Sheet trägt `data-lenis-prevent`.
+- **Prozent-Insets sind nicht quadratisch.** `inset-[2.4%]` misst oben/unten an der
+  Höhe, seitlich an der Breite — beim iPhone (2,06:1) wäre der Rand oben doppelt so
+  dick. Deshalb `inset-x-[2.4%] inset-y-[1.165%]`. Fund von Codex.
 - **Tailwind-Deckkraft nur in 5er-Schritten.** `bg-ink/6` erzeugt stillschweigend keine
   Klasse. Zweimal hineingelaufen.
 - **`sitemap.ts` / `robots.ts` brauchen `dynamic = 'force-static'`**, sonst bricht

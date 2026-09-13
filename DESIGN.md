@@ -45,6 +45,16 @@ etwas zu brechen gibt, liegt im Hero ein weiches Umgebungslicht (Kobalt 16 %,
 Tinte 6 %, blur 80px, treibt langsam). Ohne `backdrop-filter`-Unterstützung wird
 das Glas undurchsichtig, damit Text lesbar bleibt.
 
+## Das iPhone
+
+`components/ui/IPhone.tsx` — reine Geometrie im Gehäuse-Verhältnis 716:1476:
+Titanrahmen mit Lichtkante, Dynamic Island, Aktions- und Lautstärketasten links,
+Seitentaste rechts, Statusleiste mit 9:41 und Glyphen. Die Website beginnt *unter*
+der Statusleiste; dahinter liegt ihr eigener oberer Rand weichgezeichnet, damit die
+Leiste die Farbe der Website trägt. Alle inneren Masse in `cqi` — dasselbe Gerät
+funktioniert bei 19rem im Hero und bei 7rem im Sheet. Websites mit hellem Kopf
+bekommen dunkle Glyphen (`hellerKopf` in `content.ts`).
+
 ## Websites: Dock und Sheet
 
 Die Websites sind ein Angebot, kein Zwang. Eine Reihe aus sechs kleinen Glas-Kacheln

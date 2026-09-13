@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
 import Magnetic from '@/components/motion/Magnetic'
+import IPhone from '@/components/ui/IPhone'
 import { branchen, hero, websites } from '@/lib/content'
 import { asset } from '@/lib/utils'
 
@@ -103,15 +104,17 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Das Telefon zeigt die Website der Branche, die gerade im Titel steht.
-            Reine Geometrie — kein fotorealistisches Geraet. */}
+        {/* Das iPhone zeigt die Website der Branche, die gerade im Titel steht. */}
         <motion.div
           className="relative mx-auto w-[min(78vw,17rem)] lg:col-span-5 lg:mx-0 lg:ml-auto lg:w-[19rem]"
           initial={reduziert ? false : { opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...auf, delay: 0.3 }}
         >
-          <div className="relative aspect-[390/844] overflow-hidden rounded-[2.4rem] border-[6px] border-ink bg-ink shadow-lift">
+          <IPhone
+            hintergrund={asset(`/websites/${site.slug}-mobile.jpg`)}
+            helleStatusleiste={site.hellerKopf}
+          >
             {/* Aus, dann ein: eine Ueberblendung belichtet kurz beide Screenshots doppelt. */}
             <AnimatePresence mode="wait" initial={false}>
               <motion.img
@@ -127,8 +130,7 @@ export default function Hero() {
                 transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
               />
             </AnimatePresence>
-            <div aria-hidden="true" className="absolute left-1/2 top-2 h-1.5 w-16 -translate-x-1/2 rounded-pill bg-ink" />
-          </div>
+          </IPhone>
           <p className="mt-4 text-center text-sm text-muted">
             {site.name} · {site.branche}
           </p>

@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import IPhone from '@/components/ui/IPhone'
 import { websites, type Website } from '@/lib/content'
 import { asset, cn } from '@/lib/utils'
 
@@ -249,17 +250,19 @@ function Sheet({
                         />
                       </div>
                     </div>
-                    <div className="absolute bottom-4 left-4 w-[20%] min-w-[4.5rem] max-w-[7rem] overflow-hidden rounded-[1rem] border-[3px] border-ink bg-ink shadow-lift">
-                      <div className="aspect-[390/844]">
-                        <img
-                          src={asset(`/websites/${site.slug}-mobile.jpg`)}
-                          alt={`${site.name} auf dem Handy`}
-                          width={390}
-                          height={844}
-                          className="h-full w-full object-cover object-top"
-                        />
-                      </div>
-                    </div>
+                    <IPhone
+                      className="absolute bottom-4 left-5 w-[21%] min-w-[4.75rem] max-w-[7.5rem]"
+                      hintergrund={asset(`/websites/${site.slug}-mobile.jpg`)}
+                      helleStatusleiste={site.hellerKopf}
+                    >
+                      <img
+                        src={asset(`/websites/${site.slug}-mobile.jpg`)}
+                        alt={`${site.name} auf dem Handy`}
+                        width={390}
+                        height={844}
+                        className="h-full w-full object-cover object-top"
+                      />
+                    </IPhone>
                   </div>
                 </motion.div>
               </AnimatePresence>
