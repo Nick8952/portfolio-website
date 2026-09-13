@@ -1,74 +1,43 @@
 import Footer from '@/components/layout/Footer'
-import Header from '@/components/layout/Header'
-import About from '@/components/sections/About'
-import Contact from '@/components/sections/Contact'
-import Experience from '@/components/sections/Experience'
+import Nav from '@/components/layout/Nav'
+import Ablauf from '@/components/sections/Ablauf'
+import Anfrage from '@/components/sections/Anfrage'
 import Hero from '@/components/sections/Hero'
-import Marquee from '@/components/sections/Marquee'
-import Projects from '@/components/sections/Projects'
-import Services from '@/components/sections/Services'
-import Stats from '@/components/sections/Stats'
-import Testimonials from '@/components/sections/Testimonials'
-import Tools from '@/components/sections/Tools'
+import Preise from '@/components/sections/Preise'
+import UeberMich from '@/components/sections/UeberMich'
+import Websites from '@/components/sections/Websites'
+import { person, seo, websites } from '@/lib/content'
 import { siteUrl } from '@/lib/utils'
-import { getPageContent } from '@/sanity/content'
 
-/**
- * Inhalte werden höchstens 60 Sekunden alt (AE-4 in CLAUDE.md). Bewusst ISR
- * statt Webhook: der Betreiber soll nach dem Vercel-Import nichts mehr
- * einrichten müssen.
- */
-export const revalidate = 60
-
-export default async function HomePage() {
-  const { settings, hero, about, copy, stats, tools, services, experiences, projects, testimonials } =
-    await getPageContent()
-
-  // Strukturierte Daten für Suchmaschinen. Beschreibt dieselbe Person wie die
-  // Seite selbst — deshalb aus denselben Feldern gespeist, nicht separat gepflegt.
-  const personSchema = {
+export default function Startseite() {
+  // Strukturierte Daten aus denselben Inhalten wie die Seite selbst.
+  const schema = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: settings.name,
-    jobTitle: settings.role,
-    email: `mailto:${settings.email}`,
+    name: person.name,
+    jobTitle: `${person.ausbildung.titel} (${person.ausbildung.fachrichtung})`,
+    description: seo.beschreibung,
+    email: `mailto:${person.email}`,
     url: siteUrl(),
-    description: settings.seoDescription,
-    ...(settings.location ? { address: { '@type': 'PostalAddress', addressLocality: settings.location } } : {}),
-    ...(settings.socials.length > 0 ? { sameAs: settings.socials.map((social) => social.url) } : {}),
+    sameAs: [person.github],
+    knowsAbout: ['Webentwicklung', 'Next.js', 'Websites für KMU'],
+    hasOccupation: { '@type': 'Occupation', name: 'Webentwickler' },
+    workExample: websites.map((w) => ({ '@type': 'WebSite', name: w.name, url: w.url })),
   }
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
-      />
-
-      <Header settings={settings} />
-
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+      <Nav />
       <main id="inhalt">
-        <Hero hero={hero} settings={settings} />
-
-        {/* Hell: wer dahintersteht. */}
-        <About about={about} />
-        <Stats copy={copy.stats} stats={stats} />
-        <Tools copy={copy.tools} tools={tools} />
-
-        {/* Dunkel: was der Besucher bekommt. */}
-        <Services copy={copy.services} services={services} />
-
-        <Experience copy={copy.experience} experiences={experiences} />
-
-        <Projects copy={copy.projects} projects={projects} />
-
-        <Marquee words={copy.marqueeWords} />
-
-        <Testimonials copy={copy.testimonials} testimonials={testimonials} />
-        <Contact copy={copy.contact} email={settings.email} />
+        <Hero />
+        <Websites />
+        <Ablauf />
+        <Preise />
+        <UeberMich />
+        <Anfrage />
       </main>
-
-      <Footer settings={settings} />
+      <Footer />
     </>
   )
 }

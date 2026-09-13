@@ -1,78 +1,57 @@
 import type { Config } from 'tailwindcss'
 
 /**
- * Die Farbwerte stehen als CSS-Variablen in app/globals.css und werden hier nur
- * gespiegelt. Einzige Quelle der Wahrheit bleibt damit das Stylesheet — so kann
- * das Studio (das kein Tailwind lädt) dieselben Tokens verwenden.
+ * Drei Farben, mehr nicht: Papier, Tinte, Kobalt. Alles Graue ist eine Ableitung
+ * aus Tinte und wird hier nur benannt, damit es im Code nicht als Hex auftaucht.
+ * Die Werte selbst stehen als CSS-Variablen in app/globals.css.
  */
 const config: Config = {
-  content: [
-    './app/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './lib/**/*.{ts,tsx}',
-  ],
+  content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './lib/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        wine: 'rgb(var(--c-wine) / <alpha-value>)',
-        oxblood: 'rgb(var(--c-oxblood) / <alpha-value>)',
-        ember: 'rgb(var(--c-ember) / <alpha-value>)',
-        // Aufgehellter Akzent für Kleintext auf dunklem Grund — `ember` selbst
-        // erreicht dort nur 3,7:1 und ist damit auf Grossschrift beschränkt.
-        'ember-lift': 'rgb(var(--c-ember-lift) / <alpha-value>)',
-        ink: 'rgb(var(--c-ink) / <alpha-value>)',
-        paper: 'rgb(var(--c-paper) / <alpha-value>)',
-        chalk: 'rgb(var(--c-chalk) / <alpha-value>)',
-        // Abgestufte Neutraltöne. Bewusst knapp gehalten: Bordeaux ist die einzige
-        // gesättigte Farbe der Seite, alles andere bleibt neutral.
-        'paper-sunk': 'rgb(var(--c-paper-sunk) / <alpha-value>)',
-        'ink-soft': 'rgb(var(--c-ink-soft) / <alpha-value>)',
-        muted: 'rgb(var(--c-muted) / <alpha-value>)',
-        smoke: 'rgb(var(--c-smoke) / <alpha-value>)',
-        hairline: 'rgb(var(--c-hairline) / <alpha-value>)',
+        paper: 'rgb(var(--paper) / <alpha-value>)',
+        ink: 'rgb(var(--ink) / <alpha-value>)',
+        kobalt: 'rgb(var(--kobalt) / <alpha-value>)',
+        // Kobalt auf dunklem Grund: aufgehellt, damit es als Text 6,4:1 erreicht.
+        'kobalt-lift': 'rgb(var(--kobalt-lift) / <alpha-value>)',
+        // Ableitungen aus Tinte
+        muted: 'rgb(var(--muted) / <alpha-value>)',
+        hairline: 'rgb(var(--hairline) / <alpha-value>)',
+        sunk: 'rgb(var(--sunk) / <alpha-value>)',
       },
       fontFamily: {
-        display: ['var(--font-display)', 'Archivo', 'system-ui', 'sans-serif'],
-        sans: ['var(--font-sans)', 'Inter', 'system-ui', 'sans-serif'],
-        mono: ['var(--font-mono)', 'JetBrains Mono', 'ui-monospace', 'monospace'],
+        display: ['var(--font-display)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
       },
       fontSize: {
-        // Fliessende Display-Skala. Die Riesengrade skalieren mit der Viewport-Breite,
-        // damit "ENGINEER" auf jedem Gerät bündig in der Spalte sitzt.
-        // Die Zeilenhöhen sind bewusst weniger eng als bei einer englischen
-        // Vorlage: Umlaute brauchen Kopfraum, und Archivos Versal-J reicht unter
-        // die Grundlinie. Bei 0.92 stossen die Ü-Punkte der Folgezeile in das J
-        // der Zeile darüber.
-        eyebrow: ['0.6875rem', { lineHeight: '1', letterSpacing: '0.18em' }],
-        'display-sm': ['clamp(2rem, 6vw, 3.5rem)', { lineHeight: '1.02', letterSpacing: '-0.02em' }],
-        'display-md': ['clamp(2.75rem, 8vw, 6rem)', { lineHeight: '1', letterSpacing: '-0.03em' }],
-        'display-lg': ['clamp(3.5rem, 13vw, 10rem)', { lineHeight: '0.94', letterSpacing: '-0.04em' }],
-        'display-xl': ['clamp(4rem, 19vw, 16rem)', { lineHeight: '0.9', letterSpacing: '-0.05em' }],
-      },
-      spacing: {
-        section: 'clamp(5rem, 11vw, 9.5rem)',
-        gutter: 'clamp(1.25rem, 4vw, 4rem)',
-      },
-      borderRadius: {
-        card: '1.5rem',
-        pill: '999px',
+        // Display bleibt unter 6rem (Craft-Floor). Laufweite nie enger als -0.03em.
+        'display-xl': ['clamp(2.75rem, 7.2vw, 6rem)', { lineHeight: '0.98', letterSpacing: '-0.03em' }],
+        'display-lg': ['clamp(2.25rem, 5vw, 4.25rem)', { lineHeight: '1.02', letterSpacing: '-0.025em' }],
+        'display-md': ['clamp(1.75rem, 3.4vw, 2.75rem)', { lineHeight: '1.08', letterSpacing: '-0.02em' }],
+        lede: ['clamp(1.125rem, 1.6vw, 1.375rem)', { lineHeight: '1.45' }],
       },
       maxWidth: {
-        shell: '90rem',
-        prose: '34rem',
+        shell: '84rem',
+        // 65–75 Zeichen Zeilenlaenge fuer Fliesstext.
+        measure: '38rem',
+      },
+      spacing: {
+        13: '3.25rem',
+        section: 'clamp(6rem, 12vw, 11rem)',
+        gutter: 'clamp(1.25rem, 4vw, 3.5rem)',
+      },
+      borderRadius: {
+        // Karten 12–16px, Pillen nur fuer kleine Bedienelemente.
+        card: '1rem',
+        pill: '999px',
       },
       transitionTimingFunction: {
-        // Ein einziges Easing für die ganze Seite hält die Bewegung zusammenhängend.
-        soft: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        out: 'cubic-bezier(0.16, 1, 0.3, 1)',
       },
-      keyframes: {
-        marquee: {
-          from: { transform: 'translate3d(0, 0, 0)' },
-          to: { transform: 'translate3d(-50%, 0, 0)' },
-        },
-      },
-      animation: {
-        marquee: 'marquee 38s linear infinite',
+      boxShadow: {
+        // Ein Schatten mit Versatz und weichem Verlauf — kein Halo.
+        lift: '0 18px 40px -18px rgb(10 10 10 / 0.35)',
       },
     },
   },

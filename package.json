@@ -1,50 +1,36 @@
 {
   "name": "portfolio-website",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "Persoenliche Portfolio-Website - Next.js 15 (App Router) + Sanity CMS (Embedded Studio) + Vercel.",
+  "description": "Nick Holzbecher - persoenliche Website und Anfrageseite fuer Websites. Next.js 15, statischer Export auf GitHub Pages.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext .ts,.tsx",
+    "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "sanity:init": "sanity init --env .env.local",
-    "sanity:deploy": "sanity deploy",
-    "sanity:graphql": "sanity graphql deploy",
-    "seed": "node scripts/seed.mjs"
+    "screenshots": "node tools/screenshots.mjs"
   },
   "dependencies": {
-    "@react-three/fiber": "^9.7.0",
-    "@sanity/client": "^7.27.0",
-    "@sanity/icons": "^3.8.0",
-    "@sanity/image-url": "^2.1.1",
-    "@sanity/vision": "4.22.1",
     "framer-motion": "^12.43.0",
+    "lenis": "^1.3.0",
     "next": "^15.5.25",
-    "next-sanity": "^11.6.13",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "resend": "^6.26.0",
-    "sanity": "4.22.1",
-    "styled-components": "^6.1.15",
-    "three": "^0.185.1"
+    "react-dom": "^19.2.3"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
-    "@types/three": "^0.185.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.1",
     "eslint-config-next": "^15.5.25",
     "postcss": "^8.5.1",
+    "puppeteer-core": "^25.10.0",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3"
   },
   "allowScripts": {
-    "esbuild@0.28.2": true,
-    "esbuild@0.27.0": true,
     "unrs-resolver@1.12.2": true
   }
 }

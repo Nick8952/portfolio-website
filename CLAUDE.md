@@ -1,304 +1,78 @@
-# Portfolio-Website — Projektkontext
+# Nick Holzbecher — persönliche Website
 
-> Diese Datei ist der Einstiegspunkt für jede Claude-Code-Session in diesem Repo.
-> Sie wird bei strukturellen Änderungen mitgepflegt.
+> Einstieg für jede Claude-Code-Session in diesem Repo. Produktwahrheit steht in
+> `PRODUCT.md`, Gestaltung in `DESIGN.md`. Diese Datei erklärt Code und Betrieb.
 
-## 1. Projektüberblick
+## Was das ist
 
-Persönliche Portfolio-Website für einen Softwareentwickler. **Sprache: Deutsch**
-(Fliesstext, Formulare, Studio-Labels). Einzelne Display-Wörter und Section-Labels
-dürfen englisch bleiben, wo sie als Typo-Statement funktionieren.
+Nicks Website als Verkaufsinstrument für seinen Website-Nebenerwerb. Zielgruppe:
+Inhaber kleiner Schweizer Betriebe, die den Link vom Handy aus öffnen. Ziel der
+Seite: eine Anfrage über das Formular. **Live:** https://nick8952.github.io/portfolio-website/
 
-**Das Ziel der Seite:** jemanden davon überzeugen, dass sich ein Gespräch lohnt —
-und ihn zum Kontaktformular bringen. Jede Section zahlt darauf ein.
+Version 2 (2026-09-13) — der frühere Sanity/WebGL-Stand wurde komplett ersetzt.
+Git-Historie vor `v2` ist nur noch Archiv.
 
-Sämtliche Inhalte sind über ein **eingebettetes Sanity Studio unter `/studio`**
-pflegbar. Ohne Code-Kenntnisse.
+## Stack
 
-**Wichtig:** Die Seite baut und läuft auch **ohne konfiguriertes Sanity**.
-Fehlt `NEXT_PUBLIC_SANITY_PROJECT_ID`, greift automatisch der Platzhalter-Datensatz
-aus `lib/fallback.ts`. Damit funktioniert der Vercel-Import ohne Vorarbeit, und die
-Seite ist nie kaputt, nur weil ein Dokument im CMS noch fehlt.
+Next.js 15 (App Router) · TypeScript · Tailwind 3.4 · Framer Motion 12 · Lenis.
+**Statischer Export** (`output: 'export'`) auf GitHub Pages, Basispfad
+`/portfolio-website`. Kein CMS, kein Backend, keine Server-Routen.
 
-## 2. Tech-Stack
-
-| Bereich | Wahl | Warum |
-|---|---|---|
-| Framework | Next.js 15.5 (App Router, RSC) | Vorgabe der übergeordneten CLAUDE.md |
-| Sprache | TypeScript (strict) | — |
-| Styling | Tailwind CSS 3.4 + CSS-Variablen | Hauskonvention der anderen Projekte |
-| Animation | Framer Motion 12 | Scroll-Reveals, Signature-Headline |
-| 3D | three 0.185 + @react-three/fiber 9 | WebGL-Hero, lazy geladen |
-| CMS | Sanity 4.22.1 + next-sanity 11 | Embedded Studio unter `/studio` |
-| Mailversand | Resend 6 via Route Handler | Läuft nativ auf Vercel |
-| Deployment | Vercel (voll) + GitHub Pages (statisch) | siehe AE-8 |
-
-### Versions-Fallstrick (bitte nicht blind aktualisieren)
-
-Zwei Versionen sind bewusst festgehalten. Beide hängen daran, dass dieses Projekt
-auf **Next 15** läuft:
-
-**1. `sanity` ist exakt auf `4.22.1` gepinnt** (nicht `^4.22.1`).
-Ab **Sanity 5** wird `useEffectEvent` direkt aus `react` importiert. Das in
-Next 15.5 mitgelieferte React exportiert diesen Hook nicht — der Build bricht mit
-`Attempted import error: 'useEffectEvent' is not exported from 'react'` ab.
-Sanity 4.22.1 bezieht denselben Hook aus dem Ponyfill-Paket `use-effect-event`
-und ist damit unabhängig von der React-Version, die Next bündelt.
-
-**2. `next-sanity` bleibt auf `^11.6.13`.**
-`next-sanity@12` und `@13` verlangen als Peer zwingend Next 16. Version 11 ist die
-letzte mit `next: ^15.1 || ^16` und `sanity: ^4.22.0 || ^5`.
-
-**Wer auf Next 16 wechseln will**, zieht alle drei zusammen hoch: `next@16`,
-`next-sanity@13`, `sanity@6`. Einzeln aktualisiert bricht der Build.
-
-## 3. Architekturentscheidungen
-
-**AE-1 — Fallback-Content-Layer.** Alle Sanity-Zugriffe laufen über
-`sanity/fetch.ts`. Die Funktion prüft, ob ein Projekt konfiguriert ist, fängt
-Netzwerkfehler ab und liefert bei leerem Ergebnis den passenden Platzhalter aus
-`lib/fallback.ts`. Konsequenz: Sections rendern immer, nie ein leeres `<section>`.
-Platzhalter sind an `[ECKIGEN KLAMMERN]` erkennbar.
-
-**AE-2 — Server Components als Default.** Datenholen passiert ausschliesslich in
-Server Components. `"use client"` steht nur dort, wo Interaktion oder Motion nötig
-ist (`components/ui/*`, `components/layout/Header.tsx`, Kontaktformular).
-Sections sind Server Components, die Client-Bausteine einbetten.
-
-**AE-3 — Singletons vs. Collections.** `siteSettings`, `hero`, `about` und
-`sectionCopy` sind Singletons (genau ein Dokument, feste ID, im Studio ohne
-"Neu"-Button). `stat`, `tool`, `service`, `experience`, `project`, `testimonial`
-sind Collections mit `order`-Feld für die Sortierung. Siehe `sanity/structure.ts`.
-
-**AE-4 — ISR statt Webhooks.** Seiten nutzen `revalidate = 60`. Bewusst gewählt
-gegen einen Webhook-Setup-Schritt, den der Betreiber sonst manuell machen müsste.
-Änderungen im Studio sind nach spätestens 60 s live.
-
-**AE-5 — Resend mit weichem Fallback.** Fehlt `RESEND_API_KEY`, antwortet
-`/api/contact` mit einer freundlichen Meldung statt einem 500er, und loggt die
-Anfrage serverseitig. Der Build bricht nie an einer fehlenden Env-Var ab.
-
-**AE-6 — Seed-Skript statt Handarbeit.** `scripts/seed.mjs` schreibt
-`content/inhalte.json` in einer Transaktion nach Sanity und lädt dabei Dateien aus
-`content/bilder/` hoch. Dokument-IDs sind fest (`siteSettings`, `hero`, `about`,
-`sectionCopy`, sowie `stat-1`, `tool-1`, … ) und müssen zu den IDs in
-`sanity/structure.ts` passen — sonst zeigt die Seitenleiste auf leere Dokumente.
-Assets werden über ihren sha1 erkannt, der Lauf ist damit idempotent.
-`--dry-run` baut alles ohne Token und ohne Netz und legt das Ergebnis als
-`content/.seed-vorschau.json` ab.
-
-**AE-8 — Zwei Deploy-Ziele, ein Quellcode.** `next.config.mjs` schaltet über
-`STATIC_EXPORT=true` in den Export-Modus (`output: 'export'`, `trailingSlash`,
-`basePath`, `images.unoptimized`). Gesetzt wird das nur in
-`.github/workflows/deploy.yml`. Auf Vercel bleibt alles beim Alten: SSR, ISR und
-die echte `/api/contact`.
-
-Konsequenzen des statischen Modus, die man kennen muss:
-- **Kein `/api/contact`.** GitHub Pages führt keinen Server aus. Ein fetch
-  dorthin bekäme die 404-HTML-Seite und würde beim `response.json()` mit einem
-  Parse-Fehler scheitern. `Contact.tsx` prüft deshalb
-  `NEXT_PUBLIC_STATIC_EXPORT` und öffnet stattdessen das Mailprogramm; der tote
-  fetch wird vom Bundler ganz entfernt.
-- **`dynamic = 'force-static'`** ist Pflicht in `sitemap.ts`, `robots.ts` und
-  `opengraph-image.tsx`, und die Studio-Catch-all-Route braucht ein
-  `generateStaticParams`. Ohne das bricht der Export ab.
-- **Basispfad von Hand.** `next/image` ergänzt den `basePath` nur auf dem Weg
-  durch die eigene Bildoptimierung. Die Platzhalter-SVGs laufen mit
-  `unoptimized` daran vorbei — `Picture.tsx` setzt ihn deshalb selbst davor.
-  Ohne das: 404 auf GitHub Pages, lokal unsichtbar.
-- **`NOINDEX=true`** im Workflow hält die Platzhalter-Vorschau aus dem
-  Suchindex. Beim Umstieg auf echte Inhalte entfernen.
-
-**AE-9 — 3D sparsam und abschaltbar.** `components/three/HeroScene.tsx` ist ein
-einzelnes InstancedMesh (ein Draw-Call für 576 Stäbe), das über
-`HeroSceneLazy.tsx` per `next/dynamic` erst nach dem Seitenaufbau lädt — die
-Startseite bleibt dadurch bei rund 164 kB First Load statt three.js ins
-Initial-Bundle zu ziehen. Es wird nur gerendert, solange der Hero im Bild ist
-(IntersectionObserver), bei `prefers-reduced-motion` bleibt ein Standbild
-stehen, und ohne WebGL rendert es gar nichts — dann trägt der CSS-Lichtschein
-allein.
-
-**AE-7 — Bilder.** Sanity Image Assets mit Hotspot/Crop, ausgeliefert über
-`next/image` mit `remotePatterns` auf `cdn.sanity.io` (siehe `next.config.mjs`).
-Platzhalterbilder liegen als lokale SVGs in `public/placeholder/`.
-
-## 4. Ordnerstruktur
+## Wo was liegt
 
 ```
-app/
-  layout.tsx              Fonts, <html lang="de">, globale Metadata
-  page.tsx                Startseite — komponiert alle Sections, holt Daten
-  globals.css             Design-Tokens als CSS-Variablen + Tailwind-Layer
-  not-found.tsx           404
-  robots.ts / sitemap.ts  SEO
-  opengraph-image.tsx     Dynamisches OG-Bild (next/og)
-  api/contact/route.ts    Kontaktformular -> Resend
-  studio/[[...tool]]/     Eingebettetes Sanity Studio
-components/
-  layout/     Header (inkl. Mobilmenü), Footer
-  sections/   Hero, About, Stats, Tools, Services, Experience,
-              Projects, Testimonials, Contact, Marquee
-  ui/         Wiederverwendbare Primitive — siehe unten
-sanity/
-  env.ts        Env-Vars + isSanityConfigured()
-  client.ts     Sanity-Client
-  image.ts      urlForImage() Helper
-  fetch.ts      sanityFetch() mit Fallback (AE-1)
-  queries.ts    Alle GROQ-Queries an einem Ort
-  structure.ts  Studio-Desk-Struktur (Singletons)
-  schemas/      Ein Schema pro Datei + index.ts
-lib/
-  fallback.ts   Platzhalter-Datensatz
-  utils.ts      cn(), Formatierungshelfer
-types/
-  content.ts    TypeScript-Typen für alle Inhalte
+lib/content.ts        ALLE Texte, Preise, Websites. Hier pflegen, sonst nirgends.
+lib/utils.ts          cn(), chf(), asset() — asset() setzt den Basispfad davor.
+app/                  layout (Fonts, Meta), page (Reihenfolge), robots, sitemap, icon
+components/layout     Nav, Footer
+components/sections   Hero, Websites, Ablauf, Preise, UeberMich, Anfrage
+components/motion     SmoothScroll (Lenis), Cursor (Kobalt-Ring), Magnetic
+tools/screenshots.mjs Erzeugt public/websites/*.jpg aus den Live-Demos
+tools/websites-source.mjs  Adressen dafür — Slugs müssen zu content.ts passen
 ```
 
-## 5. Sanity-Schemas
+## Regeln, die nicht verhandelbar sind
 
-| Schema | Typ | Inhalt |
-|---|---|---|
-| `siteSettings` | Singleton | Name, Rolle, Standort, E-Mail, Telefon, Social Links, CV-Datei, SEO-Defaults, OG-Bild |
-| `hero` | Singleton | Eyebrow, Display-Zeilen (klein/gross), Beschreibung, Portrait, 2 CTAs |
-| `about` | Singleton | Label, zweifarbige Headline, zwei Textspalten |
-| `sectionCopy` | Singleton | Labels/Headlines/Intros aller übrigen Sections an einem Ort |
-| `stat` | Collection | Wert (`320+`), Titel, Beschreibung, Bild, Reihenfolge |
-| `tool` | Collection | Name, Icon-Bild, Kategorie, Reihenfolge |
-| `service` | Collection | Icon-Key, Titel, Beschreibung, Link, Reihenfolge |
-| `experience` | Collection | Jobtitel, Firma, Zeitraum von/bis, Beschreibung, Reihenfolge |
-| `project` | Collection | Titel, Kategorie, Vorschaubild, externer Link, Case-Study-Link, Reihenfolge |
-| `testimonial` | Collection | Zitat, Foto, Name, Rolle, Hervorhebung (ja/nein), Reihenfolge |
+- **Nur belegte Inhalte.** Keine Kundenlogos, keine Testimonials, keine Zahl
+  «zufriedener Kunden», kein Lehrbetrieb, kein Standort — nichts davon ist bestätigt.
+  `fahrschule-ch.ch` zeigt auf die *alte* Kundenseite und gehört nicht in die Liste.
+- **Drei Farben.** Papier, Tinte, Kobalt (`#1c50be`). Grau nur als Ableitung. Kobalt
+  ist auf Dunkel 2,8:1 — dort nur als Fläche; für Text `kobalt-lift`.
+- **Keine Eyebrows über Headlines, keine Kartenraster, keine Sektionsnummern**
+  ausser im Ablauf (dort ist die Reihenfolge Information). Siehe `DESIGN.md`.
+- **Ein inszenierter Moment:** der Stapel in `Websites.tsx`. Nichts anderes bekommt
+  eine Einblend-Choreografie.
+- Schweizer Schreibweise, «Sie», CHF mit Apostroph (`chf()`).
 
-Jedes Schema hat eine `preview`-Konfiguration mit Titel, Untertitel und Bild,
-damit die Listen im Studio ohne Rätselraten lesbar sind.
+## Technische Fallen
 
-## 6. Designsystem
+- **`asset()` für alles unter `public/`.** `next/image` ist aus (`unoptimized`), ein
+  plain `<img src="/x.jpg">` würde auf GitHub Pages den Basispfad verfehlen → 404.
+- **Stapel nur ≥1024px.** Auf dem Handy ist ein Panel höher als der Viewport; sticky
+  würde den Screenshot zudecken. `useStapel()` schaltet es ab, ebenso bei
+  `prefers-reduced-motion`.
+- **`sitemap.ts` / `robots.ts` brauchen `dynamic = 'force-static'`**, sonst bricht
+  der Export.
+- **Screenshots mit `waitUntil: 'load'`**, nicht networkidle — Demos mit
+  Canvas-Animation werden sonst nie «idle» und das Skript läuft in den Timeout.
+- Formular: FormSubmit (AJAX-Endpunkt). Beim **allerersten** Versand kommt eine
+  Aktivierungs-Mail an `holzbechernick@gmail.com`; erst nach dem Klick darin werden
+  Anfragen zugestellt. Fallback im Fehlerfall: Mailto.
 
-Abgeleitet aus `design-reference.png`. Tokens leben als CSS-Variablen in
-`app/globals.css` und werden in `tailwind.config.ts` gespiegelt.
+## Befehle
 
-**Farbe** — Bordeaux ist die *einzige* gesättigte Farbe der Seite. Alles andere
-ist neutral. Genau dadurch trifft der Akzent.
-
-Die Kontrastwerte sind gegen den jeweiligen Untergrund gerechnet und stehen als
-Kommentar an jedem Token in `globals.css`. Der Grauton der Vorlage lag bei 2,6:1
-und hätte selbst die 3:1-Schwelle für Grossschrift gerissen — `chalk` ist deshalb
-dunkler als im Referenzbild. Wer ihn aufhellt, bricht die Barrierefreiheit.
-
-| Token | Hex | Rolle |
-|---|---|---|
-| `wine` | `#4A0E1C` | Kern-Bordeaux, Hero-Grund |
-| `oxblood` | `#7B1023` | Glow, CTA-Füllung |
-| `ember` | `#C2364B` | Links, Pfeile, Signal auf Dunkel |
-| `ink` | `#140A0C` | Fast-Schwarz mit Rotstich (nie `#000`) |
-| `paper` | `#F2F0ED` | Heller Sectiongrund |
-| `chalk` | `#8A8480` | Zweiter Ton der Headlines — 3,3:1, **nur in Display-Graden** |
-| `muted` | `#6B6461` | Kleintext auf Hell — 5,1:1 |
-| `ember-lift` | `#E4667A` | Kleintext-Akzent auf Dunkel — 6,0:1 |
-| `smoke` | `#7E7370` | Zweiter Headline-Ton auf Dunkel — 4,3:1 |
-
-**Typografie** — drei Rollen:
-- `font-display` **Archivo** (700/800/900) — Riesen-Headlines, `tracking-tight`
-- `font-sans` **Inter** — Fliesstext
-- `font-mono` **JetBrains Mono** — Eyebrows, Jahreszahlen, Marquee, Stat-Labels.
-  Monospace ist bei einem Entwickler-Portfolio Vernakular, keine Dekoration.
-
-**3D als Fortsetzung des Lichtkonzepts, nicht als Deko.** Der WebGL-Hero zeigt
-kein rotierendes Objekt, sondern ein Gitter aus Stäben, über das eine Welle
-läuft, gestreift von genau *einem* warmen Licht — dieselbe Leitidee wie im
-CSS-Verlauf: Bordeaux ist eine Lichtquelle. Die Kämme fangen Licht, die Täler
-bleiben schwarz. Es liegt dunkel und flach unter der Schrift, damit die
-Typografie Hauptdarstellerin bleibt.
-
-Die 3D-Karten (`TiltCard.tsx`) tragen dasselbe Licht: das Glanzlicht, das dem
-Zeiger folgt, ist derselbe Bordeaux-Ton. Eine Drehung ohne wanderndes Licht
-liest sich flach — das Glanzlicht ist das eigentliche Mittel, nicht die Drehung.
-
-**Signature-Element — die sich selbst lesende Headline.**
-`components/ui/ReadingHeadline.tsx`. Die zweifarbige Headline aus der Vorlage ist
-hier nicht statisch: Die Tongrenze wandert beim Scrollen wortweise durch den Satz
-(`chalk` -> `ink`), wie mitgelesener Text. Unter `prefers-reduced-motion` fällt sie
-auf die statische Zweifarbigkeit zurück. Das ist das eine auffällige Element —
-alles drumherum bleibt bewusst ruhig.
-
-**Riesenwörter binden sich an die Spaltenbreite.**
-Die Klasse `.fit-word` in `globals.css` rechnet die Schriftgrösse aus der
-Innenbreite der Spalte (`100cqi`) und der Zeichenzahl (`--chars`), gedeckelt durch
-`--cap`. Nötig, weil die Wortlänge im CMS steht: mit einem festen `clamp()`-Deckel
-lief „ENGINEER" bei 1440 px seitlich aus der Spalte. Genutzt vom Hero-Wort und vom
-Hintergrundwort der Stimmen-Section.
-
-**Zeilenhöhen sind weniger eng als in der englischen Vorlage.**
-Deutsche Umlaute brauchen Kopfraum, und Archivos Versal-J reicht unter die
-Grundlinie. Bei `line-height: 0.92` stossen die Ü-Punkte einer Zeile in das J der
-Zeile darüber. Die Display-Grade in `tailwind.config.ts` liegen deshalb zwischen
-0.9 und 1.02 — nicht tiefer setzen.
-
-**Rhythmus** — hell/dunkel wechseln sich ab, und der Wechsel bedeutet etwas:
-dunkel = *was ich für dich mache* (Hero, Services, Projekte, Footer),
-hell = *wer ich bin* (Über mich, Zahlen, Tools, Werdegang, Testimonials, Kontakt).
-
-## 7. Coding-Konventionen
-
-- **Deutsch** in UI-Text, Kommentaren und Studio-Labels. **Englisch** für Code-Bezeichner.
-- Kommentare erklären *warum*, nicht *was*. Keine Kommentare, die den Code nacherzählen.
-- Komponenten: benannte Props-Typen (`type XProps = {...}`), Default-Export.
-- Kein `any`. Inhalts-Typen kommen aus `types/content.ts`.
-- Klassen werden mit `cn()` aus `lib/utils.ts` zusammengesetzt.
-- `"use client"` so spät wie möglich im Baum — siehe AE-2.
-- Jede interaktive Fläche: `cursor-pointer`, sichtbarer `:focus-visible`-Ring,
-  Hover-Transition 150–300 ms.
-- Animationen respektieren immer `prefers-reduced-motion`.
-- Breakpoints getestet auf 375 / 768 / 1024 / 1440 px.
-
-## 8. Umgebungsvariablen
-
-| Variable | Pflicht | Zweck |
-|---|---|---|
-| `NEXT_PUBLIC_SANITY_PROJECT_ID` | nein* | Sanity-Projekt-ID. Fehlt sie -> Platzhalterinhalte. |
-| `NEXT_PUBLIC_SANITY_DATASET` | nein | Default `production` |
-| `NEXT_PUBLIC_SANITY_API_VERSION` | nein | Default `2024-10-01` |
-| `SANITY_API_READ_TOKEN` | nein | Nur für Draft-Vorschau nötig |
-| `SANITY_API_WRITE_TOKEN` | nein | Nur für `npm run seed`. Rein lokal, gehört nicht nach Vercel |
-| `RESEND_API_KEY` | nein* | Ohne Key nimmt das Formular an und loggt nur |
-| `CONTACT_TO_EMAIL` | nein | Empfängeradresse der Formularmails |
-| `CONTACT_FROM_EMAIL` | nein | Default `onboarding@resend.dev` |
-| `NEXT_PUBLIC_SITE_URL` | nein | Für Canonicals/Sitemap/OG. Default = Vercel-URL |
-| `STATIC_EXPORT` | nein | `true` schaltet auf GitHub-Pages-Export. Nur im Workflow |
-| `BASE_PATH` | nein | Unterordner beim statischen Export |
-| `NOINDEX` | nein | `true` hält die Seite aus dem Suchindex |
-
-\* Nicht build-blockierend, aber für den Produktivbetrieb gewollt.
-
-## 9. Deployment
-
-**Lokal**
-
-```bash
-npm install
-cp .env.example .env.local     # Werte eintragen (optional)
-npm run dev                    # http://localhost:3000, Studio: /studio
+```
+npm run dev           lokal, http://localhost:3000
+npm run build         statischer Export nach out/
+npm run screenshots   Vorschaubilder neu erzeugen (Chrome nötig; ONLY=<slug> für eine)
+npm run lint / typecheck
 ```
 
-**Sanity anlegen (einmalig)**
+Deploy: Push auf `main` → `.github/workflows/deploy.yml` → GitHub Pages.
 
-```bash
-npx sanity login
-npx sanity init --env .env.local   # "Create new project", Dataset: production
-```
+## Offen
 
-Danach in `sanity.io/manage` unter *API -> CORS origins* die Domains
-`http://localhost:3000` und die Vercel-URL mit *Allow credentials* eintragen.
-
-**Vercel**
-
-1. Repo auf vercel.com importieren — Framework wird als Next.js erkannt.
-2. Env-Vars aus Abschnitt 8 eintragen (Production + Preview).
-3. Deploy. Kein Build-Command-Override nötig.
-
-## 10. Offene Punkte
-
-- [ ] Echte Inhalte einpflegen — `content/inhalte.json` ausfüllen, dann `npm run seed`
-- [ ] Sanity-Projekt anlegen und CORS-Origins setzen
-- [ ] Resend-Domain verifizieren (bis dahin läuft `onboarding@resend.dev`)
-- [ ] Portrait, Projektbilder, CV-PDF hochladen
+- Portraitfoto (Platz in `UeberMich.tsx` ist vorbereitet)
+- FormSubmit einmalig aktivieren (erste Testanfrage schicken, Mail bestätigen)
+- Fahrschule CH wieder aufnehmen, sobald die Domain auf die Demo zeigt
+- Eigene Domain (Ablauf im Workflow kommentiert)
