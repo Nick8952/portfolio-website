@@ -56,8 +56,10 @@ export default function Nav() {
             // volle Spaltenbreite. max-width und Hoehe werden animiert; die
             // Pille selbst bleibt dieselbe, sie dehnt sich nur.
             'glass pointer-events-auto mx-auto flex items-center justify-between gap-4 rounded-pill pl-5 pr-2',
-            'transition-[max-width,height,box-shadow] duration-700 ease-out will-change-[max-width]',
-            gescrollt ? 'h-16 max-w-shell shadow-lift' : 'h-14 max-w-3xl',
+            'transition-[max-width,height,box-shadow] duration-[1200ms] ease-[cubic-bezier(0.32,0.72,0,1)] will-change-[max-width]',
+            // Gescrollt liegt die Pille auch ueber der schwarzen Preis-Section: 70 %
+            // Fuellung halten die Links dort bei ueber 4,5:1 (38 % ergaeben 2,6:1).
+            gescrollt ? 'h-16 max-w-shell bg-paper/70 shadow-lift' : 'h-14 max-w-3xl',
           )}
         >
           <a
@@ -72,7 +74,7 @@ export default function Nav() {
               <li key={eintrag.href}>
                 <a
                   href={eintrag.href}
-                  className="inline-flex h-9 items-center rounded-pill px-3.5 text-[0.9375rem] text-ink/75 transition-colors duration-200 ease-out hover:bg-ink/5 hover:text-ink"
+                  className="inline-flex h-9 items-center rounded-pill px-3.5 text-[0.9375rem] text-ink/80 transition-colors duration-200 ease-out hover:bg-ink/5 hover:text-ink"
                 >
                   {eintrag.label}
                 </a>

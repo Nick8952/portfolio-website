@@ -36,10 +36,19 @@ Hero → Websites (Dock) → Ablauf → Preise (dunkel) → Über mich → Anfra
 Eine Seite, Ankerlinks. Keine Eyebrows, keine Kartenraster, Sektionsnummern nur im
 Ablauf und als Positionszähler im Sheet («02 / 06»).
 
-## Glas (nach Apple)
+## Liquid Glass (iOS 26)
 
-Weichzeichnung 24–40px plus Sättigung des Inhalts dahinter, helle Kante oben,
-feiner Rand, Schatten mit Versatz. **Nur auf der schwebenden Schicht:** Nav-Pille,
+Drei Merkmale, die es vom Milchglas unterscheiden: **fast durchsichtig** (38 %
+Papierfüllung, blur 18px, saturate 1.9, brightness 1.06), ein **brechender Rand**
+(1,5px-Ring aus Verlauf — hell oben links, dunkel in der Mitte, hell unten rechts —
+per Maske ausgeschnitten, z-index −1 unter dem Inhalt) und ein **Glanz oben links**.
+Chromium bekommt zusätzlich eine Linsenverzerrung (`#liquid-lens`, feDisplacementMap
+scale 9); Safari nicht — dort verwirft ein `url()`-Backdrop-Filter die ganze Kette,
+darum Browser-Erkennung statt `@supports` (`LensSupport.tsx`).
+
+**Kontrast:** 38 % über Schwarz ergibt 2,6:1. Die gescrollte Nav liegt über der
+Preis-Section und bekommt deshalb 70 % Füllung (≥4,5:1). Glas als Section-Füllung
+bleibt tabu. **Nur auf der schwebenden Schicht:** Nav-Pille,
 Sekundär-Buttons, Dock-Kacheln, Sheet, Regelfall-Panel (dunkle Variante). Damit es
 etwas zu brechen gibt, liegt im Hero ein weiches Umgebungslicht (Kobalt 16 %,
 Tinte 6 %, blur 80px, treibt langsam). Ohne `backdrop-filter`-Unterstützung wird
@@ -66,6 +75,8 @@ weichgezeichnet.
 ## Bewegung
 
 - **Der eine Moment:** das Sheet — steigt auf, die Seite dahinter tritt zurück.
+- **Nav-Pille:** oben 768px kompakt, gescrollt volle Spaltenbreite und 64px hoch;
+  1,2 s mit `cubic-bezier(0.32,0.72,0,1)` — langsam und weich, nicht zackig.
 - Hero: gestaffelte Einblendung einmalig beim Laden; das Branchen-Wort wechselt
   alle 2,6 s zusammen mit dem Telefon-Screenshot. Das ist Inhalt, nicht Deko.
 - Cursor: Kobalt-Ring, der dem Zeiger nachläuft; über Links weitet er sich, über

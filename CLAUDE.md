@@ -59,6 +59,12 @@ tools/websites-source.mjs  Adressen dafür — Slugs müssen zu content.ts passe
 - **Sheet und Lenis.** `SmoothScroll.tsx` legt die Lenis-Instanz auf `window.__lenis`
   (Typ in `types/global.d.ts`); das Sheet ruft `stop()`/`start()`, sonst scrollt die
   Seite hinter dem offenen Sheet weiter. Scrollbereich im Sheet trägt `data-lenis-prevent`.
+- **`@supports (backdrop-filter: url(#x))` ist in Safari eine Falle.** Safari 18+ besteht
+  den Test, rendert aber keine SVG-Backdrop-Filter und verwirft dabei die ganze Kette
+  samt Blur. Die Linse schaltet `LensSupport.tsx` nur in Chromium frei (UA: «Chrome/»
+  ohne «Version/» — auch Chromes UA endet mit «Safari/537.36»). Fund von Codex.
+- **Glas über Schwarz braucht Füllung.** 38 % Papier ergibt 2,6:1; die gescrollte Nav
+  hat 70 %, weil sie über der Preis-Section liegt. Fund von Codex.
 - **Prozent-Insets sind nicht quadratisch.** `inset-[2.4%]` misst oben/unten an der
   Höhe, seitlich an der Breite — beim iPhone (2,06:1) wäre der Rand oben doppelt so
   dick. Deshalb `inset-x-[2.4%] inset-y-[1.165%]`. Fund von Codex.
