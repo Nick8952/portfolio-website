@@ -8,9 +8,10 @@ import { hero, navigation, person } from '@/lib/content'
 import { cn } from '@/lib/utils'
 
 /**
- * Eine Zeile: Name links, Ziele rechts, eine Schaltflaeche. Ueber dem Hero
- * ohne Grund, beim Scrollen mit Papier und Haarlinie — sonst laegen die Links
- * irgendwann ueber einem Screenshot.
+ * Schwebende Glas-Pille, wie Apple sie ueber Inhalt legt: Name links, Ziele
+ * in der Mitte, eine Schaltflaeche rechts. Das Glas ist hier kein Schmuck —
+ * die Pille liegt beim Scrollen ueber Headlines und Screenshots, und die
+ * Weichzeichnung haelt die Links lesbar, ohne den Inhalt zu verdecken.
  */
 export default function Nav() {
   const [gescrollt, setGescrollt] = useState(false)
@@ -46,55 +47,69 @@ export default function Nav() {
   }
 
   return (
-    <header
-      className={cn(
-        'fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow] duration-300 ease-out',
-        gescrollt ? 'bg-paper/90 shadow-[0_1px_0_0_rgb(var(--hairline))] backdrop-blur-md' : 'bg-transparent',
-      )}
-    >
-      <nav aria-label="Hauptnavigation" className="shell flex h-16 items-center justify-between gap-6 md:h-20">
-        <a href="#top" className="font-display text-[1.0625rem] font-semibold tracking-[-0.01em] text-ink">
-          {person.name}
-        </a>
-
-        <ul className="hidden items-center gap-7 md:flex">
-          {navigation.map((eintrag) => (
-            <li key={eintrag.href}>
-              <a
-                href={eintrag.href}
-                className="text-[0.9375rem] text-ink/70 transition-colors duration-200 ease-out hover:text-ink"
-              >
-                {eintrag.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        <div className="flex items-center gap-3">
-          <Magnetic staerke={0.25} className="hidden md:block">
-            <a
-              href="#anfrage"
-              className="inline-flex h-10 items-center rounded-pill bg-ink px-5 text-[0.9375rem] font-medium text-paper transition-colors duration-200 ease-out hover:bg-kobalt"
-            >
-              {hero.cta}
-            </a>
-          </Magnetic>
-
-          <button
-            ref={oeffnenRef}
-            type="button"
-            onClick={() => setOffen(true)}
-            aria-expanded={offen}
-            aria-controls="menue"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-pill border border-hairline text-ink md:hidden"
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 pt-3 md:pt-5">
+      <div className="shell">
+        <nav
+          aria-label="Hauptnavigation"
+          className={cn(
+            'glass pointer-events-auto mx-auto flex h-14 max-w-4xl items-center justify-between gap-4 rounded-pill pl-5 pr-2 transition-shadow duration-300 ease-out',
+            gescrollt && 'shadow-lift',
+          )}
+        >
+          <a
+            href="#top"
+            className="font-display text-[1.0625rem] font-semibold tracking-[-0.01em] text-ink"
           >
-            <span className="sr-only">Menü öffnen</span>
-            <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
-              <path d="M3 6.5h14M3 13.5h14" />
-            </svg>
-          </button>
-        </div>
-      </nav>
+            {person.name}
+          </a>
+
+          <ul className="hidden items-center gap-1 md:flex">
+            {navigation.map((eintrag) => (
+              <li key={eintrag.href}>
+                <a
+                  href={eintrag.href}
+                  className="inline-flex h-9 items-center rounded-pill px-3.5 text-[0.9375rem] text-ink/75 transition-colors duration-200 ease-out hover:bg-ink/5 hover:text-ink"
+                >
+                  {eintrag.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <div className="flex items-center gap-2">
+            <Magnetic staerke={0.25} className="hidden md:block">
+              <a
+                href="#anfrage"
+                className="inline-flex h-10 items-center rounded-pill bg-ink px-5 text-[0.9375rem] font-medium text-paper transition-colors duration-200 ease-out hover:bg-kobalt"
+              >
+                {hero.cta}
+              </a>
+            </Magnetic>
+
+            <button
+              ref={oeffnenRef}
+              type="button"
+              onClick={() => setOffen(true)}
+              aria-expanded={offen}
+              aria-controls="menue"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-pill text-ink transition-colors duration-200 ease-out hover:bg-ink/5 md:hidden"
+            >
+              <span className="sr-only">Menü öffnen</span>
+              <svg
+                viewBox="0 0 20 20"
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                aria-hidden="true"
+              >
+                <path d="M3 6.5h14M3 13.5h14" />
+              </svg>
+            </button>
+          </div>
+        </nav>
+      </div>
 
       <AnimatePresence>
         {offen && (
@@ -103,7 +118,7 @@ export default function Nav() {
             role="dialog"
             aria-modal="true"
             aria-label="Navigation"
-            className="fixed inset-0 z-50 bg-paper md:hidden"
+            className="glass-strong pointer-events-auto fixed inset-0 z-50 md:hidden"
             initial={reduziert ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={reduziert ? undefined : { opacity: 0 }}
@@ -119,7 +134,15 @@ export default function Nav() {
                   className="inline-flex h-10 w-10 items-center justify-center rounded-pill border border-hairline"
                 >
                   <span className="sr-only">Menü schliessen</span>
-                  <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 20 20"
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    aria-hidden="true"
+                  >
                     <path d="M5 5l10 10M15 5 5 15" />
                   </svg>
                 </button>

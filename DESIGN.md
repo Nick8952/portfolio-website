@@ -32,14 +32,30 @@ Arbeit bringt die Farbe, das Layout nicht.
 
 ## Struktur
 
-Hero → Websites → Ablauf → Preise (dunkel) → Über mich → Anfrage → Footer.
+Hero → Websites (Dock) → Ablauf → Preise (dunkel) → Über mich → Anfrage → Footer.
 Eine Seite, Ankerlinks. Keine Eyebrows, keine Kartenraster, Sektionsnummern nur im
-Ablauf und als Positionszähler im Stapel («02 / 06»).
+Ablauf und als Positionszähler im Sheet («02 / 06»).
+
+## Glas (nach Apple)
+
+Weichzeichnung 24–40px plus Sättigung des Inhalts dahinter, helle Kante oben,
+feiner Rand, Schatten mit Versatz. **Nur auf der schwebenden Schicht:** Nav-Pille,
+Sekundär-Buttons, Dock-Kacheln, Sheet, Regelfall-Panel (dunkle Variante). Damit es
+etwas zu brechen gibt, liegt im Hero ein weiches Umgebungslicht (Kobalt 16 %,
+Tinte 6 %, blur 80px, treibt langsam). Ohne `backdrop-filter`-Unterstützung wird
+das Glas undurchsichtig, damit Text lesbar bleibt.
+
+## Websites: Dock und Sheet
+
+Die Websites sind ein Angebot, kein Zwang. Eine Reihe aus sechs kleinen Glas-Kacheln
+(2 / 3 / 6 Spalten); Antippen öffnet ein Sheet — auf dem Handy von unten wie iOS, am
+Desktop zentriert — mit Desktop- und Handy-Screenshot, einem Satz, dem Link.
+Esc schliesst, Pfeiltasten blättern, Fokus bleibt drin, Seite dahinter dunkel und
+weichgezeichnet.
 
 ## Bewegung
 
-- **Der eine Moment:** der Stapel — jede Website haftet oben, die nächste schiebt
-  darüber; das Panel darunter schrumpft auf 94 % und dunkelt ab. Nur ≥1024px.
+- **Der eine Moment:** das Sheet — steigt auf, die Seite dahinter tritt zurück.
 - Hero: gestaffelte Einblendung einmalig beim Laden; das Branchen-Wort wechselt
   alle 2,6 s zusammen mit dem Telefon-Screenshot. Das ist Inhalt, nicht Deko.
 - Cursor: Kobalt-Ring, der dem Zeiger nachläuft; über Links weitet er sich, über
@@ -55,5 +71,5 @@ Scrollbar dünn in Tinte/22 %, Link-Unterstrich aus `hairline` mit 0,22em Versat
 
 ## Nicht tun
 
-Gradient-Text, Glas-Effekte, farbige Linksbalken, Grain-Overlays, Monospace als
+Gradient-Text, Glas als Section-Füllung, farbige Linksbalken, Grain-Overlays, Monospace als
 Kostüm, Emoji als Icons, System-Display-Schriften, mehr als eine Akzentfarbe.

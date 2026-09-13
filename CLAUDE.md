@@ -10,6 +10,7 @@ Inhaber kleiner Schweizer Betriebe, die den Link vom Handy aus öffnen. Ziel der
 Seite: eine Anfrage über das Formular. **Live:** https://nick8952.github.io/portfolio-website/
 
 Version 2 (2026-09-13) — der frühere Sanity/WebGL-Stand wurde komplett ersetzt.
+Glasoptik und Dock statt Stapel: 2026-09-13, zweite Runde.
 Git-Historie vor `v2` ist nur noch Archiv.
 
 ## Stack
@@ -40,17 +41,25 @@ tools/websites-source.mjs  Adressen dafür — Slugs müssen zu content.ts passe
   ist auf Dunkel 2,8:1 — dort nur als Fläche; für Text `kobalt-lift`.
 - **Keine Eyebrows über Headlines, keine Kartenraster, keine Sektionsnummern**
   ausser im Ablauf (dort ist die Reihenfolge Information). Siehe `DESIGN.md`.
-- **Ein inszenierter Moment:** der Stapel in `Websites.tsx`. Nichts anderes bekommt
-  eine Einblend-Choreografie.
+- **Websites nur auf Wunsch.** Das Dock in `Websites.tsx` ist eine Reihe kleiner
+  Kacheln; die grosse Ansicht kommt erst im Sheet nach dem Antippen. Ein Stapel aus
+  Vollbild-Panels, an dem man nicht vorbeikommt, war Nicks ausdrücklicher Einwand —
+  nicht wieder einbauen.
+- **Glas nur auf der schwebenden Schicht:** Navigation, Sekundär-Buttons, Dock-Kacheln,
+  Sheet, das Regelfall-Panel in den Preisen. Nie als Füllung ganzer Sections.
+  Klassen `glass`, `glass-strong`, `glass-dark` in `globals.css`; das Umgebungslicht
+  (`.ambient`) im Hero ist der Grund, warum das Glas überhaupt als Glas lesbar ist.
 - Schweizer Schreibweise, «Sie», CHF mit Apostroph (`chf()`).
 
 ## Technische Fallen
 
 - **`asset()` für alles unter `public/`.** `next/image` ist aus (`unoptimized`), ein
   plain `<img src="/x.jpg">` würde auf GitHub Pages den Basispfad verfehlen → 404.
-- **Stapel nur ≥1024px.** Auf dem Handy ist ein Panel höher als der Viewport; sticky
-  würde den Screenshot zudecken. `useStapel()` schaltet es ab, ebenso bei
-  `prefers-reduced-motion`.
+- **Sheet und Lenis.** `SmoothScroll.tsx` legt die Lenis-Instanz auf `window.__lenis`
+  (Typ in `types/global.d.ts`); das Sheet ruft `stop()`/`start()`, sonst scrollt die
+  Seite hinter dem offenen Sheet weiter. Scrollbereich im Sheet trägt `data-lenis-prevent`.
+- **Tailwind-Deckkraft nur in 5er-Schritten.** `bg-ink/6` erzeugt stillschweigend keine
+  Klasse. Zweimal hineingelaufen.
 - **`sitemap.ts` / `robots.ts` brauchen `dynamic = 'force-static'`**, sonst bricht
   der Export.
 - **Screenshots mit `waitUntil: 'load'`**, nicht networkidle — Demos mit

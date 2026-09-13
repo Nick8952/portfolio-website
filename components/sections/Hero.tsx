@@ -37,8 +37,9 @@ export default function Hero() {
   const auf = { duration: 0.55, ease: [0.16, 1, 0.3, 1] as const }
 
   return (
-    <section id="top" className="relative overflow-hidden pt-28 md:pt-36">
-      <div className="shell grid items-end gap-12 lg:grid-cols-12 lg:gap-8">
+    <section id="top" className="relative overflow-hidden pt-32 md:pt-40">
+      <div aria-hidden="true" className="ambient" />
+      <div className="shell relative z-[1] grid items-end gap-12 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-7">
           <h1 className="font-display text-display-xl font-semibold text-balance">
             <motion.span
@@ -95,7 +96,7 @@ export default function Hero() {
             </Magnetic>
             <a
               href="#websites"
-              className="inline-flex h-13 items-center rounded-pill border border-hairline px-7 text-base font-medium text-ink transition-colors duration-200 ease-out hover:border-ink"
+              className="glass inline-flex h-13 items-center rounded-pill px-7 text-base font-medium text-ink transition-shadow duration-200 ease-out hover:shadow-lift"
             >
               {hero.ctaSekundaer}
             </a>
@@ -111,7 +112,8 @@ export default function Hero() {
           transition={{ ...auf, delay: 0.3 }}
         >
           <div className="relative aspect-[390/844] overflow-hidden rounded-[2.4rem] border-[6px] border-ink bg-ink shadow-lift">
-            <AnimatePresence mode="popLayout" initial={false}>
+            {/* Aus, dann ein: eine Ueberblendung belichtet kurz beide Screenshots doppelt. */}
+            <AnimatePresence mode="wait" initial={false}>
               <motion.img
                 key={site.slug}
                 src={asset(`/websites/${site.slug}-mobile.jpg`)}
@@ -119,10 +121,10 @@ export default function Hero() {
                 width={390}
                 height={844}
                 className="absolute inset-0 h-full w-full object-cover object-top"
-                initial={reduziert ? false : { opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={reduziert ? undefined : { opacity: 0 }}
-                transition={{ duration: 0.45 }}
+                initial={reduziert ? false : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduziert ? undefined : { opacity: 0, y: -6 }}
+                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
               />
             </AnimatePresence>
             <div aria-hidden="true" className="absolute left-1/2 top-2 h-1.5 w-16 -translate-x-1/2 rounded-pill bg-ink" />

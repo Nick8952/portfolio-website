@@ -166,6 +166,100 @@
   .tnum {
     font-variant-numeric: tabular-nums;
   }
+
+  /* -------------------------------------------------------------------
+     Glas. Nach Apples Rezept: Weichzeichnung plus Saettigung des Inhalts
+     dahinter, eine helle Kante oben (Lichteinfall), ein feiner Rand und
+     ein weicher Schatten mit Versatz. Nur fuer die schwebende Schicht —
+     Navigation, Steuerelemente, das Sheet. Nie als Fuellung von Sections.
+  ------------------------------------------------------------------- */
+  .glass {
+    background: rgb(var(--paper) / 0.62);
+    -webkit-backdrop-filter: blur(24px) saturate(1.8);
+    backdrop-filter: blur(24px) saturate(1.8);
+    border: 1px solid rgb(var(--paper) / 0.7);
+    box-shadow:
+      inset 0 1px 0 rgb(var(--paper) / 0.9),
+      inset 0 -1px 0 rgb(var(--ink) / 0.04),
+      0 1px 2px rgb(var(--ink) / 0.06),
+      0 12px 32px -12px rgb(var(--ink) / 0.22);
+  }
+
+  /* Staerkere Variante fuer Flaechen, die ueber Screenshots liegen. */
+  .glass-strong {
+    background: rgb(var(--paper) / 0.78);
+    -webkit-backdrop-filter: blur(40px) saturate(1.9);
+    backdrop-filter: blur(40px) saturate(1.9);
+    border: 1px solid rgb(var(--paper) / 0.8);
+    box-shadow:
+      inset 0 1px 0 rgb(var(--paper)),
+      inset 0 -1px 0 rgb(var(--ink) / 0.05),
+      0 2px 4px rgb(var(--ink) / 0.06),
+      0 30px 80px -24px rgb(var(--ink) / 0.35);
+  }
+
+  /* Glas auf dunklem Grund (Preise). */
+  .glass-dark {
+    background: rgb(var(--paper) / 0.06);
+    -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    backdrop-filter: blur(24px) saturate(1.6);
+    border: 1px solid rgb(var(--paper) / 0.14);
+    box-shadow:
+      inset 0 1px 0 rgb(var(--paper) / 0.18),
+      0 12px 32px -12px rgb(0 0 0 / 0.5);
+  }
+
+  /* Ohne backdrop-filter-Unterstuetzung: undurchsichtig, damit Text lesbar bleibt. */
+  @supports not (backdrop-filter: blur(1px)) {
+    .glass,
+    .glass-strong {
+      background: rgb(var(--paper) / 0.96);
+    }
+    .glass-dark {
+      background: rgb(var(--ink) / 0.92);
+    }
+  }
+
+  /* Umgebungslicht: zwei weiche Flecken hinter dem Hero. Sie sind der Grund,
+     warum das Glas darueber ueberhaupt als Glas lesbar ist. */
+  .ambient {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+    /* Nach unten ausblenden, sonst endet das Licht an der Section-Kante als Linie. */
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  }
+  .ambient::before,
+  .ambient::after {
+    content: '';
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(80px);
+    will-change: transform;
+  }
+  .ambient::before {
+    width: 42rem;
+    height: 42rem;
+    right: -8rem;
+    top: -10rem;
+    background: rgb(var(--kobalt) / 0.16);
+    animation: treiben 22s ease-in-out infinite alternate;
+  }
+  .ambient::after {
+    width: 30rem;
+    height: 30rem;
+    left: -10rem;
+    bottom: -12rem;
+    background: rgb(var(--ink) / 0.06);
+    animation: treiben 28s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes treiben {
+    from { transform: translate3d(0, 0, 0) scale(1); }
+    to { transform: translate3d(-4rem, 3rem, 0) scale(1.08); }
+  }
 }
 
 @layer utilities {

@@ -22,7 +22,14 @@ export default function Preise() {
           {preise.map((stufe) => (
             <div
               key={stufe.name}
-              className="grid gap-6 border-b border-paper/15 py-9 md:grid-cols-12 md:gap-8 md:py-12"
+              className={cn(
+                'grid gap-6 py-9 md:grid-cols-12 md:gap-8 md:py-12',
+                // Der Regelfall liegt als Glas-Panel ueber dem Schwarz — die eine
+                // Hervorhebung, die ohne Balken und ohne zweite Farbe auskommt.
+                stufe.hervorheben
+                  ? 'glass-dark -mx-5 my-2 rounded-card px-5 sm:-mx-8 sm:px-8'
+                  : 'border-b border-paper/15',
+              )}
             >
               <div className="md:col-span-3">
                 <h3

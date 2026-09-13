@@ -36,15 +36,24 @@ export default function Cursor() {
     let ringY = -100
     let frame = 0
 
+    const bewerten = (element: Element | null) => {
+      const ziel = element?.closest<HTMLElement>('a, button, [role="button"], [data-cursor]')
+      const etikett = ziel?.dataset.cursor
+      ring.dataset.state = etikett ? 'label' : ziel ? 'hover' : 'idle'
+      ring.textContent = etikett ?? ''
+    }
+
     const beiBewegung = (e: PointerEvent) => {
       zielX = e.clientX
       zielY = e.clientY
       punkt.style.transform = `translate(${zielX}px, ${zielY}px) translate(-50%, -50%)`
+      bewerten(e.target as Element)
+    }
 
-      const ziel = (e.target as HTMLElement).closest<HTMLElement>('a, button, [role="button"], [data-cursor]')
-      const etikett = ziel?.dataset.cursor
-      ring.dataset.state = etikett ? 'label' : ziel ? 'hover' : 'idle'
-      ring.textContent = etikett ?? ''
+    // Nach einem Klick kann sich unter dem stillstehenden Zeiger alles aendern
+    // (ein Sheet geht auf) — dann neu nachsehen, was jetzt darunter liegt.
+    const beiKlick = () => {
+      requestAnimationFrame(() => bewerten(document.elementFromPoint(zielX, zielY)))
     }
 
     // Der Ring laeuft dem Punkt nach — das Nachziehen ist der ganze Reiz.
@@ -64,12 +73,14 @@ export default function Cursor() {
     }
 
     window.addEventListener('pointermove', beiBewegung, { passive: true })
+    window.addEventListener('click', beiKlick, { passive: true })
     document.documentElement.addEventListener('pointerleave', beiVerlassen)
     document.documentElement.addEventListener('pointerenter', beiEintritt)
 
     return () => {
       cancelAnimationFrame(frame)
       window.removeEventListener('pointermove', beiBewegung)
+      window.removeEventListener('click', beiKlick)
       document.documentElement.removeEventListener('pointerleave', beiVerlassen)
       document.documentElement.removeEventListener('pointerenter', beiEintritt)
       document.documentElement.classList.remove('has-cursor')

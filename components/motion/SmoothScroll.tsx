@@ -21,6 +21,8 @@ export default function SmoothScroll() {
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     })
+    // Das Websites-Sheet haelt das Scrollen an, solange es offen ist.
+    window.__lenis = lenis
 
     let frame = 0
     const tick = (zeit: number) => {
@@ -46,6 +48,7 @@ export default function SmoothScroll() {
       cancelAnimationFrame(frame)
       document.removeEventListener('click', beiKlick)
       lenis.destroy()
+      window.__lenis = undefined
     }
   }, [])
 
