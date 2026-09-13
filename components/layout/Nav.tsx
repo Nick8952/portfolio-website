@@ -52,8 +52,12 @@ export default function Nav() {
         <nav
           aria-label="Hauptnavigation"
           className={cn(
-            'glass pointer-events-auto mx-auto flex h-14 max-w-4xl items-center justify-between gap-4 rounded-pill pl-5 pr-2 transition-shadow duration-300 ease-out',
-            gescrollt && 'shadow-lift',
+            // Oben kompakt, beim Scrollen waechst die Pille nach aussen auf die
+            // volle Spaltenbreite. max-width und Hoehe werden animiert; die
+            // Pille selbst bleibt dieselbe, sie dehnt sich nur.
+            'glass pointer-events-auto mx-auto flex items-center justify-between gap-4 rounded-pill pl-5 pr-2',
+            'transition-[max-width,height,box-shadow] duration-700 ease-out will-change-[max-width]',
+            gescrollt ? 'h-16 max-w-shell shadow-lift' : 'h-14 max-w-3xl',
           )}
         >
           <a
