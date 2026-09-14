@@ -96,7 +96,9 @@ Deploy: Push auf `main` → `.github/workflows/deploy.yml` → GitHub Pages.
 
 ## Offen
 
-- Portraitfoto (Platz in `UeberMich.tsx` ist vorbereitet)
+(Portrait ist drin: `public/portrait.jpg`, neu kodiert ohne Metadaten. Zum Tauschen einfach
+die Datei ersetzen — gleicher Name, Hochformat.)
+
 - FormSubmit: Testanfrage am 14.09.2026 gesendet (HTTP 200) → **Aktivierungs-Mail in
   holzbechernick@gmail.com bestätigen**, sonst werden Anfragen nicht zugestellt
 - Fahrschule CH wieder aufnehmen, sobald die Domain auf die Demo zeigt

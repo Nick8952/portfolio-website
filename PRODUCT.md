@@ -56,8 +56,8 @@ unter Agenturniveau), offen begründet mit seiner Ausbildungssituation.
   Fallback ist Mailto.
 - Sprache: Deutsch (Schweiz) — «ss» statt «ß», Preise in CHF.
 - Statisches Hosting: keine Server-Routen, keine Bildoptimierung zur Laufzeit.
-- Preise: Richtwerte existieren (Start ab CHF 1'200, Website ab 2'900, Website+
-  ab 4'200, Betrieb 19/39 pro Monat). **Ob sie öffentlich stehen: offen.**
+- Preise öffentlich als Richtwerte: Start ab CHF 1'200, Website ab 2'500, Website+
+  ab 3'600, Betrieb ab 19 pro Monat (Nutzerentscheid 2026-09-14, von 2'900/4'200 gesenkt).
 - Muss auf Handy einwandfrei funktionieren — Kunden öffnen den Link vom Telefon.
 
 ## Brand Commitments
@@ -88,7 +88,8 @@ Nicht öffentlich (nicht zeigen): Fahrschule Gimenez, fahrschule-barbara, -deck,
 2026-09-13 per Screenshot — Jimdo-Cookie-Banner); die Demo ist nicht öffentlich. Nicht zeigen,
 bis die Domain umgestellt ist.
 
-**Fehlt, darf nicht erfunden werden:** Portraitfoto, Testimonials, Kundenlogos,
+**Vorhanden:** Portraitfoto (`public/portrait.jpg`, 2026-09-14).
+**Fehlt, darf nicht erfunden werden:** Testimonials, Kundenlogos,
 Lehrbetrieb, Abschlussjahr, Screenshots der Demos (werden beim Build erzeugt).
 
 ## Product Principles

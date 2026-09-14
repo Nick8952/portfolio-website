@@ -22,6 +22,8 @@ export const person = {
     stand: '3. Lehrjahr',
   },
   github: 'https://github.com/Nick8952',
+  /** Liegt unter public/portrait.jpg. Fehlt die Datei, zeigt UeberMich den Platzhalter. */
+  portrait: '/portrait.jpg',
 } as const
 
 /** Branchen, fuer die bereits Websites gebaut wurden — genau diese laufen im Hero durch. */
@@ -145,7 +147,7 @@ export const preise: readonly Preis[] = [
   },
   {
     name: 'Website',
-    ab: 2900,
+    ab: 2500,
     umfang: '5 – 10 Seiten',
     fuer: 'Der Regelfall: eine vollständige Website, deren Inhalte Sie selbst pflegen.',
     punkte: [
@@ -159,7 +161,7 @@ export const preise: readonly Preis[] = [
   },
   {
     name: 'Website+',
-    ab: 4200,
+    ab: 3600,
     umfang: 'Mit Sonderfunktion',
     fuer: 'Wenn etwas dazukommt: eine zweite Sprache, Online-Anmeldung, Reservation, Kurskalender.',
     punkte: ['Alles aus «Website»', 'Eine Sonderfunktion nach Absprache', 'Zweite Sprache möglich'],
