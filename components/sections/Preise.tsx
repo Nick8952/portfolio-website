@@ -117,14 +117,17 @@ export default function Preise() {
 
                 <p className="text-base font-semibold text-paper/60">{stufe.name}</p>
 
+                {/* «ab» ist Teil des Preises, nicht Kleingedrucktes: gleich gross wie
+                    CHF, in voller Deckkraft, damit niemand 1'200 als Festpreis liest. */}
                 <div className="mt-6 flex items-baseline justify-center gap-x-2">
                   <span className="font-display text-5xl font-semibold tracking-[-0.02em] tnum">
+                    <span className="mr-2 align-top text-[0.55em] font-semibold text-kobalt-lift">ab</span>
                     <span className="mr-1.5 align-top text-[0.5em] font-medium text-paper/60">CHF</span>
                     {chf(stufe.ab)}
                   </span>
                 </div>
                 <p className="mt-1 text-xs leading-5 text-paper/55">
-                  ab · einmalig · {stufe.umfang}
+                  einmalig · {stufe.umfang}
                 </p>
 
                 <ul className="mt-6 flex flex-col gap-2.5 text-left">
