@@ -1,34 +1,89 @@
 'use client'
 
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  type Variants,
+} from 'framer-motion'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import Magnetic from '@/components/motion/Magnetic'
 import { hero, navigation, person } from '@/lib/content'
 import { cn } from '@/lib/utils'
 
 /**
- * Schwebende Glas-Pille, wie Apple sie ueber Inhalt legt: Name links, Ziele
- * in der Mitte, eine Schaltflaeche rechts. Das Glas ist hier kein Schmuck —
- * die Pille liegt beim Scrollen ueber Headlines und Screenshots, und die
- * Weichzeichnung haelt die Links lesbar, ohne den Inhalt zu verdecken.
+ * Die Glas-Pille faltet sich beim Runterscrollen zu einem Kreis zusammen und
+ * beim Hochscrollen wieder auf — federnd, die Links gestaffelt. Wer den Kreis
+ * antippt, bekommt sie ebenfalls zurueck.
+ *
+ * Zusammengeklappt wird ab 150 px Scrolltiefe, sobald die Richtung nach unten
+ * zeigt. Aufgeklappt, sobald es 80 px vom tiefsten Punkt zurueck nach oben
+ * ging — die Schwelle verhindert, dass ein Wackeln auf dem Trackpad die Pille
+ * flattern laesst. (Die Vorlage mass vom Punkt des Zuklappens aus und oeffnete
+ * dadurch nur nahe dem Seitenanfang wieder.)
+ *
+ * Die Groesse der aufgeklappten Pille ist fix (48 rem); sie waechst beim
+ * Scrollen nicht mehr.
  */
+
+const ZUKLAPPEN_AB = 150
+const AUFKLAPPEN_NACH = 80
+const KREIS = '3.5rem' // = h-14, damit es ein Kreis wird
+
+const feder = { type: 'spring', damping: 20, stiffness: 300 } as const
+
+const huelle: Variants = {
+  offen: {
+    width: '100%',
+    transition: { ...feder, staggerChildren: 0.06, delayChildren: 0.12 },
+  },
+  zu: {
+    width: KREIS,
+    transition: { ...feder, when: 'afterChildren', staggerChildren: 0.04, staggerDirection: -1 },
+  },
+}
+
+const eintrag: Variants = {
+  offen: { opacity: 1, x: 0, scale: 1, visibility: 'visible', transition: { type: 'spring', damping: 15 } },
+  zu: { opacity: 0, x: -16, scale: 0.96, transition: { duration: 0.18 }, transitionEnd: { visibility: 'hidden' } },
+}
+
+const kreisSymbol: Variants = {
+  offen: { opacity: 0, scale: 0.7, transition: { duration: 0.15 } },
+  zu: { opacity: 1, scale: 1, transition: { type: 'spring', damping: 15, stiffness: 300, delay: 0.12 } },
+}
+
 export default function Nav() {
+  const [offen, setOffen] = useState(true)
   const [gescrollt, setGescrollt] = useState(false)
-  const [offen, setOffen] = useState(false)
+  const [menue, setMenue] = useState(false)
   const schliessenRef = useRef<HTMLButtonElement>(null)
   const oeffnenRef = useRef<HTMLButtonElement>(null)
   const reduziert = useReducedMotion()
 
-  useEffect(() => {
-    const beiScroll = () => setGescrollt(window.scrollY > 12)
-    beiScroll()
-    window.addEventListener('scroll', beiScroll, { passive: true })
-    return () => window.removeEventListener('scroll', beiScroll)
-  }, [])
+  const { scrollY } = useScroll()
+  const letzterY = useRef(0)
+  const tiefsterY = useRef(0)
+
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    const vorher = letzterY.current
+    setGescrollt(y > 12)
+
+    if (offen && y > vorher && y > ZUKLAPPEN_AB) {
+      setOffen(false)
+      tiefsterY.current = y
+    } else if (!offen) {
+      tiefsterY.current = Math.max(tiefsterY.current, y)
+      if (y < vorher && tiefsterY.current - y > AUFKLAPPEN_NACH) setOffen(true)
+    }
+    letzterY.current = y
+  })
 
   useEffect(() => {
-    if (!offen) return
+    if (!menue) return
     const beiTaste = (e: KeyboardEvent) => e.key === 'Escape' && schliessen()
     document.addEventListener('keydown', beiTaste)
     const vorher = document.body.style.overflow
@@ -39,88 +94,99 @@ export default function Nav() {
       document.body.style.overflow = vorher
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offen])
+  }, [menue])
 
-  function schliessen() {
-    setOffen(false)
+  const schliessen = useCallback(() => {
+    setMenue(false)
     oeffnenRef.current?.focus()
-  }
+  }, [])
+
+  const zustand = offen ? 'offen' : 'zu'
 
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-50 pt-3 md:pt-5">
-      <div className="shell">
-        <nav
+      <div className="shell flex justify-center">
+        <motion.nav
           aria-label="Hauptnavigation"
+          initial={false}
+          animate={zustand}
+          variants={huelle}
+          transition={reduziert ? { duration: 0 } : undefined}
+          whileHover={!offen && !reduziert ? { scale: 1.08 } : undefined}
+          whileTap={!offen && !reduziert ? { scale: 0.95 } : undefined}
+          onClick={() => !offen && setOffen(true)}
           className={cn(
-            // Oben kompakt, beim Scrollen waechst die Pille nach aussen auf die
-            // volle Spaltenbreite. max-width und Hoehe werden animiert; die
-            // Pille selbst bleibt dieselbe, sie dehnt sich nur.
-            'glass pointer-events-auto mx-auto flex items-center justify-between gap-4 rounded-pill pl-5 pr-2',
-            // Nur max-width und Schatten: die Hoehe konstant zu halten spart 1,2 s
-            // Layout-Arbeit pro Aufweitung, und will-change auf max-width bringt nichts.
-            'h-14 transition-[max-width,box-shadow] duration-[1200ms] ease-[cubic-bezier(0.32,0.72,0,1)]',
-            // Gescrollt liegt die Pille auch ueber der schwarzen Preis-Section: 70 %
-            // Fuellung halten die Links dort bei ueber 4,5:1 (38 % ergaeben 2,6:1).
-            gescrollt ? 'max-w-shell bg-paper/70 shadow-lift' : 'max-w-3xl',
+            'glass pointer-events-auto relative flex h-14 max-w-3xl items-center justify-between gap-4 overflow-hidden rounded-pill pl-5 pr-2',
+            gescrollt && 'bg-paper/70 shadow-lift',
+            !offen && 'cursor-pointer justify-center',
           )}
         >
-          <a
+          <motion.a
+            variants={eintrag}
             href="#top"
-            className="font-display text-[1.0625rem] font-semibold tracking-[-0.01em] text-ink"
+            className="shrink-0 whitespace-nowrap font-display text-[1.0625rem] font-semibold tracking-[-0.01em] text-ink"
           >
             {person.name}
-          </a>
+          </motion.a>
 
           <ul className="hidden items-center gap-1 md:flex">
-            {navigation.map((eintrag) => (
-              <li key={eintrag.href}>
+            {navigation.map((e) => (
+              <motion.li key={e.href} variants={eintrag}>
                 <a
-                  href={eintrag.href}
-                  className="inline-flex h-9 items-center rounded-pill px-3.5 text-[0.9375rem] text-ink/80 transition-colors duration-200 ease-out hover:bg-ink/5 hover:text-ink"
+                  href={e.href}
+                  className="inline-flex h-9 items-center whitespace-nowrap rounded-pill px-3.5 text-[0.9375rem] text-ink/80 transition-colors duration-200 ease-out hover:bg-ink/5 hover:text-ink"
                 >
-                  {eintrag.label}
+                  {e.label}
                 </a>
-              </li>
+              </motion.li>
             ))}
           </ul>
 
-          <div className="flex items-center gap-2">
+          <motion.div variants={eintrag} className="flex shrink-0 items-center gap-2">
             <Magnetic staerke={0.25} className="hidden md:block">
               <a
                 href="#anfrage"
-                className="inline-flex h-10 items-center rounded-pill bg-ink px-5 text-[0.9375rem] font-medium text-paper transition-colors duration-200 ease-out hover:bg-kobalt"
+                className="inline-flex h-10 items-center whitespace-nowrap rounded-pill bg-ink px-5 text-[0.9375rem] font-medium text-paper transition-colors duration-200 ease-out hover:bg-kobalt"
               >
                 {hero.cta}
               </a>
             </Magnetic>
-
             <button
               ref={oeffnenRef}
               type="button"
-              onClick={() => setOffen(true)}
-              aria-expanded={offen}
+              onClick={() => setMenue(true)}
+              aria-expanded={menue}
               aria-controls="menue"
               className="inline-flex h-10 w-10 items-center justify-center rounded-pill text-ink transition-colors duration-200 ease-out hover:bg-ink/5 md:hidden"
             >
               <span className="sr-only">Menü öffnen</span>
-              <svg
-                viewBox="0 0 20 20"
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                aria-hidden="true"
-              >
-                <path d="M3 6.5h14M3 13.5h14" />
-              </svg>
+              <MenuIcon />
             </button>
-          </div>
-        </nav>
+          </motion.div>
+
+          {/* Das Symbol im zusammengefalteten Kreis. Ein echter Knopf, damit es
+              auch per Tastatur erreichbar ist — aber nur, solange der Kreis zu ist. */}
+          <motion.button
+            type="button"
+            variants={kreisSymbol}
+            aria-label="Navigation einblenden"
+            tabIndex={offen ? -1 : 0}
+            onClick={(e) => {
+              e.stopPropagation()
+              setOffen(true)
+            }}
+            className={cn(
+              'absolute inset-0 flex items-center justify-center rounded-pill text-ink',
+              offen && 'pointer-events-none',
+            )}
+          >
+            <MenuIcon />
+          </motion.button>
+        </motion.nav>
       </div>
 
       <AnimatePresence>
-        {offen && (
+        {menue && (
           <motion.div
             id="menue"
             role="dialog"
@@ -142,29 +208,21 @@ export default function Nav() {
                   className="inline-flex h-10 w-10 items-center justify-center rounded-pill border border-hairline"
                 >
                   <span className="sr-only">Menü schliessen</span>
-                  <svg
-                    viewBox="0 0 20 20"
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    aria-hidden="true"
-                  >
+                  <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
                     <path d="M5 5l10 10M15 5 5 15" />
                   </svg>
                 </button>
               </div>
 
               <ul className="mt-6 divide-y divide-hairline border-y border-hairline">
-                {navigation.map((eintrag) => (
-                  <li key={eintrag.href}>
+                {navigation.map((e) => (
+                  <li key={e.href}>
                     <a
-                      href={eintrag.href}
-                      onClick={() => setOffen(false)}
+                      href={e.href}
+                      onClick={() => setMenue(false)}
                       className="block py-5 font-display text-3xl font-semibold tracking-[-0.02em]"
                     >
-                      {eintrag.label}
+                      {e.label}
                     </a>
                   </li>
                 ))}
@@ -172,8 +230,8 @@ export default function Nav() {
 
               <a
                 href="#anfrage"
-                onClick={() => setOffen(false)}
-                className="mt-auto mb-8 inline-flex h-14 items-center justify-center rounded-pill bg-ink text-base font-medium text-paper"
+                onClick={() => setMenue(false)}
+                className="mb-8 mt-auto inline-flex h-14 items-center justify-center rounded-pill bg-ink text-base font-medium text-paper"
               >
                 {hero.cta}
               </a>
@@ -182,5 +240,13 @@ export default function Nav() {
         )}
       </AnimatePresence>
     </header>
+  )
+}
+
+function MenuIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
+      <path d="M3 6.5h14M3 13.5h14" />
+    </svg>
   )
 }

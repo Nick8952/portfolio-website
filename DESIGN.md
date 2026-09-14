@@ -76,8 +76,10 @@ weichgezeichnet.
 ## Bewegung
 
 - **Der eine Moment:** das Sheet — steigt auf, die Seite dahinter tritt zurück.
-- **Nav-Pille:** oben 768px kompakt, gescrollt volle Spaltenbreite und 64px hoch;
-  1,2 s mit `cubic-bezier(0.32,0.72,0,1)` — langsam und weich, nicht zackig.
+- **Nav-Pille:** feste Breite (48 rem). Beim Runterscrollen (ab 150 px) faltet sie sich
+  federnd zu einem 56-px-Kreis mit Menü-Symbol; die Links gehen gestaffelt raus. Beim
+  Hochscrollen um 80 px vom tiefsten Punkt — oder beim Antippen des Kreises — faltet
+  sie sich wieder auf. Spring damping 20 / stiffness 300.
 - Hero: gestaffelte Einblendung einmalig beim Laden; das Branchen-Wort wechselt
   alle 2,6 s zusammen mit dem Telefon-Screenshot. Das ist Inhalt, nicht Deko.
 - Cursor: Kobalt-Ring, der dem Zeiger nachläuft; über Links weitet er sich, über

@@ -26,7 +26,7 @@ natives Scrollen, Ankerlinks per CSS `scroll-behavior: smooth`.
 lib/content.ts        ALLE Texte, Preise, Websites. Hier pflegen, sonst nirgends.
 lib/utils.ts          cn(), chf(), asset() — asset() setzt den Basispfad davor.
 app/                  layout (Fonts, Meta), page (Reihenfolge), robots, sitemap, icon
-components/layout     Nav, Footer
+components/layout     Nav (faltet sich beim Scrollen zum Kreis — Logik in useMotionValueEvent), Footer
 components/sections   Hero, Websites, Ablauf, Preise, UeberMich, Anfrage
 components/motion     Cursor (Kobalt-Ring), Magnetic
 components/ui/IPhone  Das iPhone aus Geometrie — Hero und Sheet nutzen dasselbe
