@@ -41,8 +41,9 @@ tools/websites-source.mjs  Adressen dafür — Slugs müssen zu content.ts passe
   `fahrschule-ch.ch` zeigt auf die *alte* Kundenseite und gehört nicht in die Liste.
 - **Drei Farben.** Papier, Tinte, Kobalt (`#1c50be`). Grau nur als Ableitung. Kobalt
   ist auf Dunkel 2,8:1 — dort nur als Fläche; für Text `kobalt-lift`.
-- **Keine Eyebrows über Headlines, keine Kartenraster, keine Sektionsnummern**
-  ausser im Ablauf (dort ist die Reihenfolge Information). Siehe `DESIGN.md`.
+- **Keine Eyebrows über Headlines, keine Sektionsnummern** ausser im Ablauf (dort ist
+  die Reihenfolge Information). Kartenraster nur bei den Preisen — Nicks Vorlage,
+  bewusste Ausnahme. Siehe `DESIGN.md`.
 - **Websites nur auf Wunsch.** Das Dock in `Websites.tsx` ist eine Reihe kleiner
   Kacheln; die grosse Ansicht kommt erst im Sheet nach dem Antippen. Ein Stapel aus
   Vollbild-Panels, an dem man nicht vorbeikommt, war Nicks ausdrücklicher Einwand —

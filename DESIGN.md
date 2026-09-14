@@ -33,8 +33,13 @@ Arbeit bringt die Farbe, das Layout nicht.
 ## Struktur
 
 Hero → Websites (Dock) → Ablauf → Preise (dunkel) → Über mich → Anfrage → Footer.
-Eine Seite, Ankerlinks. Keine Eyebrows, keine Kartenraster, Sektionsnummern nur im
-Ablauf und als Positionszähler im Sheet («02 / 06»).
+Eine Seite, Ankerlinks. Keine Eyebrows, Sektionsnummern nur im Ablauf und als
+Positionszähler im Sheet («02 / 06»).
+
+**Preise als drei Karten** (Nicks Vorlage, 14.09.): Mitte erhöht mit Kobalt-Rand und
+Badge «Der Regelfall», Aussenkarten 94 % und 10° nach innen gedreht, federnder Einzug
+(spring 100/30). Ohne Monatlich/Jährlich-Schalter — die Preise sind einmalig. Das ist die
+eine bewusste Ausnahme von «keine Kartenraster».
 
 ## Liquid Glass (iOS 26)
 
