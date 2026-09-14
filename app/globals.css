@@ -349,6 +349,47 @@
     }
   }
 
+  /* -------------------------------------------------------------------
+     Preiskarten beim Hovern: Kobalt-Saum, Nachbarn treten zurueck, Glanzlicht
+     folgt dem Zeiger. Die Karte selbst hebt sich per Framer Motion.
+  ------------------------------------------------------------------- */
+  .preiskarte {
+    transition: box-shadow 350ms var(--ease-out);
+  }
+  .preiskarte:hover {
+    box-shadow:
+      inset 0 1px 0 rgb(var(--paper) / 0.2),
+      0 0 0 1px rgb(var(--kobalt-lift) / 0.7),
+      0 30px 70px -24px rgb(var(--kobalt) / 0.55),
+      0 18px 40px -18px rgb(0 0 0 / 0.6);
+  }
+  /* Nur mit Maus: auf Touch gibt es kein Schweben, also auch kein Zuruecktreten. */
+  @media (hover: hover) and (pointer: fine) {
+    .preisraster:hover .preiskarte:not(:hover) > :not(.preisglanz) {
+      opacity: 0.55;
+    }
+  }
+  .preiskarte > :not(.preisglanz) {
+    transition: opacity 350ms var(--ease-out);
+  }
+  .preisglanz {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 350ms var(--ease-out);
+    background: radial-gradient(
+      55% 55% at var(--gx, 50%) var(--gy, 40%),
+      rgb(var(--kobalt-lift) / 0.22),
+      rgb(var(--paper) / 0.05) 45%,
+      transparent 72%
+    );
+  }
+  .preiskarte:hover .preisglanz {
+    opacity: 1;
+  }
+
   /* Umgebungslicht: zwei weiche Flecken hinter dem Hero. Sie sind der Grund,
      warum das Glas darueber ueberhaupt als Glas lesbar ist.
      Als radial-gradient, nicht als filter: blur() — ein 42rem-Element mit 80px

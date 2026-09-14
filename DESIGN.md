@@ -38,8 +38,10 @@ Positionszähler im Sheet («02 / 06»).
 
 **Preise als drei Karten** (Nicks Vorlage, 14.09.): Mitte erhöht mit Kobalt-Rand und
 Badge «Der Regelfall», Aussenkarten 94 % und 10° nach innen gedreht, federnder Einzug
-(spring 100/30). Ohne Monatlich/Jährlich-Schalter — die Preise sind einmalig. Das ist die
-eine bewusste Ausnahme von «keine Kartenraster».
+(spring 100/30). **Hover:** die Karte richtet sich auf, hebt sich um 18 px auf 104 %, bekommt
+einen Kobalt-Saum, ein Glanzlicht folgt dem Zeiger, die Nachbarn treten auf 55 % zurück
+(nur Maus, nie Touch). Ohne Monatlich/Jährlich-Schalter — die Preise sind einmalig. Das
+ist die eine bewusste Ausnahme von «keine Kartenraster».
 
 ## Liquid Glass (iOS 26)
 

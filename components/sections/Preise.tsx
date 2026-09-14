@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, useReducedMotion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type PointerEvent as ReactPointerEvent } from 'react'
 
 import { betrieb, preise } from '@/lib/content'
 import { chf, cn } from '@/lib/utils'
@@ -14,7 +14,19 @@ import { chf, cn } from '@/lib/utils'
  *
  * Kein Monatlich/Jaehrlich-Schalter: die Preise sind einmalig, es gibt nichts
  * umzuschalten.
+ *
+ * Hover: die Karte richtet sich auf, hebt sich, bekommt einen Kobalt-Saum, die
+ * Nachbarn treten zurueck (CSS, .preisraster), und ein Glanzlicht folgt dem
+ * Zeiger ueber das Glas — die Position geht als CSS-Variable direkt an den
+ * Knoten, kein React-State pro Mausbewegung.
  */
+
+function glanzFolgen(e: ReactPointerEvent<HTMLDivElement>) {
+  if (e.pointerType !== 'mouse') return
+  const r = e.currentTarget.getBoundingClientRect()
+  e.currentTarget.style.setProperty('--gx', `${((e.clientX - r.left) / r.width) * 100}%`)
+  e.currentTarget.style.setProperty('--gy', `${((e.clientY - r.top) / r.height) * 100}%`)
+}
 
 function useDesktop(): boolean {
   const [ist, setIst] = useState(false)
@@ -45,7 +57,7 @@ export default function Preise() {
           </p>
         </div>
 
-        <div className="mt-14 grid gap-5 md:mt-20 md:grid-cols-3 md:gap-4 [perspective:1400px]">
+        <div className="preisraster mt-14 grid gap-5 md:mt-20 md:grid-cols-3 md:gap-4 [perspective:1400px]">
           {preise.map((stufe, i) => {
             const aussen = i === 0 || i === 2
             const ziel =
@@ -63,18 +75,28 @@ export default function Preise() {
               <motion.div
                 key={stufe.name}
                 initial={reduziert ? false : { y: 50, opacity: 0 }}
-                whileInView={ziel}
-                viewport={{ once: true, margin: '-80px' }}
-                transition={{
-                  type: 'spring',
-                  stiffness: 100,
-                  damping: 30,
-                  delay: 0.15 + i * 0.1,
-                  opacity: { duration: 0.5 },
+                whileInView={{
+                  ...ziel,
+                  // Der Einzug hat die Verzoegerung, der Hover nicht.
+                  transition: {
+                    type: 'spring',
+                    stiffness: 100,
+                    damping: 30,
+                    delay: 0.15 + i * 0.1,
+                    opacity: { duration: 0.5 },
+                  },
                 }}
+                whileHover={
+                  desktop && !reduziert
+                    ? { y: -18, x: 0, scale: 1.04, rotateY: 0, zIndex: 20 }
+                    : undefined
+                }
+                viewport={{ once: true, margin: '-80px' }}
+                transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+                onPointerMove={glanzFolgen}
                 style={{ transformStyle: 'preserve-3d' }}
                 className={cn(
-                  'relative flex flex-col rounded-card p-7 text-center',
+                  'preiskarte relative flex flex-col rounded-card p-7 text-center',
                   stufe.hervorheben
                     ? 'glass-dark-lite z-10 border border-kobalt-lift/60'
                     : 'glass-dark-lite z-0 md:mt-5',
@@ -82,6 +104,8 @@ export default function Preise() {
                   i === 2 && 'origin-left',
                 )}
               >
+                <span aria-hidden="true" className="preisglanz" />
+
                 {stufe.hervorheben && (
                   <div className="absolute right-0 top-0 flex items-center gap-1 rounded-bl-xl rounded-tr-card bg-kobalt px-2.5 py-1 text-paper">
                     <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="currentColor" aria-hidden="true">
