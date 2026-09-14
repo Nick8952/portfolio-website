@@ -49,7 +49,7 @@ export default function Hero() {
   const auf = { duration: 0.55, ease: [0.16, 1, 0.3, 1] as const }
 
   return (
-    <section ref={sectionRef} id="top" className="relative overflow-hidden pt-32 md:pt-40">
+    <section ref={sectionRef} id="top" className="relative pb-20 pt-32 md:pb-28 md:pt-40">
       <div aria-hidden="true" className="ambient" />
       <div className="shell relative z-[1] grid items-end gap-12 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-7">
