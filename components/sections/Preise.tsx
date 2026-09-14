@@ -27,7 +27,7 @@ export default function Preise() {
                 // Der Regelfall liegt als Glas-Panel ueber dem Schwarz — die eine
                 // Hervorhebung, die ohne Balken und ohne zweite Farbe auskommt.
                 stufe.hervorheben
-                  ? 'glass-dark -mx-5 my-2 rounded-card px-5 sm:-mx-8 sm:px-8'
+                  ? 'glass-dark-lite -mx-5 my-2 rounded-card px-5 sm:-mx-8 sm:px-8'
                   : 'border-b border-paper/15',
               )}
             >

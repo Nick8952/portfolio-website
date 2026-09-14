@@ -56,7 +56,7 @@ export default function Websites() {
                 onClick={(e) => oeffnen(i, e.currentTarget)}
                 data-cursor="Ansehen"
                 aria-haspopup="dialog"
-                className="glass group block w-full rounded-card p-2 text-left transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:shadow-lift"
+                className="glass-lite group block w-full rounded-card p-2 text-left transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:shadow-lift"
               >
                 <span className="block aspect-[16/10] overflow-hidden rounded-[10px] bg-sunk">
                   <img
@@ -128,13 +128,11 @@ function Sheet({
     document.addEventListener('keydown', beiTaste)
     const vorher = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    window.__lenis?.stop()
     requestAnimationFrame(() => panelRef.current?.querySelector<HTMLElement>('button')?.focus())
 
     return () => {
       document.removeEventListener('keydown', beiTaste)
       document.body.style.overflow = vorher
-      window.__lenis?.start()
     }
   }, [index, onClose, onWechsel])
 
@@ -191,7 +189,7 @@ function Sheet({
               </div>
             </div>
 
-            <div className="overflow-y-auto px-5 pb-6 pt-4 sm:px-8 sm:pb-8" data-lenis-prevent>
+            <div className="overflow-y-auto px-5 pb-6 pt-4 sm:px-8 sm:pb-8">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={site.slug}

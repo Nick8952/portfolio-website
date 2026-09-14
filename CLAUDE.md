@@ -15,7 +15,8 @@ Git-Historie vor `v2` ist nur noch Archiv.
 
 ## Stack
 
-Next.js 15 (App Router) · TypeScript · Tailwind 3.4 · Framer Motion 12 · Lenis.
+Next.js 15 (App Router) · TypeScript · Tailwind 3.4 · Framer Motion 12. **Kein Lenis mehr** —
+natives Scrollen, Ankerlinks per CSS `scroll-behavior: smooth`.
 **Statischer Export** (`output: 'export'`) auf GitHub Pages, Basispfad
 `/portfolio-website`. Kein CMS, kein Backend, keine Server-Routen.
 
@@ -27,7 +28,7 @@ lib/utils.ts          cn(), chf(), asset() — asset() setzt den Basispfad davor
 app/                  layout (Fonts, Meta), page (Reihenfolge), robots, sitemap, icon
 components/layout     Nav, Footer
 components/sections   Hero, Websites, Ablauf, Preise, UeberMich, Anfrage
-components/motion     SmoothScroll (Lenis), Cursor (Kobalt-Ring), Magnetic
+components/motion     Cursor (Kobalt-Ring), Magnetic
 components/ui/IPhone  Das iPhone aus Geometrie — Hero und Sheet nutzen dasselbe
 tools/screenshots.mjs Erzeugt public/websites/*.jpg aus den Live-Demos
 tools/websites-source.mjs  Adressen dafür — Slugs müssen zu content.ts passen
@@ -56,13 +57,17 @@ tools/websites-source.mjs  Adressen dafür — Slugs müssen zu content.ts passe
 
 - **`asset()` für alles unter `public/`.** `next/image` ist aus (`unoptimized`), ein
   plain `<img src="/x.jpg">` würde auf GitHub Pages den Basispfad verfehlen → 404.
-- **Sheet und Lenis.** `SmoothScroll.tsx` legt die Lenis-Instanz auf `window.__lenis`
-  (Typ in `types/global.d.ts`); das Sheet ruft `stop()`/`start()`, sonst scrollt die
-  Seite hinter dem offenen Sheet weiter. Scrollbereich im Sheet trägt `data-lenis-prevent`.
+- **Scroll-Ruckeln (14.09.2026, von Nick gemeldet).** Ursachen, alle entfernt — nicht
+  wieder einbauen: Lenis-Smooth-Scroll (fühlt sich auf dem Trackpad verzögert an);
+  SVG-`feDisplacementMap` als `backdrop-filter` auf der fixierten Nav (verzerrt bei jedem
+  Frame den Hintergrund neu); `filter: blur(80px)` auf grossen, dauerhaft animierten
+  Flächen (jetzt statischer `radial-gradient`); `backdrop-filter` auf Dock-Kacheln und
+  Preis-Panel (über einfarbigem Grund wirkungslos → `glass-lite`). Dazu: Hero-Wechsel
+  pausiert ausserhalb des Viewports, Cursor-rAF läuft nur, solange der Ring unterwegs ist.
+  `backdrop-filter` bleibt nur auf Nav, Sheet, Menü.
 - **`@supports (backdrop-filter: url(#x))` ist in Safari eine Falle.** Safari 18+ besteht
   den Test, rendert aber keine SVG-Backdrop-Filter und verwirft dabei die ganze Kette
-  samt Blur. Die Linse schaltet `LensSupport.tsx` nur in Chromium frei (UA: «Chrome/»
-  ohne «Version/» — auch Chromes UA endet mit «Safari/537.36»). Fund von Codex.
+  samt Blur. (Die SVG-Linse ist inzwischen ganz raus — wegen Ruckeln.) Fund von Codex.
 - **Glas über Schwarz braucht Füllung.** 38 % Papier ergibt 2,6:1; die gescrollte Nav
   hat 70 %, weil sie über der Preis-Section liegt. Fund von Codex.
 - **Prozent-Insets sind nicht quadratisch.** `inset-[2.4%]` misst oben/unten an der

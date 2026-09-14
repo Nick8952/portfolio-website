@@ -1,7 +1,7 @@
 'use client'
 
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import Magnetic from '@/components/motion/Magnetic'
 import IPhone from '@/components/ui/IPhone'
@@ -24,13 +24,24 @@ const TAKT_MS = 2600
 
 export default function Hero() {
   const [index, setIndex] = useState(0)
+  const [imBild, setImBild] = useState(true)
   const reduziert = useReducedMotion()
+  const sectionRef = useRef<HTMLElement>(null)
+
+  // Wer beim Formular ist, braucht keinen Hero, der im Hintergrund weiterschaltet.
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    const io = new IntersectionObserver(([e]) => setImBild(e.isIntersecting))
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
 
   useEffect(() => {
-    if (reduziert) return
+    if (reduziert || !imBild) return
     const t = setInterval(() => setIndex((i) => (i + 1) % branchen.length), TAKT_MS)
     return () => clearInterval(t)
-  }, [reduziert])
+  }, [reduziert, imBild])
 
   const branche = branchen[index]
   const site = websites.find((w) => w.slug === BRANCHE_ZU_SLUG[branche]) ?? websites[0]
@@ -38,7 +49,7 @@ export default function Hero() {
   const auf = { duration: 0.55, ease: [0.16, 1, 0.3, 1] as const }
 
   return (
-    <section id="top" className="relative overflow-hidden pt-32 md:pt-40">
+    <section ref={sectionRef} id="top" className="relative overflow-hidden pt-32 md:pt-40">
       <div aria-hidden="true" className="ambient" />
       <div className="shell relative z-[1] grid items-end gap-12 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-7">
@@ -97,7 +108,7 @@ export default function Hero() {
             </Magnetic>
             <a
               href="#websites"
-              className="glass inline-flex h-13 items-center rounded-pill px-7 text-base font-medium text-ink transition-shadow duration-200 ease-out hover:shadow-lift"
+              className="glass-lite inline-flex h-13 items-center rounded-pill px-7 text-base font-medium text-ink transition-shadow duration-200 ease-out hover:shadow-lift"
             >
               {hero.ctaSekundaer}
             </a>

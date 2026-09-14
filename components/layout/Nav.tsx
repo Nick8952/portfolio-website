@@ -56,10 +56,12 @@ export default function Nav() {
             // volle Spaltenbreite. max-width und Hoehe werden animiert; die
             // Pille selbst bleibt dieselbe, sie dehnt sich nur.
             'glass pointer-events-auto mx-auto flex items-center justify-between gap-4 rounded-pill pl-5 pr-2',
-            'transition-[max-width,height,box-shadow] duration-[1200ms] ease-[cubic-bezier(0.32,0.72,0,1)] will-change-[max-width]',
+            // Nur max-width und Schatten: die Hoehe konstant zu halten spart 1,2 s
+            // Layout-Arbeit pro Aufweitung, und will-change auf max-width bringt nichts.
+            'h-14 transition-[max-width,box-shadow] duration-[1200ms] ease-[cubic-bezier(0.32,0.72,0,1)]',
             // Gescrollt liegt die Pille auch ueber der schwarzen Preis-Section: 70 %
             // Fuellung halten die Links dort bei ueber 4,5:1 (38 % ergaeben 2,6:1).
-            gescrollt ? 'h-16 max-w-shell bg-paper/70 shadow-lift' : 'h-14 max-w-3xl',
+            gescrollt ? 'max-w-shell bg-paper/70 shadow-lift' : 'max-w-3xl',
           )}
         >
           <a

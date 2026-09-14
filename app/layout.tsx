@@ -3,8 +3,6 @@ import { Bricolage_Grotesque, Instrument_Sans } from 'next/font/google'
 import type { ReactNode } from 'react'
 
 import Cursor from '@/components/motion/Cursor'
-import LensSupport from '@/components/motion/LensSupport'
-import SmoothScroll from '@/components/motion/SmoothScroll'
 import { person, seo } from '@/lib/content'
 import { siteUrl } from '@/lib/utils'
 
@@ -62,19 +60,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         >
           Zum Inhalt springen
         </a>
-        <SmoothScroll />
         <Cursor />
-        <LensSupport />
         {children}
-        {/* Verzerrungsquelle fuer das Liquid Glass (globals.css). Sehr weiche,
-            grosse Wellen mit kleiner Auslenkung — der Hintergrund biegt sich am
-            Glas leicht, wie hinter einer Linse. Nur Chrome/Edge werten es aus. */}
-        <svg aria-hidden="true" width="0" height="0" style={{ position: 'absolute' }}>
-          <filter id="liquid-lens" x="-5%" y="-5%" width="110%" height="110%" colorInterpolationFilters="sRGB">
-            <feTurbulence type="fractalNoise" baseFrequency="0.006 0.012" numOctaves="1" seed="4" result="welle" />
-            <feDisplacementMap in="SourceGraphic" in2="welle" scale="9" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </svg>
       </body>
     </html>
   )

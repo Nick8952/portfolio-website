@@ -42,9 +42,10 @@ Drei Merkmale, die es vom Milchglas unterscheiden: **fast durchsichtig** (38 %
 Papierfüllung, blur 18px, saturate 1.9, brightness 1.06), ein **brechender Rand**
 (1,5px-Ring aus Verlauf — hell oben links, dunkel in der Mitte, hell unten rechts —
 per Maske ausgeschnitten, z-index −1 unter dem Inhalt) und ein **Glanz oben links**.
-Chromium bekommt zusätzlich eine Linsenverzerrung (`#liquid-lens`, feDisplacementMap
-scale 9); Safari nicht — dort verwirft ein `url()`-Backdrop-Filter die ganze Kette,
-darum Browser-Erkennung statt `@supports` (`LensSupport.tsx`).
+Keine SVG-Linsenverzerrung: auf einem fixierten Element muss sie bei jedem Scroll-Frame
+den Hintergrund neu verzerren — das hat sichtbar geruckelt. `backdrop-filter` nur auf
+Nav, Sheet und Menü; Dock, Preis-Panel und Sekundär-Buttons nutzen `glass-lite`
+(Füllung, Rand, Glanz — ohne Weichzeichnung, über einfarbigem Grund gleichwertig).
 
 **Kontrast:** 38 % über Schwarz ergibt 2,6:1. Die gescrollte Nav liegt über der
 Preis-Section und bekommt deshalb 70 % Füllung (≥4,5:1). Glas als Section-Füllung
@@ -82,7 +83,7 @@ weichgezeichnet.
 - Cursor: Kobalt-Ring, der dem Zeiger nachläuft; über Links weitet er sich, über
   Websites wird er zum Etikett «Ansehen». Nur feiner Zeiger.
 - Magnetische Buttons: Haupt-CTAs ziehen leicht zum Zeiger.
-- Lenis-Smooth-Scroll; aus auf Touch und unter Bewegungsreduktion.
+- Natives Scrollen (kein Lenis — fühlte sich verzögert an); Anker per CSS `scroll-behavior`.
 - Alles Übrige: keine Einblendungen. Inhalt steht.
 
 ## Browser-Oberflächen

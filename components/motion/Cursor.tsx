@@ -48,6 +48,7 @@ export default function Cursor() {
       zielY = e.clientY
       punkt.style.transform = `translate(${zielX}px, ${zielY}px) translate(-50%, -50%)`
       bewerten(e.target as Element)
+      anstossen()
     }
 
     // Nach einem Klick kann sich unter dem stillstehenden Zeiger alles aendern
@@ -57,13 +58,25 @@ export default function Cursor() {
     }
 
     // Der Ring laeuft dem Punkt nach — das Nachziehen ist der ganze Reiz.
+    // Die Schleife laeuft nur, solange der Ring noch unterwegs ist; bei ruhendem
+    // Zeiger schreibt sie nichts. Ein permanenter rAF-Takt waere Dauerarbeit
+    // fuer nichts.
+    let laeuft = false
     const tick = () => {
       ringX += (zielX - ringX) * 0.18
       ringY += (zielY - ringY) * 0.18
       ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`
+      if (Math.abs(zielX - ringX) + Math.abs(zielY - ringY) > 0.2) {
+        frame = requestAnimationFrame(tick)
+      } else {
+        laeuft = false
+      }
+    }
+    const anstossen = () => {
+      if (laeuft) return
+      laeuft = true
       frame = requestAnimationFrame(tick)
     }
-    frame = requestAnimationFrame(tick)
 
     const beiVerlassen = () => {
       ring.dataset.state = 'hidden'

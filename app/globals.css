@@ -30,6 +30,10 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: 6rem;
+    /* Natives Scrollen. Eine Smooth-Scroll-Bibliothek (Lenis) hatte hier jedes
+       Rad-Ereignis abgefangen und 1,1 s hinterher interpoliert — auf dem Trackpad
+       fuehlt sich das verzoegert an. Ankerlinks gleiten trotzdem, per CSS. */
+    scroll-behavior: smooth;
   }
 
   body {
@@ -196,24 +200,49 @@
         dicken Linse. Gebaut mit einer Maske, die nur den Ring stehen laesst.
      3. Ein Glanz oben links (::before), der wie eine Lichtquelle ueber dem Glas
         liegt.
-     Chrome bekommt zusaetzlich eine leichte Linsenverzerrung des Hintergrunds
-     (backdrop-filter: url(#liquid-lens)); Safari kann das nicht und zeigt das
-     Glas ohne Verzerrung — nicht kaputt, nur ruhiger.
+     Keine Linsenverzerrung per SVG-Filter: ein feDisplacementMap auf einem
+     fixierten backdrop-filter-Element muss bei jedem Scroll-Frame den ganzen
+     Hintergrund neu verzerren — der teuerste Effekt der Seite bei kleinstem
+     Nutzen. Das hat sichtbar geruckelt.
+
+     backdrop-filter nur dort, wo es etwas verwischt: Nav-Pille, Sheet, Menue.
+     Dock-Kacheln, Preis-Panel und Sekundaer-Buttons liegen ueber einfarbigem
+     Grund und bekommen die leichte Variante ohne Weichzeichnung (.glass-lite).
 
      Nur fuer die schwebende Schicht: Navigation, Steuerelemente, Dock, Sheet.
      Nie als Fuellung ganzer Sections.
   ------------------------------------------------------------------- */
   .glass,
   .glass-strong,
-  .glass-dark {
+  .glass-dark,
+  .glass-lite,
+  .glass-dark-lite {
     position: relative;
     isolation: isolate;
   }
 
+  .glass-lite {
+    background: rgb(var(--paper) / 0.55);
+    box-shadow:
+      inset 0 1px 0 rgb(var(--paper) / 0.75),
+      0 1px 2px rgb(var(--ink) / 0.05),
+      0 14px 36px -14px rgb(var(--ink) / 0.18);
+  }
+  .glass-dark-lite {
+    background: rgb(var(--paper) / 0.05);
+    box-shadow:
+      inset 0 1px 0 rgb(var(--paper) / 0.16),
+      0 14px 36px -14px rgb(0 0 0 / 0.55);
+  }
+
   .glass {
-    background: rgb(var(--paper) / 0.38);
-    -webkit-backdrop-filter: blur(18px) saturate(1.9) brightness(1.06);
-    backdrop-filter: blur(18px) saturate(1.9) brightness(1.06);
+    background: rgb(var(--paper) / 0.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.8);
+    backdrop-filter: blur(14px) saturate(1.8);
+    /* Eigene Ebene und Paint-Containment: die Weichzeichnung soll nicht die
+       Seite mit-repainten. */
+    transform: translateZ(0);
+    contain: paint;
     box-shadow:
       inset 0 1px 0 rgb(var(--paper) / 0.75),
       0 1px 2px rgb(var(--ink) / 0.05),
@@ -242,7 +271,9 @@
   /* Der brechende Rand. padding = Ringbreite; die Maske schneidet die Mitte aus. */
   .glass::after,
   .glass-strong::after,
-  .glass-dark::after {
+  .glass-dark::after,
+  .glass-lite::after,
+  .glass-dark-lite::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -269,7 +300,8 @@
       linear-gradient(#000 0 0);
     mask-composite: exclude;
   }
-  .glass-dark::after {
+  .glass-dark::after,
+  .glass-dark-lite::after {
     background: linear-gradient(
       135deg,
       rgb(var(--paper) / 0.45) 0%,
@@ -282,7 +314,8 @@
 
   /* Der Glanz oben links. */
   .glass::before,
-  .glass-strong::before {
+  .glass-strong::before,
+  .glass-lite::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -293,7 +326,8 @@
       radial-gradient(120% 90% at 12% 0%, rgb(var(--paper) / 0.55), transparent 55%),
       linear-gradient(180deg, rgb(var(--paper) / 0.18), transparent 45%);
   }
-  .glass-dark::before {
+  .glass-dark::before,
+  .glass-dark-lite::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -301,15 +335,6 @@
     border-radius: inherit;
     pointer-events: none;
     background: radial-gradient(120% 90% at 12% 0%, rgb(var(--paper) / 0.14), transparent 55%);
-  }
-
-  /* Linsenverzerrung. Bewusst NICHT per @supports: Safari 18+ akzeptiert die
-     url()-Syntax im Test, rendert aber keine SVG-Backdrop-Filter — und verwirft
-     dabei die ganze Kette samt Blur. Die Klasse setzt components/motion/
-     LensSupport.tsx nur in Chromium-Browsern. */
-  html.has-lens .glass {
-    -webkit-backdrop-filter: url(#liquid-lens) blur(18px) saturate(1.9) brightness(1.06);
-    backdrop-filter: url(#liquid-lens) blur(18px) saturate(1.9) brightness(1.06);
   }
 
   /* Ohne backdrop-filter (auch nicht mit -webkit-Praefix): undurchsichtig,
@@ -325,44 +350,41 @@
   }
 
   /* Umgebungslicht: zwei weiche Flecken hinter dem Hero. Sie sind der Grund,
-     warum das Glas darueber ueberhaupt als Glas lesbar ist. */
+     warum das Glas darueber ueberhaupt als Glas lesbar ist.
+     Als radial-gradient, nicht als filter: blur() — ein 42rem-Element mit 80px
+     Weichzeichnung, dauerhaft animiert, war ein messbarer Teil des Ruckelns.
+     Der Verlauf sieht gleich aus und kostet nichts. */
   .ambient {
     position: absolute;
     inset: 0;
     overflow: hidden;
     pointer-events: none;
     z-index: 0;
-    /* Nach unten ausblenden, sonst endet das Licht an der Section-Kante als Linie. */
     -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
     mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
   }
+  /* Statisch. Zwei dauerhaft animierte Ebenen dieser Groesse hinter einer
+     Maske halten den Compositor beschaeftigt — fuer eine Bewegung, die niemand
+     bewusst sieht. */
   .ambient::before,
   .ambient::after {
     content: '';
     position: absolute;
     border-radius: 999px;
-    filter: blur(80px);
-    will-change: transform;
   }
   .ambient::before {
-    width: 42rem;
-    height: 42rem;
-    right: -8rem;
-    top: -10rem;
-    background: rgb(var(--kobalt) / 0.16);
-    animation: treiben 22s ease-in-out infinite alternate;
+    width: 60rem;
+    height: 60rem;
+    right: -18rem;
+    top: -20rem;
+    background: radial-gradient(closest-side, rgb(var(--kobalt) / 0.18), rgb(var(--kobalt) / 0.06) 55%, transparent 100%);
   }
   .ambient::after {
-    width: 30rem;
-    height: 30rem;
-    left: -10rem;
-    bottom: -12rem;
-    background: rgb(var(--ink) / 0.06);
-    animation: treiben 28s ease-in-out infinite alternate-reverse;
-  }
-  @keyframes treiben {
-    from { transform: translate3d(0, 0, 0) scale(1); }
-    to { transform: translate3d(-4rem, 3rem, 0) scale(1.08); }
+    width: 44rem;
+    height: 44rem;
+    left: -18rem;
+    bottom: -20rem;
+    background: radial-gradient(closest-side, rgb(var(--ink) / 0.07), transparent 100%);
   }
 }
 
