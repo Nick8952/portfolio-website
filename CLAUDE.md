@@ -92,6 +92,7 @@ Deploy: Push auf `main` → `.github/workflows/deploy.yml` → GitHub Pages.
 ## Offen
 
 - Portraitfoto (Platz in `UeberMich.tsx` ist vorbereitet)
-- FormSubmit einmalig aktivieren (erste Testanfrage schicken, Mail bestätigen)
+- FormSubmit: Testanfrage am 14.09.2026 gesendet (HTTP 200) → **Aktivierungs-Mail in
+  holzbechernick@gmail.com bestätigen**, sonst werden Anfragen nicht zugestellt
 - Fahrschule CH wieder aufnehmen, sobald die Domain auf die Demo zeigt
 - Eigene Domain (Ablauf im Workflow kommentiert)
