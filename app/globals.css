@@ -358,10 +358,17 @@
   }
   .preiskarte:hover {
     box-shadow:
-      inset 0 1px 0 rgb(var(--paper) / 0.2),
-      0 0 0 1px rgb(var(--kobalt-lift) / 0.7),
-      0 30px 70px -24px rgb(var(--kobalt) / 0.55),
-      0 18px 40px -18px rgb(0 0 0 / 0.6);
+      0 0 0 1.5px rgb(var(--kobalt) / 0.75),
+      0 28px 60px -22px rgb(var(--kobalt) / 0.45),
+      0 16px 36px -18px rgb(var(--ink) / 0.35);
+  }
+  .preiskarte--regelfall {
+    box-shadow: 0 24px 60px -24px rgb(var(--ink) / 0.55);
+  }
+  .preiskarte--regelfall:hover {
+    box-shadow:
+      0 0 0 1.5px rgb(var(--kobalt-lift) / 0.9),
+      0 30px 70px -24px rgb(var(--kobalt) / 0.6);
   }
   /* Nur mit Maus: auf Touch gibt es kein Schweben, also auch kein Zuruecktreten. */
   @media (hover: hover) and (pointer: fine) {
@@ -381,9 +388,15 @@
     transition: opacity 350ms var(--ease-out);
     background: radial-gradient(
       55% 55% at var(--gx, 50%) var(--gy, 40%),
+      rgb(var(--kobalt) / 0.14),
+      transparent 70%
+    );
+  }
+  .preiskarte--regelfall .preisglanz {
+    background: radial-gradient(
+      55% 55% at var(--gx, 50%) var(--gy, 40%),
       rgb(var(--kobalt-lift) / 0.22),
-      rgb(var(--paper) / 0.05) 45%,
-      transparent 72%
+      transparent 70%
     );
   }
   .preiskarte:hover .preisglanz {
@@ -412,6 +425,21 @@
     content: '';
     position: absolute;
     border-radius: 999px;
+  }
+  /* Variante fuer Sections in der Seitenmitte: Licht von beiden Seiten, nach
+     oben und unten ausgeblendet, damit es sich nicht an die Nachbarn anlehnt. */
+  .ambient--mitte {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent);
+  }
+  .ambient--mitte::before {
+    right: -22rem;
+    top: -10rem;
+  }
+  .ambient--mitte::after {
+    left: -22rem;
+    bottom: -14rem;
+    background: radial-gradient(closest-side, rgb(var(--kobalt) / 0.1), transparent 100%);
   }
   .ambient::before {
     width: 60rem;

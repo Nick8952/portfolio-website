@@ -70,7 +70,7 @@ tools/websites-source.mjs  Adressen dafür — Slugs müssen zu content.ts passe
   den Test, rendert aber keine SVG-Backdrop-Filter und verwirft dabei die ganze Kette
   samt Blur. (Die SVG-Linse ist inzwischen ganz raus — wegen Ruckeln.) Fund von Codex.
 - **Glas über Schwarz braucht Füllung.** 38 % Papier ergibt 2,6:1; die gescrollte Nav
-  hat 70 %, weil sie über der Preis-Section liegt. Fund von Codex.
+  hat 70 % (die Preis-Section ist inzwischen hell, die Regelfall-Karte aber schwarz). Fund von Codex.
 - **Prozent-Insets sind nicht quadratisch.** `inset-[2.4%]` misst oben/unten an der
   Höhe, seitlich an der Breite — beim iPhone (2,06:1) wäre der Rand oben doppelt so
   dick. Deshalb `inset-x-[2.4%] inset-y-[1.165%]`. Fund von Codex.

@@ -12,7 +12,7 @@ kommen deshalb vor allem anderen; jede Section führt zum Formular.
 | Token | Wert | Rolle |
 |---|---|---|
 | paper | `#FFFFFF` | Grund |
-| ink | `#0A0A0A` | Text, dunkle Section (Preise), Buttons |
+| ink | `#0A0A0A` | Text, Buttons, die Regelfall-Karte in den Preisen |
 | kobalt | `#1C50BE` | *Der eine Akzent.* Wechselndes Hero-Wort, Haupt-CTA, Cursor-Ring, Fokus, Selektion, Caret. 7,1:1 auf Papier. |
 | kobalt-lift | `#6B8FF0` | Kobalt für Text auf Tinte (6,4:1). Nie auf Papier. |
 | muted | `#6B6B6B` | Nebentext, 5,7:1 |
@@ -32,16 +32,18 @@ Arbeit bringt die Farbe, das Layout nicht.
 
 ## Struktur
 
-Hero → Websites (Dock) → Ablauf → Preise (dunkel) → Über mich → Anfrage → Footer.
+Hero → Websites (Dock) → Ablauf → Preise → Über mich → Anfrage → Footer.
 Eine Seite, Ankerlinks. Keine Eyebrows, Sektionsnummern nur im Ablauf und als
 Positionszähler im Sheet («02 / 06»).
 
-**Preise als drei Karten** (Nicks Vorlage, 14.09.): Mitte erhöht mit Kobalt-Rand und
-Badge «Der Regelfall», Aussenkarten 94 % und 10° nach innen gedreht, federnder Einzug
-(spring 100/30). **Hover:** die Karte richtet sich auf, hebt sich um 18 px auf 104 %, bekommt
-einen Kobalt-Saum, ein Glanzlicht folgt dem Zeiger, die Nachbarn treten auf 55 % zurück
-(nur Maus, nie Touch). Ohne Monatlich/Jährlich-Schalter — die Preise sind einmalig. Das
-ist die eine bewusste Ausnahme von «keine Kartenraster».
+**Preise als drei Karten** in der Sprache der Seite (14.09., zweite Fassung): heller Grund
+mit Umgebungslicht, Aussenkarten `glass-lite` wie das Dock, der Regelfall als **schwarze
+Karte** mit Kobalt-Pille «Der Regelfall» — wie die Nav-Schaltfläche. Alles linksbündig,
+«ab» in Kobalt gleich gross wie CHF. Keine 3D-Kippung, keine Trennlinien, keine
+Ecken-Badges — das war der veraltete SaaS-Look. **Hover:** hebt sich 10 px auf 101,5 %,
+Kobalt-Saum, Glanzlicht folgt dem Zeiger, Nachbarn auf 55 % (nur Maus). Ohne
+Monatlich/Jährlich-Schalter — die Preise sind einmalig. Die eine bewusste Ausnahme von
+«keine Kartenraster».
 
 ## Liquid Glass (iOS 26)
 
