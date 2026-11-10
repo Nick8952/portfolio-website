@@ -77,6 +77,10 @@ tools/vorschau.mjs    Fotografiert den Build (Desktop/Mobil in Scroll-Schritten)
   die Navigationsleiste und das Mobil-Menü `backdrop-filter`. Hero-Wand, Laufband und
   Ringe laufen als CSS-Keyframes auf `transform`, pausieren per IntersectionObserver
   (`data-pausiert`) und bei verborgenem Tab (`useSichtbar`).
+- **Tailwind-Utilities schlagen eigene Komponenten-Klassen.** `@layer components` liegt unter
+  `@layer utilities`: ein `relative` oder `flex` im Markup überstimmt `position: sticky` bzw.
+  `display: none` aus einer eigenen Media-Query-Regel (Erkennen-Bühne, 10.11.). Eigenschaften, die
+  eine eigene Regel per Media Query umschaltet, gehören ganz ins CSS — nicht halb in Tailwind.
 - **`useReducedMotion()` nie direkt für Markup verwenden.** Framer liefert auf dem Server `null`, im
   Browser sofort den echten Wert → Hydration-Abweichung bei `initial`-Props und Startwerten. Immer
   `useReduziert()` (`components/motion/useSichtbar.ts`, sagt bis nach dem Mount «nein») plus
