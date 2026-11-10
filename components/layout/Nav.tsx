@@ -1,9 +1,10 @@
 'use client'
 
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 
 import Magnetic from '@/components/motion/Magnetic'
+import { useReduziert } from '@/components/motion/useSichtbar'
 import { hero, navigation, person } from '@/lib/content'
 import { cn } from '@/lib/utils'
 
@@ -17,7 +18,8 @@ export default function Nav() {
   const [offen, setOffen] = useState(false)
   const schliessenRef = useRef<HTMLButtonElement>(null)
   const oeffnenRef = useRef<HTMLButtonElement>(null)
-  const reduziert = useReducedMotion()
+  const menueRef = useRef<HTMLDivElement>(null)
+  const reduziert = useReduziert()
 
   useEffect(() => {
     const beiScroll = () => setGescrollt(window.scrollY > 24)
@@ -28,7 +30,25 @@ export default function Nav() {
 
   useEffect(() => {
     if (!offen) return
-    const beiTaste = (e: KeyboardEvent) => e.key === 'Escape' && schliessen()
+    // Escape schliesst; Tab bleibt im Dialog (aria-modal verspricht das, der
+    // Browser haelt es nicht von sich aus ein).
+    const beiTaste = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        schliessen()
+        return
+      }
+      if (e.key !== 'Tab' || !menueRef.current) return
+      const fokussierbar = menueRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled])')
+      const erstes = fokussierbar[0]
+      const letztes = fokussierbar[fokussierbar.length - 1]
+      if (e.shiftKey && document.activeElement === erstes) {
+        e.preventDefault()
+        letztes?.focus()
+      } else if (!e.shiftKey && document.activeElement === letztes) {
+        e.preventDefault()
+        erstes?.focus()
+      }
+    }
     document.addEventListener('keydown', beiTaste)
     const vorher = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -109,6 +129,7 @@ export default function Nav() {
       <AnimatePresence>
         {offen && (
           <motion.div
+            ref={menueRef}
             id="menue"
             role="dialog"
             aria-modal="true"
@@ -148,7 +169,7 @@ export default function Nav() {
                   <li key={eintrag.href}>
                     <a
                       href={eintrag.href}
-                      onClick={() => setOffen(false)}
+                      onClick={schliessen}
                       className="flex items-baseline gap-4 py-4 font-display text-3xl font-semibold tracking-[-0.02em]"
                     >
                       <span className="eyebrow tnum w-7">{String(i + 1).padStart(2, '0')}</span>
@@ -158,7 +179,7 @@ export default function Nav() {
                 ))}
               </ul>
 
-              <a href="#anfrage" onClick={() => setOffen(false)} className="btn btn--ink mb-8 mt-auto w-full">
+              <a href="#anfrage" onClick={schliessen} className="btn btn--ink mb-8 mt-auto w-full">
                 {hero.cta}
               </a>
             </div>

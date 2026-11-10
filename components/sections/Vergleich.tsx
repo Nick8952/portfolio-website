@@ -25,6 +25,10 @@ export default function Vergleich() {
         <Reveal className="mt-12 md:mt-16">
           <div className="overflow-x-auto rounded-card border border-hairline">
             <table className="vergleich w-full min-w-[44rem] border-collapse text-left text-[0.9375rem]">
+              <caption className="sr-only">
+                Vergleich der drei Wege: Demo zuerst, Agentur, Baukasten — nach Startpunkt, erster Vorschau,
+                Anpassungen, Pflege und Kostenmodell
+              </caption>
               <thead>
                 <tr>
                   <th scope="col" className="sticky left-0 z-[1] bg-paper px-5 py-4 font-normal sm:px-6">

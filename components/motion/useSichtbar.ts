@@ -1,6 +1,22 @@
 'use client'
 
+import { useReducedMotion } from 'framer-motion'
 import { useEffect, useState, type RefObject } from 'react'
+
+/**
+ * «Bewegung reduzieren» — hydrationssicher. Framers useReducedMotion liefert auf
+ * dem Server null, im Browser aber schon beim ersten Rendern den echten Wert;
+ * davon abhaengige initial-Props oder Startwerte ergaeben unterschiedliches
+ * Markup. Dieser Hook sagt bis nach dem Mount «nein» (wie der Server) und erst
+ * dann die Wahrheit. Die Animationen selbst schaltet MotionConfig
+ * reducedMotion="user" ab (components/motion/BewegungsKonfig.tsx).
+ */
+export function useReduziert(): boolean {
+  const reduziert = useReducedMotion()
+  const [gemountet, setGemountet] = useState(false)
+  useEffect(() => setGemountet(true), [])
+  return gemountet ? Boolean(reduziert) : false
+}
 
 /**
  * Ob ein Element im Bild ist — und der Tab ueberhaupt sichtbar. Damit werden

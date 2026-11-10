@@ -2,11 +2,14 @@
 
 // Statischer Export. Zwei Betriebsorte aus demselben Code:
 //   Vercel (primaer):   https://nick-hbr.vercel.app/          Basispfad ""
-//   GitHub Pages:       https://nick8952.github.io/portfolio-website/
+//   GitHub Pages:       https://nick8952.github.io/portfolio-website/   (Spiegel)
 // Vercel setzt VERCEL=1 und VERCEL_PROJECT_PRODUCTION_URL im Build; dann faellt
 // der Basispfad weg und die absoluten Adressen zeigen auf die Vercel-Domain.
-// Explizit gesetzte Variablen (BASE_PATH, SITE_ORIGIN) haben immer Vorrang —
-// so laesst sich spaeter eine eigene Domain eintragen, ohne Code anzufassen.
+// Der Spiegel bekommt noindex und ein Canonical auf die primaere Adresse — zwei
+// indexierte Kopien derselben Seite braucht niemand.
+// Explizit gesetzte Variablen (BASE_PATH, SITE_ORIGIN, SITE_KANONISCH) haben
+// immer Vorrang — so laesst sich spaeter eine eigene Domain eintragen, ohne Code
+// anzufassen.
 
 const aufVercel = Boolean(process.env.VERCEL)
 const BASE_PATH = process.env.BASE_PATH ?? (aufVercel ? '' : '/portfolio-website')
@@ -15,6 +18,10 @@ const SITE_ORIGIN =
   (aufVercel
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL ?? 'nick-hbr.vercel.app'}`
     : 'https://nick8952.github.io')
+const KANONISCH = process.env.SITE_KANONISCH ?? 'https://nick-hbr.vercel.app'
+// Spiegel = nicht Vercel und mit Basispfad (also GitHub Pages). Ein lokaler Build
+// ohne Basispfad gilt als primaer, damit die Vorschau der Vercel-Variante entspricht.
+const SPIEGEL = !aufVercel && BASE_PATH !== ''
 
 const nextConfig = {
   output: 'export',
@@ -26,6 +33,8 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_BASE_PATH: BASE_PATH,
     NEXT_PUBLIC_SITE_URL: SITE_ORIGIN + BASE_PATH,
+    NEXT_PUBLIC_KANONISCH: KANONISCH,
+    NEXT_PUBLIC_SPIEGEL: SPIEGEL ? '1' : '',
   },
 }
 

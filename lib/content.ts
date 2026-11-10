@@ -268,7 +268,7 @@ export const ablauf = [
   },
   {
     titel: 'Die Seite geht live',
-    text: 'Eigene Domain, Kontaktformular, Google-Sichtbarkeit. Auf Wunsch pflegen Sie Inhalte danach selbst — ohne mich zu fragen.',
+    text: 'Eigene Domain, Kontaktformular, technische Google-Grundlagen. Auf Wunsch pflegen Sie Inhalte danach selbst — ohne mich zu fragen.',
   },
 ] as const
 
@@ -318,7 +318,7 @@ export const preise: readonly Preis[] = [
       'Inhalte selbst bearbeiten, ohne Technik',
       'Kontaktformular mit Spam-Schutz',
       'Karte, Öffnungszeiten, Preise',
-      'Auffindbar bei Google',
+      'Technische Grundlagen für Google',
     ],
     hervorheben: true,
   },
@@ -348,7 +348,7 @@ export const vergleich = {
   zeilen: [
     {
       merkmal: 'Startpunkt',
-      werte: ['Die Adresse Ihrer heutigen Website', 'Briefing und Angebot', 'Eine Vorlage, die Sie füllen'],
+      werte: ['Die Adresse Ihrer heutigen Website', 'Briefing und Angebot', 'Meist eine Vorlage, die Sie selbst füllen'],
     },
     {
       merkmal: 'Erste sichtbare Vorschau',
@@ -360,11 +360,11 @@ export const vergleich = {
     },
     {
       merkmal: 'Laufende Pflege',
-      werte: ['Ab CHF 19 pro Monat, ohne Mindestlaufzeit', 'Abhängig vom Anbieter', 'Im Abo enthalten'],
+      werte: ['Ab CHF 19 pro Monat, höchstens zwölf Monate Laufzeit', 'Abhängig vom Anbieter', 'Je nach Anbieter im Abo enthalten'],
     },
     {
       merkmal: 'Kostenmodell',
-      werte: ['Einmalig ab CHF 1’200, Betrag vorher schriftlich', 'Nach Offerte', 'Monatliches Abo'],
+      werte: ['Einmalig ab CHF 1’200, Betrag vorher schriftlich', 'Nach Offerte', 'Meist laufendes Abo, je nach Anbieter'],
     },
   ],
 } as const
@@ -395,7 +395,7 @@ export const faq = {
     },
     {
       frage: 'Kann ich Texte, Preise und Öffnungszeiten später selbst ändern?',
-      antwort: 'Ja. Ab der Stufe «Website» bearbeiten Sie Inhalte selbst, ohne Technik. Hosting, Sicherheitsupdates und kleine Anpassungen übernehme ich ab CHF 19 pro Monat — ohne Mindestlaufzeit über zwölf Monate.',
+      antwort: 'Ja. Ab der Stufe «Website» bearbeiten Sie Inhalte selbst, ohne Technik. Hosting, Sicherheitsupdates und kleine Anpassungen übernehme ich ab CHF 19 pro Monat — keine Laufzeit über zwölf Monate.',
     },
     {
       frage: 'Wie lange dauert es bis zur fertigen Website?',

@@ -1,9 +1,10 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import type { PointerEvent as ReactPointerEvent } from 'react'
 
 import Reveal from '@/components/motion/Reveal'
+import { useReduziert } from '@/components/motion/useSichtbar'
 import { betrieb, preise } from '@/lib/content'
 import { chf, cn } from '@/lib/utils'
 
@@ -26,7 +27,7 @@ function glanzFolgen(e: ReactPointerEvent<HTMLDivElement>) {
 }
 
 export default function Preise() {
-  const reduziert = useReducedMotion()
+  const reduziert = useReduziert()
 
   return (
     <section id="preise" className="section relative overflow-hidden border-t border-hairline">

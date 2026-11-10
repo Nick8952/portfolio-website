@@ -1,10 +1,10 @@
 'use client'
 
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 
 import Magnetic from '@/components/motion/Magnetic'
-import { useSichtbar } from '@/components/motion/useSichtbar'
+import { useReduziert, useSichtbar } from '@/components/motion/useSichtbar'
 import AnfrageKarte from '@/components/ui/AnfrageKarte'
 import { branchen, hero, websites } from '@/lib/content'
 import { asset, cn } from '@/lib/utils'
@@ -20,7 +20,7 @@ const TAKT_MS = 2600
  */
 export default function Hero() {
   const [index, setIndex] = useState(0)
-  const reduziert = useReducedMotion()
+  const reduziert = useReduziert()
   const sectionRef = useRef<HTMLElement>(null)
   const sichtbar = useSichtbar(sectionRef)
 

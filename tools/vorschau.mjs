@@ -38,6 +38,15 @@ async function lauf(name, vp, schritte) {
   await page.setViewport(vp)
   await page.goto(BASE, { waitUntil: 'load', timeout: 60000 })
   await warten(1800)
+  // Die ausgeblendeten Demo-Karten gehoeren mit zur Pruefung.
+  const mehr = await page.$('button[aria-controls="demo-raster"]')
+  if (mehr) {
+    await mehr.evaluate((b) => b.scrollIntoView({ block: 'center' }))
+    await mehr.click()
+    await warten(800)
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }))
+    await warten(400)
+  }
   const ueberlauf = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
   const hoehe = await page.evaluate(() => document.documentElement.scrollHeight)
   for (let i = 0; i < schritte; i++) {

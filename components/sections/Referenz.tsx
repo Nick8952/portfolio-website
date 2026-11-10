@@ -1,9 +1,10 @@
 'use client'
 
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import Reveal from '@/components/motion/Reveal'
+import { useReduziert } from '@/components/motion/useSichtbar'
 import Browser from '@/components/ui/Browser'
 import IPhone from '@/components/ui/IPhone'
 import { referenz } from '@/lib/content'
@@ -18,7 +19,7 @@ import { asset } from '@/lib/utils'
  * die genau dieses Projekt beschreiben.
  */
 export default function Referenz() {
-  const reduziert = useReducedMotion()
+  const reduziert = useReduziert()
   const karteRef = useRef<HTMLDivElement>(null)
   const rahmenRef = useRef<HTMLDivElement>(null)
   const bildRef = useRef<HTMLImageElement>(null)
@@ -78,9 +79,13 @@ export default function Referenz() {
                   alt={`Die Website von ${referenz.name} am Computer, ganze Startseite`}
                   width={1440}
                   height={3600}
+                  loading="lazy"
+                  decoding="async"
                   onLoad={messen}
                   style={{ y: reduziert ? 0 : y }}
-                  className="absolute left-0 top-0 h-auto w-full will-change-transform"
+                  // Kein will-change: ein 1440×3600-Bild dauerhaft als eigene Ebene
+                  // zu halten kostet GPU-Speicher; Framer setzt nur den Transform.
+                  className="absolute left-0 top-0 h-auto w-full"
                 />
               </div>
             </Browser>

@@ -1,8 +1,9 @@
 'use client'
 
-import { animate, useInView, useReducedMotion } from 'framer-motion'
+import { animate, useInView } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 
+import { useReduziert } from '@/components/motion/useSichtbar'
 import { kennzahlen } from '@/lib/content'
 
 /**
@@ -43,8 +44,10 @@ function Zahl({
 }) {
   const ref = useRef<HTMLSpanElement>(null)
   const imBild = useInView(ref, { once: true, margin: '-60px' })
-  const reduziert = useReducedMotion()
-  const [wert, setWert] = useState(reduziert ? bis : 0)
+  const reduziert = useReduziert()
+  // Startwert immer 0 — Server und Client rendern denselben Text. Unter
+  // Bewegungsreduktion springt die Zahl nach dem Mount direkt ans Ziel.
+  const [wert, setWert] = useState(0)
 
   useEffect(() => {
     if (reduziert) {

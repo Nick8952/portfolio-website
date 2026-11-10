@@ -10,6 +10,7 @@ Inhaber kleiner Schweizer Betriebe, die den Link vom Handy aus öffnen. Ziel der
 Seite: eine Anfrage über das Formular.
 
 **Live (primär):** https://nick-hbr.vercel.app/ · Spiegel: https://nick8952.github.io/portfolio-website/
+(der Spiegel ist `noindex` und zeigt per Canonical auf Vercel — `istSpiegel()` in `lib/utils.ts`).
 
 Version 3 (2026-11-10): Umbau «wie kingofon.ch» — Dramaturgie, Effekte und
 Darstellungsformen einer Premium-Agenturseite, aber hell, mit belegten Inhalten
@@ -76,6 +77,12 @@ tools/vorschau.mjs    Fotografiert den Build (Desktop/Mobil in Scroll-Schritten)
   die Navigationsleiste und das Mobil-Menü `backdrop-filter`. Hero-Wand, Laufband und
   Ringe laufen als CSS-Keyframes auf `transform`, pausieren per IntersectionObserver
   (`data-pausiert`) und bei verborgenem Tab (`useSichtbar`).
+- **`useReducedMotion()` nie direkt für Markup verwenden.** Framer liefert auf dem Server `null`, im
+  Browser sofort den echten Wert → Hydration-Abweichung bei `initial`-Props und Startwerten. Immer
+  `useReduziert()` (`components/motion/useSichtbar.ts`, sagt bis nach dem Mount «nein») plus
+  `<MotionConfig reducedMotion="user">` (`BewegungsKonfig.tsx`), das die Transform-Animationen abschaltet.
+- **Eigene Klassennamen vs. Tailwind:** `.ring` → siehe oben; Laufband und Wand schleifen über EINE Spur
+  (-50 % = eine Liste) bzw. `calc(-50% - halbe Lücke)` — sonst springt die Schleife.
 - **Framer Motion überschreibt `transform`.** Ein Element mit `style={{ x, y, scale }}`
   verliert Tailwind-Translate-Klassen → Zentrierung über `x: '-50%'` im style.
 - **Hero-Wort-Wechsel ohne `mode="wait"`** — sonst steht für 0,5 s eine leere Zeile.
@@ -98,7 +105,8 @@ tools/vorschau.mjs    Fotografiert den Build (Desktop/Mobil in Scroll-Schritten)
 npm run dev           lokal, http://localhost:3000 (Basispfad /portfolio-website!)
 npm run build         statischer Export nach out/ (GitHub-Pages-Variante)
 BASE_PATH= SITE_ORIGIN=http://localhost:4173 npm run build && npm run vorschau
-                      Vercel-Variante bauen und nach pruefung/ fotografieren
+                      Vercel-Variante bauen und nach pruefung/ fotografieren (klickt «Weitere anzeigen»,
+                      misst Überlauf und Konsolenfehler)
 npm run screenshots   Vorschaubilder neu erzeugen (Chrome nötig; ONLY=<slug> für eine)
 npm run lint / typecheck
 ```
@@ -109,8 +117,8 @@ GitHub verbunden) **und** `.github/workflows/deploy.yml` → GitHub Pages.
 ## Offen
 
 - FormSubmit: Aktivierungs-Mail in holzbechernick@gmail.com bestätigen (Testanfrage 14.09.2026)
-- Eigene Domain (dann `SITE_ORIGIN` als Vercel-Env setzen; GitHub-Pages-Spiegel ggf. abschalten
-  oder auf noindex stellen — zwei indexierte Kopien sind unnötig)
+- Eigene Domain (dann `SITE_ORIGIN` + `SITE_KANONISCH` als Vercel-Env setzen; der GitHub-Pages-Spiegel
+  ist bereits noindex)
 - Offline gegangene Demos: Gusto Campano (GitHub Pages aus, Vercel-Projekt am 3.11. gelöscht),
   Fahrschul-Center und FKM Fahrschule (GitLab-Projekte nicht mehr öffentlich) — wieder
   aufnehmen, sobald sie erreichbar sind (Eintrag in content.ts + websites-source.mjs,

@@ -449,17 +449,19 @@
   .wand[data-pausiert='true'] .wand__spalte {
     animation-play-state: paused;
   }
+  /* -50 % minus eine halbe Luecke: die zweite Bildfolge beginnt eine volle
+     Luecke nach der ersten, -50 % allein traefe die Mitte der Luecke. */
   @keyframes wand-auf {
     from {
       transform: translate3d(0, 0, 0);
     }
     to {
-      transform: translate3d(0, -50%, 0);
+      transform: translate3d(0, calc(-50% - 0.55rem), 0);
     }
   }
   @keyframes wand-ab {
     from {
-      transform: translate3d(0, -50%, 0);
+      transform: translate3d(0, calc(-50% - 0.55rem), 0);
     }
     to {
       transform: translate3d(0, 0, 0);
@@ -486,18 +488,24 @@
      Browser-Rahmen mit langer Aufnahme: in den Demo-Karten scrollt die Website
      beim Hovern von oben nach unten (6 s), beim Verlassen kehrt sie zurueck.
      Container-Einheiten liefern die Rahmenhoehe (100cqh), damit das Bild exakt
-     am unteren Rand haelt. Nur mit Maus — auf Touch steht der erste Bildschirm.
+     am unteren Rand haelt. Nur bei echtem Hover — Tastaturfokus loest keine
+     6-Sekunden-Fahrt aus, die Karte bleibt auch so vollstaendig bedienbar.
   ------------------------------------------------------------------- */
   .rahmen {
     container-type: size;
+  }
+  /* Die Adresszeile im Browserfenster ist nowrap (truncate). Ohne Containment
+     waere ihr voller Text die Mindestbreite der ganzen Karte — im Raster auf dem
+     Handy 385px statt 350px. Mit inline-size-Containment zaehlt sie nicht. */
+  .browser__leiste {
+    contain: inline-size;
   }
   .rahmen__bild {
     transform: translate3d(0, 0, 0);
     transition: transform 1.2s var(--ease-out);
   }
   @media (hover: hover) and (pointer: fine) {
-    .demo-karte:hover .rahmen__bild,
-    .demo-karte:focus-visible .rahmen__bild {
+    .demo-karte:hover .rahmen__bild {
       transform: translate3d(0, calc(-100% + 100cqh), 0);
       transition: transform 6.5s linear;
     }
@@ -513,13 +521,19 @@
     -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
     mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
   }
+  /* Eine Spur mit beiden Listen: -50 % der Spur = genau eine Liste, nahtlos. */
   .laufband__spur {
     display: flex;
     width: max-content;
     will-change: transform;
     animation: laufband 70s linear infinite;
   }
-  .laufband:hover .laufband__spur {
+  .laufband__liste {
+    display: flex;
+    flex-shrink: 0;
+  }
+  .laufband:hover .laufband__spur,
+  [data-pausiert='true'] .laufband__spur {
     animation-play-state: paused;
   }
   @keyframes laufband {
@@ -534,12 +548,43 @@
     }
     .laufband__spur {
       animation: none;
+      will-change: auto;
       width: auto;
+    }
+    .laufband__liste {
       flex-wrap: wrap;
       justify-content: center;
       row-gap: 0.5rem;
     }
-    .laufband__spur[aria-hidden='true'] {
+    .laufband__liste[aria-hidden='true'] {
+      display: none;
+    }
+  }
+
+  /* -------------------------------------------------------------------
+     Erkennen: Hoehe und Kleben stehen per Media Query fest — nicht per JS nach
+     der Hydration, sonst springt das Layout auf dem Desktop nachtraeglich um.
+     Zwei Pillen-Varianten sind im DOM; CSS zeigt die passende.
+  ------------------------------------------------------------------- */
+  .erkennen__schwebend {
+    display: none;
+  }
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    .erkennen {
+      height: 170vh;
+      padding: 0;
+    }
+    .erkennen__buehne {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      min-height: 0;
+      padding: 0;
+    }
+    .erkennen__schwebend {
+      display: block;
+    }
+    .erkennen__fluss {
       display: none;
     }
   }

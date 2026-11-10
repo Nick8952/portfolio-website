@@ -121,6 +121,7 @@ async function aufnehmen(site, name, vp, versuch = 1) {
       return aufnehmen(site, name, vp, versuch + 1)
     }
     console.error(`FEHL ${site.slug} ${name}: ${fehler.message}`)
+    process.exitCode = 1 // alte Bilder bleiben liegen — der Aufrufer soll das sehen
   } finally {
     await page.close().catch(() => {})
   }

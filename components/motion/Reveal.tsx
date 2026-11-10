@@ -1,7 +1,9 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import type { ReactNode } from 'react'
+
+import { useReduziert } from '@/components/motion/useSichtbar'
 
 type RevealProps = {
   children: ReactNode
@@ -18,7 +20,7 @@ type RevealProps = {
  * Inhalt sofort — nichts ist erst nach einer Animation lesbar.
  */
 export default function Reveal({ children, className, delay = 0, weg = 22 }: RevealProps) {
-  const reduziert = useReducedMotion()
+  const reduziert = useReduziert()
 
   return (
     <motion.div

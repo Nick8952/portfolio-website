@@ -1,9 +1,10 @@
 'use client'
 
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useId, useState } from 'react'
 
 import Reveal from '@/components/motion/Reveal'
+import { useReduziert } from '@/components/motion/useSichtbar'
 import AnfrageKarte from '@/components/ui/AnfrageKarte'
 import { faq } from '@/lib/content'
 import { cn } from '@/lib/utils'
@@ -17,7 +18,7 @@ import { cn } from '@/lib/utils'
  */
 export default function Faq() {
   const [offen, setOffen] = useState<number | null>(0)
-  const reduziert = useReducedMotion()
+  const reduziert = useReduziert()
   const id = useId()
 
   return (

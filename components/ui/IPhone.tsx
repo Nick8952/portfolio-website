@@ -59,6 +59,8 @@ export default function IPhone({
               <img
                 src={hintergrund}
                 alt=""
+                loading="lazy"
+                decoding="async"
                 className="absolute inset-0 h-full w-full scale-[1.06] object-cover object-top blur-[1cqi]"
               />
             )}

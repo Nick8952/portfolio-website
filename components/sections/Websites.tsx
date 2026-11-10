@@ -45,7 +45,7 @@ export default function Websites() {
           </div>
         </Reveal>
 
-        <ul className="mt-12 grid gap-5 md:mt-16 md:grid-cols-2 xl:grid-cols-3">
+        <ul id="demo-raster" className="mt-12 grid gap-5 md:mt-16 md:grid-cols-2 xl:grid-cols-3">
           {liste.map((site, i) => (
             <li key={site.slug} className="cv-auto">
               <Reveal delay={(i % 3) * 0.06}>
@@ -55,10 +55,17 @@ export default function Websites() {
           ))}
         </ul>
 
-        {!alle && rest > 0 && (
+        {rest > 0 && (
           <div className="mt-10 flex justify-center">
-            <button type="button" onClick={() => setAlle(true)} aria-expanded={false} className="btn btn--glas glass-lite">
-              Weitere {rest} Websites anzeigen
+            {/* Ein echter Umschalter: bleibt stehen, sagt seinen Zustand, steuert das Raster. */}
+            <button
+              type="button"
+              onClick={() => setAlle((v) => !v)}
+              aria-expanded={alle}
+              aria-controls="demo-raster"
+              className="btn btn--glas glass-lite"
+            >
+              {alle ? 'Weniger anzeigen' : `Weitere ${rest} Websites anzeigen`}
             </button>
           </div>
         )}

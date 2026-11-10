@@ -16,7 +16,9 @@ type BrowserProps = {
 export default function Browser({ url, children, className }: BrowserProps) {
   return (
     <div className={cn('overflow-hidden rounded-card border border-hairline bg-paper shadow-lift', className)}>
-      <div aria-hidden="true" className="flex h-9 items-center gap-3 border-b border-hairline bg-sunk px-3.5">
+      {/* browser__leiste: contain inline-size — die nicht umbrechende Adresse darf
+          die Mindestbreite der Karte nicht bestimmen (sonst 385px auf dem Handy). */}
+      <div aria-hidden="true" className="browser__leiste flex h-9 items-center gap-3 border-b border-hairline bg-sunk px-3.5">
         <span className="flex shrink-0 gap-1.5">
           <span className="h-2.5 w-2.5 rounded-pill bg-hairline" />
           <span className="h-2.5 w-2.5 rounded-pill bg-hairline" />

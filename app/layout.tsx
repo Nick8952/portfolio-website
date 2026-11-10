@@ -2,9 +2,10 @@ import type { Metadata, Viewport } from 'next'
 import { Bricolage_Grotesque, Geist_Mono, Instrument_Sans } from 'next/font/google'
 import type { ReactNode } from 'react'
 
+import BewegungsKonfig from '@/components/motion/BewegungsKonfig'
 import Cursor from '@/components/motion/Cursor'
 import { person, seo } from '@/lib/content'
-import { siteUrl } from '@/lib/utils'
+import { istSpiegel, kanonischeUrl, siteUrl } from '@/lib/utils'
 
 import './globals.css'
 
@@ -40,23 +41,26 @@ export const viewport: Viewport = {
   colorScheme: 'light',
 }
 
+// Der GitHub-Pages-Spiegel zeigt per Canonical auf Vercel und wird nicht indexiert.
+const kanonisch = `${kanonischeUrl()}/`
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
   title: seo.titel,
   description: seo.beschreibung,
   applicationName: person.name,
   authors: [{ name: person.name }],
-  alternates: { canonical: '/' },
+  alternates: { canonical: kanonisch },
   openGraph: {
     type: 'website',
     locale: 'de_CH',
-    url: siteUrl(),
+    url: kanonisch,
     siteName: person.name,
     title: seo.titel,
     description: seo.beschreibung,
   },
   twitter: { card: 'summary_large_image', title: seo.titel, description: seo.beschreibung },
-  robots: { index: true, follow: true },
+  robots: { index: !istSpiegel(), follow: true },
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -69,8 +73,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         >
           Zum Inhalt springen
         </a>
-        <Cursor />
-        {children}
+        <BewegungsKonfig>
+          <Cursor />
+          {children}
+        </BewegungsKonfig>
       </body>
     </html>
   )
