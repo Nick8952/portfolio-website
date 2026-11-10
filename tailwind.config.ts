@@ -23,6 +23,9 @@ const config: Config = {
       fontFamily: {
         display: ['var(--font-display)', 'system-ui', 'sans-serif'],
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        // Geist Mono: Eyebrows, Meta-Zeilen, Uhr, Kennzahl-Labels — das Etikett-System
+        // der Seite, nie Fliesstext.
+        mono: ['var(--font-mono)', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       fontSize: {
         // Display bleibt unter 6rem (Craft-Floor). Laufweite nie enger als -0.03em.
@@ -30,6 +33,8 @@ const config: Config = {
         'display-lg': ['clamp(2.25rem, 5vw, 4.25rem)', { lineHeight: '1.02', letterSpacing: '-0.025em' }],
         'display-md': ['clamp(1.75rem, 3.4vw, 2.75rem)', { lineHeight: '1.08', letterSpacing: '-0.02em' }],
         lede: ['clamp(1.125rem, 1.6vw, 1.375rem)', { lineHeight: '1.45' }],
+        // Etiketten in Mono: klein, gesperrt, Versalien.
+        eyebrow: ['0.75rem', { lineHeight: '1.2', letterSpacing: '0.14em' }],
       },
       maxWidth: {
         shell: '84rem',
@@ -42,8 +47,9 @@ const config: Config = {
         gutter: 'clamp(1.25rem, 4vw, 3.5rem)',
       },
       borderRadius: {
-        // Karten 12–16px, Pillen nur fuer kleine Bedienelemente.
+        // Karten 12–16px, grosse Buehnen 28px, Pillen nur fuer kleine Bedienelemente.
         card: '1rem',
+        stage: '1.75rem',
         pill: '999px',
       },
       transitionTimingFunction: {
@@ -52,6 +58,7 @@ const config: Config = {
       boxShadow: {
         // Ein Schatten mit Versatz und weichem Verlauf — kein Halo.
         lift: '0 18px 40px -18px rgb(10 10 10 / 0.35)',
+        stage: '0 40px 90px -40px rgb(10 10 10 / 0.45)',
       },
     },
   },

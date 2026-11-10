@@ -8,10 +8,10 @@ web
 
 ## Stack
 
-Next.js 15 (App Router, TypeScript), Tailwind CSS, Framer Motion. Statischer Export
-auf GitHub Pages (`nick8952.github.io/portfolio-website`), gleiches Repo und gleiche
-URL wie zuvor — der alte Code wird vollständig ersetzt (Nutzerentscheid 2026-09-12).
-Kein CMS: Inhalte liegen als typisierte Datendatei im Repo; Nick pflegt sie selbst.
+Next.js 15 (App Router, TypeScript), Tailwind CSS, Framer Motion. Statischer Export,
+primär auf **Vercel** (`nick-hbr.vercel.app`, Nutzerentscheid 2026-11-10), gespiegelt auf
+GitHub Pages (`nick8952.github.io/portfolio-website`). Kein CMS: Inhalte liegen als
+typisierte Datendatei im Repo; Nick pflegt sie selbst.
 
 ## Users
 
@@ -44,13 +44,16 @@ unter Agenturniveau), offen begründet mit seiner Ausbildungssituation.
   Plattformentwicklung** (Lehrbetrieb und Schule: nicht bestätigt, nicht nennen).
 - Nebenerwerb neben der Lehre; Arbeit abends/Wochenende.
 - Ablauf mit Kunden: Demo bauen → Link schicken → Gespräch → Umsetzung → Betrieb.
-- Bisher rund elf Demos gebaut, sechs davon öffentlich erreichbar, noch kein
-  bezahlter Abschluss (Stand 2026-09-12). Das ist ehrlich zu behandeln: keine
-  Kundenlogos, keine erfundenen Testimonials, keine „zufriedene Kunden"-Zahl.
+- Über zwanzig Websites gebaut (Demos und Kundenprojekte), zehn Demos öffentlich
+  erreichbar, **ein bezahlter Abschluss: Thai Restaurant Suwannaphum, Schlieren**
+  (Demo 16.10.2026, live 21.10.2026 auf suwannaphum.ch, Stand 2026-11-10). Das ist
+  ehrlich zu behandeln: keine Kundenlogos, keine erfundenen Testimonials, keine
+  „zufriedene Kunden"-Zahl; jede Kennzahl mit Fussnote.
 
 ## Capabilities and Constraints
 
-- Sections: Über mich, Ausbildung, Websites (Portfolio), Anfrage (Formular).
+- Sections: Hero, Laufband, Referenz, Erkennen, Demos, Ablauf, Preise, Vergleich,
+  Über mich mit Kennzahlen, Fragen, Anfrage (Formular).
 - Formular sendet an **holzbechernick@gmail.com** (Nutzerentscheid). Da die Seite
   statisch gehostet ist, läuft der Versand über einen Formular-Dienst ohne Backend;
   Fallback ist Mailto.
@@ -64,7 +67,8 @@ unter Agenturniveau), offen begründet mit seiner Ausbildungssituation.
 
 - Name: Nick Holzbecher. Kein Firmenname, kein Logo — die Person ist die Marke.
 - Bindende visuelle Vorgabe (Nutzer): **hauptsächlich Weiss und Schwarz mit genau
-  einer Akzentfarbe**, professionell, clean, mit hochwertigen Effekten.
+  einer Akzentfarbe**, professionell, clean, mit hochwertigen Effekten. Vorbild für
+  Effekte und Darstellungsformen seit 2026-11-10: kingofon.ch — aber hell (Nutzerentscheid).
 - Bestehende Preislisten-Artefakte nutzen Kobalt `#1c50be` als Akzent; eine
   gemeinsame Akzentfarbe würde Website und Preisliste als ein Auftritt lesen.
 - Ton: direkt, ehrlich, ohne Agentur-Floskeln. Ein Lernender, der gut ist und das
@@ -72,30 +76,42 @@ unter Agenturniveau), offen begründet mit seiner Ausbildungssituation.
 
 ## Evidence on Hand
 
-Öffentlich erreichbare eigene Websites (geprüft 2026-09-13):
+**Referenz (Kunde, live):** Thai Restaurant Suwannaphum, Zürcherstrasse 31, 8952 Schlieren —
+www.suwannaphum.ch. Demo am 16.10.2026 ohne Auftrag gebaut, Website am 21.10.2026 unter
+der eigenen Domain live; keine Cookies, kein Banner; keine Vorabkosten für das Restaurant.
+Das Restaurant wollte Nick auf *seiner* Website nicht als Gestalter nennen (22.10.2026) —
+die Nennung *hier* als Referenz ist Nicks Entscheid und mit dem Restaurant zu klären.
+
+Öffentlich erreichbare Demos (alle ohne Auftrag, geprüft 2026-11-10):
 
 | Projekt | Branche | Ort | URL |
 |---|---|---|---|
-| FKM Fahrschule Klaus Müller | Fahrschule | Zürich | fahrlehrer-zuerich-fdb7e6.gitlab.io |
-| Altec Elektro | Elektro-Handwerk | Zürich | altec-elektro-website-ae0768.gitlab.io |
-| Fahrschul-Center | Fahrschule | Zürich-Oerlikon | fahrschul-center-demo-bfeae8.gitlab.io |
-| Gusto Campano | Ristorante Pizzeria | Zürich-Affoltern | nick8952.github.io/gusto-campano-website |
-| H&G Dienstleistungen | Hauswartung/Garten | Zufikon AG | nick8952.github.io/hg-dienstleistungen-website |
+| Advokatur Kanonengasse | Anwaltskanzlei | Zürich, Kreis 4 | nick8952.github.io/advokatur-kanonengasse-demo |
+| Praxis am Zürichberg | Zahnarztpraxis | Zürich | nick8952.github.io/praxis-zuerichberg-website |
+| Casatex Zürich | Bodenleger | Zürich-Altstetten | nick8952.github.io/casatex-zuerich-demo |
+| New York Nails | Nagelstudio | Schlieren | nick8952.github.io/new-york-nails-schlieren-demo |
+| VITIS SportCenter | Racketsport-Center | Schlieren | nick8952.github.io/vitis-sportcenter-website |
+| Maler Attinger | Malerbetrieb | Zürich | nick8952.github.io/maler-attinger-website |
+| Styling Azzurro | Coiffeursalon | Zürich-Schwamendingen | nick8952.github.io/styling-azzurro-website |
 | Clean-Express | Reinigung | Birmensdorf ZH | nick8952.github.io/clean-express-website |
+| H&G Dienstleistungen | Hauswartung/Garten | Zufikon AG | nick8952.github.io/hg-dienstleistungen-website |
+| Altec Elektro | Elektro-Installationen | Zürich | nick8952.github.io/altec-elektro-demo |
 
-Nicht öffentlich (nicht zeigen): Fahrschule Gimenez, fahrschule-barbara, -deck, -genial.
-**Fahrschule CH:** Domain `fahrschule-ch.ch` zeigt noch auf die alte Kundenseite (geprüft
-2026-09-13 per Screenshot — Jimdo-Cookie-Banner); die Demo ist nicht öffentlich. Nicht zeigen,
-bis die Domain umgestellt ist.
+**Derzeit offline, nicht zeigen:** Gusto Campano (GitHub Pages aus, Vercel-Projekt gelöscht),
+Fahrschul-Center und FKM Fahrschule (GitLab-Projekte nicht mehr öffentlich). Nicht öffentlich:
+Fahrschule Gimenez, fahrschule-barbara, -deck, -genial, Garage Klausner, Letzistübli u. a.
+**Fahrschule CH:** `fahrschule-ch.ch` zeigt weiterhin auf die alte Kundenseite (Weblication
+CMS, geprüft 2026-11-10). Nicht zeigen, bis die Domain umgestellt ist.
 
-**Vorhanden:** Portraitfoto (`public/portrait.jpg`, 2026-09-14).
-**Fehlt, darf nicht erfunden werden:** Testimonials, Kundenlogos,
-Lehrbetrieb, Abschlussjahr, Screenshots der Demos (werden beim Build erzeugt).
+**Vorhanden:** Portraitfoto (`public/portrait.jpg`). Aufnahmen aller Websites (fünf WebP je
+Website, erzeugt mit `npm run screenshots`).
+**Fehlt, darf nicht erfunden werden:** Testimonials, Kundenlogos, Lehrbetrieb, Abschlussjahr.
 
 ## Product Principles
 
-1. **Die Demo ist das Argument.** Nichts auf der Seite behauptet Qualität — die
-   sechs Websites belegen sie. Jede bekommt Raum, keine wird zur Kachel degradiert.
+1. **Die Referenz ist das Argument, die Demos der Beleg.** Nichts auf der Seite
+   behauptet Qualität — Suwannaphum zeigt sie als echtes Projekt, die zehn Demos
+   zeigen die Bandbreite. Die Referenz bekommt den grössten Raum.
 2. **Ehrlich über die Ausgangslage.** Lernender, Nebenerwerb, Einstiegspreise: das
    wird als Stärke erzählt, nicht versteckt. Kunden merken Bluff.
 3. **Ein Weg, ein Ziel.** Alles führt zur Anfrage. Keine Nebenausgänge, kein Blog,

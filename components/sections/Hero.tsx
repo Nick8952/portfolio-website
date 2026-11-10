@@ -1,93 +1,94 @@
 'use client'
 
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 
 import Magnetic from '@/components/motion/Magnetic'
-import IPhone from '@/components/ui/IPhone'
+import { useSichtbar } from '@/components/motion/useSichtbar'
+import AnfrageKarte from '@/components/ui/AnfrageKarte'
 import { branchen, hero, websites } from '@/lib/content'
-import { asset } from '@/lib/utils'
-
-/**
- * Welche Website zu welcher Branche im Hero gezeigt wird. Das Wort und das
- * Bild wechseln gemeinsam — die Bewegung zeigt etwas, sie schmueckt nicht.
- */
-const BRANCHE_ZU_SLUG: Record<(typeof branchen)[number], string> = {
-  Fahrschule: 'fahrschul-center',
-  Elektrobetrieb: 'altec-elektro',
-  Restaurant: 'gusto-campano',
-  Reinigungsfirma: 'clean-express',
-  Hauswartung: 'hg-dienstleistungen',
-}
+import { asset, cn } from '@/lib/utils'
 
 const TAKT_MS = 2600
 
+/**
+ * Der Hero in der Aufteilung einer Buehne: links die Etiketten, die Headline
+ * mit dem wechselnden Wort, der Text, die Schaltflaechen und die kleine
+ * Anfrage-Karte; rechts das Schaufenster — drei gekippte Spalten aus echten
+ * Handy-Aufnahmen aller Websites, die langsam durchlaufen. Das ist kein
+ * Stock-Video: Was da laeuft, ist die Arbeit.
+ */
 export default function Hero() {
   const [index, setIndex] = useState(0)
-  const [imBild, setImBild] = useState(true)
   const reduziert = useReducedMotion()
   const sectionRef = useRef<HTMLElement>(null)
-
-  // Wer beim Formular ist, braucht keinen Hero, der im Hintergrund weiterschaltet.
-  useEffect(() => {
-    const el = sectionRef.current
-    if (!el) return
-    const io = new IntersectionObserver(([e]) => setImBild(e.isIntersecting))
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
+  const sichtbar = useSichtbar(sectionRef)
 
   useEffect(() => {
-    if (reduziert || !imBild) return
+    if (reduziert || !sichtbar) return
     const t = setInterval(() => setIndex((i) => (i + 1) % branchen.length), TAKT_MS)
     return () => clearInterval(t)
-  }, [reduziert, imBild])
+  }, [reduziert, sichtbar])
 
-  const branche = branchen[index]
-  const site = websites.find((w) => w.slug === BRANCHE_ZU_SLUG[branche]) ?? websites[0]
-
+  const wort = branchen[index]
   const auf = { duration: 0.55, ease: [0.16, 1, 0.3, 1] as const }
 
   return (
-    <section ref={sectionRef} id="top" className="relative pb-20 pt-32 md:pb-28 md:pt-40">
+    <section ref={sectionRef} id="top" className="relative overflow-hidden pb-16 pt-28 md:pb-24 md:pt-36">
       <div aria-hidden="true" className="ambient" />
-      <div className="shell relative z-[1] grid items-end gap-12 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-7">
-          <h1 className="font-display text-display-xl font-semibold text-balance">
+
+      <div className="shell relative z-[1] grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
+        <div className="lg:col-span-6">
+          <ul className="flex flex-col gap-1.5">
+            {hero.eyebrows.map((e, i) => (
+              <motion.li
+                key={e}
+                className="eyebrow eyebrow--slash"
+                initial={reduziert ? false : { opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ ...auf, delay: 0.05 + i * 0.07 }}
+              >
+                {e}
+              </motion.li>
+            ))}
+          </ul>
+
+          <h1 className="mt-8 font-display text-display-xl font-semibold text-balance">
             <motion.span
               className="block"
               initial={reduziert ? false : { opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={auf}
+              transition={{ ...auf, delay: 0.2 }}
             >
               {hero.titelVor}
             </motion.span>
 
             {/* Das Wort, das wechselt. Die Hoehe ist fixiert, damit die Zeilen
                 darunter beim Wechsel nicht springen. */}
-            <span className="relative block h-[1.02em] overflow-hidden text-kobalt" aria-live="polite">
-              <AnimatePresence mode="wait" initial={false}>
+            {/* Ohne mode="wait": das neue Wort schiebt sich herein, waehrend das alte
+                hinausfaehrt — keine leere Zeile dazwischen. */}
+            <span className="relative block h-[1.02em] overflow-hidden text-kobalt" aria-live="off">
+              <AnimatePresence initial={false}>
                 <motion.span
-                  key={branche}
+                  key={wort}
                   className="absolute inset-x-0 top-0 block"
                   initial={reduziert ? false : { y: '100%', opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   exit={reduziert ? undefined : { y: '-100%', opacity: 0 }}
-                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], opacity: { duration: 0.3 } }}
                 >
-                  {branche}
+                  {wort}
                   <span className="text-ink">.</span>
                 </motion.span>
               </AnimatePresence>
             </span>
-
           </h1>
 
           <motion.p
             className="mt-8 max-w-measure text-lede text-ink/70 text-pretty"
             initial={reduziert ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ ...auf, delay: 0.18 }}
+            transition={{ ...auf, delay: 0.3 }}
           >
             <strong className="font-semibold text-ink">{hero.versprechen}</strong> {hero.text}
           </motion.p>
@@ -96,57 +97,85 @@ export default function Hero() {
             className="mt-10 flex flex-wrap items-center gap-3"
             initial={reduziert ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ ...auf, delay: 0.26 }}
+            transition={{ ...auf, delay: 0.38 }}
           >
             <Magnetic>
-              <a
-                href="#anfrage"
-                className="inline-flex h-13 items-center rounded-pill bg-kobalt px-7 text-base font-medium text-paper transition-colors duration-200 ease-out hover:bg-ink"
-              >
+              <a href="#anfrage" className="btn btn--kobalt">
                 {hero.cta}
               </a>
             </Magnetic>
-            <a
-              href="#websites"
-              className="glass-lite inline-flex h-13 items-center rounded-pill px-7 text-base font-medium text-ink transition-shadow duration-200 ease-out hover:shadow-lift"
-            >
+            <a href="#referenz" className="btn btn--glas glass-lite">
               {hero.ctaSekundaer}
             </a>
           </motion.div>
+
+          <motion.div
+            initial={reduziert ? false : { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...auf, delay: 0.46 }}
+          >
+            <AnfrageKarte className="mt-10 max-w-[28rem]" />
+          </motion.div>
         </div>
 
-        {/* Das iPhone zeigt die Website der Branche, die gerade im Titel steht. */}
         <motion.div
-          className="relative mx-auto w-[min(78vw,17rem)] lg:col-span-5 lg:mx-0 lg:ml-auto lg:w-[19rem]"
+          className="lg:col-span-6"
           initial={reduziert ? false : { opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...auf, delay: 0.3 }}
         >
-          <IPhone
-            hintergrund={asset(`/websites/${site.slug}-mobile.jpg`)}
-            helleStatusleiste={site.hellerKopf}
-          >
-            {/* Aus, dann ein: eine Ueberblendung belichtet kurz beide Screenshots doppelt. */}
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.img
-                key={site.slug}
-                src={asset(`/websites/${site.slug}-mobile.jpg`)}
-                alt={`${site.name} auf dem Handy`}
-                width={390}
-                height={844}
-                className="absolute inset-0 h-full w-full object-cover object-top"
-                initial={reduziert ? false : { opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={reduziert ? undefined : { opacity: 0, y: -6 }}
-                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-              />
-            </AnimatePresence>
-          </IPhone>
-          <p className="mt-4 text-center text-sm text-muted">
-            {site.name} · {site.branche}
-          </p>
+          <Wand pausiert={!sichtbar} />
+          <p className="mt-4 text-center text-sm text-muted">{hero.wandLabel}</p>
         </motion.div>
       </div>
     </section>
+  )
+}
+
+/**
+ * Die Wand: elf Websites auf drei Spalten verteilt, jede Spalte verdoppelt fuer
+ * die nahtlose Schleife; die mittlere laeuft in die Gegenrichtung. Antippen
+ * fuehrt zu den Websites. Bewegung und Perspektive stehen in globals.css
+ * (.wand) — samt den Regeln, wann sie stillsteht.
+ */
+function Wand({ pausiert }: { pausiert: boolean }) {
+  const spalten = [0, 1, 2].map((s) => websites.filter((_, i) => i % 3 === s))
+  const dauern = ['58s', '72s', '64s']
+
+  return (
+    <a
+      href="#websites"
+      aria-label="Zu den Websites"
+      data-cursor="Ansehen"
+      data-pausiert={pausiert}
+      className="wand block h-[24rem] rounded-stage sm:h-[32rem] lg:h-[42rem]"
+    >
+      <div aria-hidden="true" className="wand__buehne">
+        {spalten.map((spalte, s) => (
+          <div
+            key={s}
+            className={cn('wand__spalte w-[8.5rem] sm:w-[10.5rem] lg:w-[11.75rem]', s === 1 && 'wand__spalte--ab')}
+            style={{ '--dauer': dauern[s] } as CSSProperties}
+          >
+            {[...spalte, ...spalte].map((site, k) => (
+              <div
+                key={`${site.slug}-${k}`}
+                className="overflow-hidden rounded-[1.1rem] border border-hairline bg-sunk shadow-lift"
+              >
+                <img
+                  src={asset(`/websites/${site.slug}-mobile-klein.webp`)}
+                  alt=""
+                  width={390}
+                  height={844}
+                  loading={k < 2 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  className="block h-auto w-full"
+                />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </a>
   )
 }

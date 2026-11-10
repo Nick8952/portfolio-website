@@ -3,14 +3,14 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import type { PointerEvent as ReactPointerEvent } from 'react'
 
+import Reveal from '@/components/motion/Reveal'
 import { betrieb, preise } from '@/lib/content'
 import { chf, cn } from '@/lib/utils'
 
 /**
- * Die Preistafel in der Sprache der uebrigen Seite: heller Grund mit
- * Umgebungslicht, drei Karten aus demselben Glas wie das Dock, linksbuendig,
- * der Regelfall als schwarze Karte — wie die Schaltflaeche in der Navigation.
- * Kobalt nur fuer «ab», die Haekchen und den einen Button.
+ * Die Preistafel: drei Karten, der Regelfall als schwarze Karte in der Mitte
+ * und etwas hoeher gesetzt — wie die hervorgehobene Stufe bei jeder guten
+ * Preistafel. Grosse Zahlen, Mono-Meta, Haekchen in Kobalt.
  *
  * Beim Hereinscrollen federn die Karten nacheinander hoch. Hover hebt die
  * Karte, legt einen Kobalt-Saum darum und laesst ein Glanzlicht dem Zeiger
@@ -29,21 +29,24 @@ export default function Preise() {
   const reduziert = useReducedMotion()
 
   return (
-    <section id="preise" className="section relative overflow-hidden">
+    <section id="preise" className="section relative overflow-hidden border-t border-hairline">
       <div aria-hidden="true" className="ambient ambient--mitte" />
 
       <div className="shell relative z-[1]">
-        <div className="grid gap-6 md:grid-cols-12 md:items-end md:gap-8">
-          <div className="md:col-span-7">
-            <h2 className="font-display text-display-lg font-semibold text-balance">
-              Preise, die ich vorher sage.
-            </h2>
+        <Reveal>
+          <div className="grid gap-6 md:grid-cols-12 md:items-end md:gap-8">
+            <div className="md:col-span-7">
+              <p className="eyebrow eyebrow--slash">Preise</p>
+              <h2 className="mt-4 font-display text-display-lg font-semibold text-balance">
+                Preise, die ich vorher sage.
+              </h2>
+            </div>
+            <p className="max-w-measure text-lede text-ink/70 text-pretty md:col-span-5 md:pb-1">
+              Richtwerte. Was Ihr Betrieb genau braucht, sehen wir nach der Demo — und dann steht
+              die Zahl schriftlich fest, bevor Sie etwas zahlen.
+            </p>
           </div>
-          <p className="max-w-measure text-lede text-ink/70 text-pretty md:col-span-5 md:pb-1">
-            Richtwerte. Was Ihr Betrieb genau braucht, sehen wir nach der Demo — und dann steht
-            die Zahl schriftlich fest, bevor Sie etwas zahlen.
-          </p>
-        </div>
+        </Reveal>
 
         <div className="preisraster mt-12 grid gap-4 md:mt-16 md:grid-cols-3 md:items-start">
           {preise.map((stufe, i) => {
@@ -63,35 +66,35 @@ export default function Preise() {
                 transition={{ type: 'spring', stiffness: 260, damping: 22 }}
                 onPointerMove={glanzFolgen}
                 className={cn(
-                  'preiskarte relative flex flex-col rounded-card p-7',
+                  'preiskarte relative flex flex-col rounded-card p-7 sm:p-8',
                   regelfall ? 'preiskarte--regelfall bg-ink text-paper' : 'glass-lite text-ink',
-                  !regelfall && 'md:mt-6',
+                  !regelfall && 'md:mt-8',
                 )}
               >
                 <span aria-hidden="true" className="preisglanz" />
 
                 <div className="flex items-center justify-between gap-3">
-                  <h3 className="font-display text-xl font-semibold tracking-[-0.01em]">{stufe.name}</h3>
+                  <h3 className="font-display text-2xl font-semibold tracking-[-0.01em]">{stufe.name}</h3>
                   {regelfall && (
-                    <span className="rounded-pill bg-kobalt px-2.5 py-1 text-xs font-semibold text-paper">
+                    <span className="rounded-pill bg-kobalt px-2.5 py-1 font-mono text-[0.68rem] font-medium uppercase tracking-[0.12em] text-paper">
                       Der Regelfall
                     </span>
                   )}
                 </div>
 
-                <p className={cn('mt-1.5 text-sm', regelfall ? 'text-paper/60' : 'text-muted')}>
+                <p className={cn('eyebrow mt-2', regelfall ? 'text-paper/55' : 'text-muted')}>
                   {stufe.umfang} · einmalig
                 </p>
 
                 {/* «ab» ist Teil des Preises, nicht Kleingedrucktes. */}
-                <p className="mt-7 flex items-baseline gap-2 font-display tnum">
+                <p className="mt-8 flex items-baseline gap-2 font-display tnum">
                   <span className={cn('text-lg font-semibold', regelfall ? 'text-kobalt-lift' : 'text-kobalt')}>
                     ab
                   </span>
                   <span className={cn('text-lg font-medium', regelfall ? 'text-paper/60' : 'text-muted')}>
                     CHF
                   </span>
-                  <span className="text-[2.75rem] font-semibold leading-none tracking-[-0.03em]">
+                  <span className="text-[3.25rem] font-semibold leading-none tracking-[-0.035em] sm:text-[3.5rem]">
                     {chf(stufe.ab)}
                   </span>
                 </p>
@@ -105,7 +108,12 @@ export default function Preise() {
                   {stufe.fuer}
                 </p>
 
-                <ul className="mt-6 flex flex-col gap-2.5">
+                <ul
+                  className={cn(
+                    'mt-7 flex flex-col gap-3 border-t pt-6',
+                    regelfall ? 'border-paper/15' : 'border-hairline',
+                  )}
+                >
                   {stufe.punkte.map((punkt) => (
                     <li
                       key={punkt}
@@ -134,10 +142,8 @@ export default function Preise() {
                 <a
                   href="#anfrage"
                   className={cn(
-                    'mt-8 inline-flex h-12 w-full items-center justify-center rounded-pill text-[0.9375rem] font-medium transition-colors duration-200 ease-out',
-                    regelfall
-                      ? 'bg-kobalt text-paper hover:bg-paper hover:text-ink'
-                      : 'bg-ink text-paper hover:bg-kobalt',
+                    'btn mt-8 h-12 w-full text-[0.9375rem]',
+                    regelfall ? 'bg-kobalt text-paper hover:bg-paper hover:text-ink' : 'bg-ink text-paper hover:bg-kobalt',
                   )}
                 >
                   Demo anfragen

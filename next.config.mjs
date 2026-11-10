@@ -1,13 +1,20 @@
 /** @type {import('next').NextConfig} */
 
-// Statischer Export fuer GitHub Pages. Betrieb unter
-//   https://nick8952.github.io/portfolio-website/
-// Beim Umzug auf eine eigene Domain: public/CNAME anlegen, Custom Domain in
-// Settings -> Pages setzen, dann BASE_PATH="" und SITE_ORIGIN=https://… im
-// Workflow eintragen. Explizit gesetzte Variablen haben Vorrang.
+// Statischer Export. Zwei Betriebsorte aus demselben Code:
+//   Vercel (primaer):   https://nick-hbr.vercel.app/          Basispfad ""
+//   GitHub Pages:       https://nick8952.github.io/portfolio-website/
+// Vercel setzt VERCEL=1 und VERCEL_PROJECT_PRODUCTION_URL im Build; dann faellt
+// der Basispfad weg und die absoluten Adressen zeigen auf die Vercel-Domain.
+// Explizit gesetzte Variablen (BASE_PATH, SITE_ORIGIN) haben immer Vorrang —
+// so laesst sich spaeter eine eigene Domain eintragen, ohne Code anzufassen.
 
-const BASE_PATH = process.env.BASE_PATH ?? '/portfolio-website'
-const SITE_ORIGIN = process.env.SITE_ORIGIN ?? 'https://nick8952.github.io'
+const aufVercel = Boolean(process.env.VERCEL)
+const BASE_PATH = process.env.BASE_PATH ?? (aufVercel ? '' : '/portfolio-website')
+const SITE_ORIGIN =
+  process.env.SITE_ORIGIN ??
+  (aufVercel
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL ?? 'nick-hbr.vercel.app'}`
+    : 'https://nick8952.github.io')
 
 const nextConfig = {
   output: 'export',

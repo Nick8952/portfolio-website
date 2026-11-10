@@ -1,28 +1,34 @@
 # Nick Holzbecher — Website
 
 Persönliche Website und Anfrageseite für Websites.
-**Live:** https://nick8952.github.io/portfolio-website/
+**Live:** https://nick-hbr.vercel.app/ (Vercel) · Spiegel: https://nick8952.github.io/portfolio-website/
 
-Next.js 15 · Tailwind · Framer Motion · statischer Export auf GitHub Pages.
-Kein CMS: alle Inhalte stehen in einer Datei.
+Next.js 15 · Tailwind · Framer Motion · statischer Export, derselbe Code auf Vercel
+und GitHub Pages. Kein CMS: alle Inhalte stehen in einer Datei.
 
 ## Inhalte ändern
 
-Alles — Texte, Preise, die Liste der Websites — steht in **`lib/content.ts`**.
-Ändern, speichern, auf `main` pushen. Die Seite baut sich selbst und ist nach
-etwa einer Minute aktualisiert.
+Alles — Texte, Preise, Referenz, Demos, Fragen, Vergleich, Kennzahlen — steht in
+**`lib/content.ts`**. Ändern, speichern, auf `main` pushen. Vercel und GitHub Pages
+bauen selbst; nach etwa zwei Minuten ist beides aktualisiert.
 
 **Eine Website hinzufügen:**
 
 1. Eintrag in `lib/content.ts` unter `websites` (Slug, Name, Branche, Ort, Adresse, ein Satz).
 2. Denselben Slug mit Adresse in `tools/websites-source.mjs` eintragen.
-3. `npm run screenshots` — erzeugt die zwei Bilder in `public/websites/`.
-   Nur eine Website neu aufnehmen: `ONLY=<slug> npm run screenshots`.
+3. `npm run screenshots` — erzeugt die fünf WebP-Bilder in `public/websites/`
+   (erster Bildschirm und ganze Seite, Desktop und Handy, plus eine kleine
+   Handy-Aufnahme für die Wand im Hero). Nur eine Website: `ONLY=<slug> npm run screenshots`.
+   Hat die Website oben einen hellen Kopf, in `content.ts` `hellerKopf: true` setzen
+   (dunkle Glyphen in der iPhone-Statusleiste).
 4. Committen und pushen.
 
-Voraussetzung für Schritt 3: Google Chrome ist installiert. Liegt es woanders als
-`C:\Program Files\Google\Chrome\Application\chrome.exe`, den Pfad als
-`CHROME_PATH` setzen.
+Voraussetzung für Schritt 3: Google Chrome ist installiert. Das Skript kennt die
+üblichen Orte auf Windows und macOS; liegt Chrome woanders, den Pfad als `CHROME_PATH` setzen.
+
+**Prüfen vor dem Push:** `BASE_PATH= SITE_ORIGIN=http://localhost:4173 npm run build && npm run vorschau`
+fotografiert die Seite nach `pruefung/` (Desktop und Handy, in Scroll-Schritten) und meldet
+Konsolenfehler und seitlichen Überlauf.
 
 ## Formular
 

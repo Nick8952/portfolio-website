@@ -29,7 +29,7 @@
 
   html {
     -webkit-text-size-adjust: 100%;
-    scroll-padding-top: 6rem;
+    scroll-padding-top: 5.5rem;
     /* Natives Scrollen. Eine Smooth-Scroll-Bibliothek (Lenis) hatte hier jedes
        Rad-Ereignis abgefangen und 1,1 s hinterher interpoliert — auf dem Trackpad
        fuehlt sich das verzoegert an. Ankerlinks gleiten trotzdem, per CSS. */
@@ -79,7 +79,7 @@
   }
 
   [id] {
-    scroll-margin-top: 6rem;
+    scroll-margin-top: 5.5rem;
   }
 
   /* Der Systemzeiger bleibt auf Touch und unter Bewegungsreduktion; auf Desktop
@@ -107,6 +107,8 @@
     left: 0;
     z-index: 100;
     will-change: transform;
+    /* Bis zur ersten Zeigerbewegung ausserhalb des Bildes, nicht in der Ecke. */
+    transform: translate(-100px, -100px);
   }
   html.has-cursor .cursor-dot,
   html.has-cursor .cursor-ring {
@@ -158,6 +160,41 @@
     @apply py-section;
   }
 
+  /* -------------------------------------------------------------------
+     Etiketten in Geist Mono — das eine Ordnungssystem der Seite: Eyebrow ueber
+     jeder Section, Meta-Zeile unter Karten, Uhr, Kennzahl-Labels. Immer klein,
+     gesperrt, Versalien. Nie Fliesstext.
+  ------------------------------------------------------------------- */
+  .eyebrow {
+    @apply font-mono text-eyebrow font-medium uppercase text-muted;
+  }
+  /* Der Schraegstrich davor markiert den Anfang einer Section. */
+  .eyebrow--slash::before {
+    content: '/ ';
+    color: rgb(var(--kobalt));
+  }
+  /* In einer eingelassenen Box: fuer Meta-Zeilen in Karten. */
+  .eyebrow--box {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.65rem;
+    border-radius: 6px;
+    background: rgb(var(--ink) / 0.05);
+    color: rgb(var(--ink) / 0.75);
+  }
+  .eyebrow--box::before {
+    content: '';
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: rgb(var(--kobalt));
+  }
+  .eyebrow--live::before {
+    background: rgb(var(--kobalt));
+    box-shadow: 0 0 0 3px rgb(var(--kobalt) / 0.18);
+  }
+
   /* Ein Link im Fliesstext: Unterstrich aus der Palette, Versatz gesetzt. */
   .link {
     @apply text-ink underline decoration-hairline decoration-[1.5px] underline-offset-[0.22em] transition-colors duration-200 ease-out hover:decoration-kobalt hover:text-kobalt;
@@ -169,6 +206,43 @@
 
   .tnum {
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Die Schaltflaechen, aus denen die Seite besteht. */
+  .btn {
+    @apply inline-flex h-13 items-center justify-center gap-2 rounded-pill px-7 text-base font-medium transition-colors duration-200 ease-out;
+  }
+  .btn--kobalt {
+    @apply bg-kobalt text-paper hover:bg-ink;
+  }
+  .btn--ink {
+    @apply bg-ink text-paper hover:bg-kobalt;
+  }
+  /* Im Markup zusammen mit .glass-lite setzen — @apply wuerde die Pseudo-
+     Elemente (Rand, Glanz) des Glases nicht mitnehmen. */
+  .btn--glas {
+    @apply text-ink transition-shadow hover:shadow-lift;
+  }
+  .btn--klein {
+    @apply h-11 px-5 text-[0.9375rem];
+  }
+
+  /* -------------------------------------------------------------------
+     Navigation: eine vollbreite Leiste mit Hairline, wie ein Fensterrahmen
+     ueber der Seite. Das einzige fixierte Element mit backdrop-filter.
+  ------------------------------------------------------------------- */
+  .navleiste {
+    background: rgb(var(--paper) / 0.78);
+    -webkit-backdrop-filter: blur(14px) saturate(1.6);
+    backdrop-filter: blur(14px) saturate(1.6);
+    border-bottom: 1px solid rgb(var(--hairline));
+    transform: translateZ(0);
+    contain: paint;
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .navleiste {
+      background: rgb(var(--paper) / 0.97);
+    }
   }
 
   /* iPhone-Gehaeuse (components/ui/IPhone.tsx). Titan: dunkler Verlauf mit einer
@@ -190,27 +264,10 @@
   }
 
   /* -------------------------------------------------------------------
-     Liquid Glass — nach Apples iOS-26-Rezept.
-
-     Drei Dinge unterscheiden es vom gewoehnlichen Milchglas:
-     1. Es ist fast durchsichtig. Die Fuellung liegt bei ~35 %, die Farbe des
-        Inhalts dahinter traegt das Element (blur + saturate + brightness).
-     2. Ein brechender Rand: ein 1,5px-Ring aus Verlauf, hell oben links, dunkler
-        in der Mitte, wieder hell unten rechts — so bricht Licht an der Kante einer
-        dicken Linse. Gebaut mit einer Maske, die nur den Ring stehen laesst.
-     3. Ein Glanz oben links (::before), der wie eine Lichtquelle ueber dem Glas
-        liegt.
-     Keine Linsenverzerrung per SVG-Filter: ein feDisplacementMap auf einem
-     fixierten backdrop-filter-Element muss bei jedem Scroll-Frame den ganzen
-     Hintergrund neu verzerren — der teuerste Effekt der Seite bei kleinstem
-     Nutzen. Das hat sichtbar geruckelt.
-
-     backdrop-filter nur dort, wo es etwas verwischt: Nav-Pille, Sheet, Menue.
-     Dock-Kacheln, Preis-Panel und Sekundaer-Buttons liegen ueber einfarbigem
-     Grund und bekommen die leichte Variante ohne Weichzeichnung (.glass-lite).
-
-     Nur fuer die schwebende Schicht: Navigation, Steuerelemente, Dock, Sheet.
-     Nie als Fuellung ganzer Sections.
+     Liquid Glass — nach Apples iOS-26-Rezept, nur auf der schwebenden Schicht.
+     backdrop-filter nur dort, wo es etwas verwischt: Menue, Sheet. Alles, was
+     ueber einfarbigem Grund liegt, bekommt die leichte Variante ohne
+     Weichzeichnung (.glass-lite). Nie als Fuellung ganzer Sections.
   ------------------------------------------------------------------- */
   .glass,
   .glass-strong,
@@ -239,8 +296,6 @@
     background: rgb(var(--paper) / 0.4);
     -webkit-backdrop-filter: blur(14px) saturate(1.8);
     backdrop-filter: blur(14px) saturate(1.8);
-    /* Eigene Ebene und Paint-Containment: die Weichzeichnung soll nicht die
-       Seite mit-repainten. */
     transform: translateZ(0);
     contain: paint;
     box-shadow:
@@ -277,8 +332,6 @@
     content: '';
     position: absolute;
     inset: 0;
-    /* Negativ innerhalb der isolierten Ebene: ueber dem Glasgrund, unter dem Inhalt —
-       ohne dass die Kinder eine eigene Regel brauchen. */
     z-index: -1;
     border-radius: inherit;
     padding: 1.5px;
@@ -337,8 +390,6 @@
     background: radial-gradient(120% 90% at 12% 0%, rgb(var(--paper) / 0.14), transparent 55%);
   }
 
-  /* Ohne backdrop-filter (auch nicht mit -webkit-Praefix): undurchsichtig,
-     damit Text lesbar bleibt. Safari 17 kennt nur die Praefix-Form. */
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .glass,
     .glass-strong {
@@ -347,6 +398,214 @@
     .glass-dark {
       background: rgb(var(--ink) / 0.92);
     }
+  }
+
+  /* -------------------------------------------------------------------
+     Die Schaufenster-Wand im Hero: drei Spalten aus echten Handy-Aufnahmen,
+     als gekippte Flaeche, die langsam laeuft.
+
+     Regeln, damit sie nicht ruckelt:
+     - Die Perspektive sitzt als perspective() auf der unbewegten Buehne, die
+       Spalten bewegen sich nur per translate3d — reine Compositor-Arbeit.
+     - will-change nur auf den drei Spalten, nicht auf den Bildern.
+     - Pausiert, sobald der Hero aus dem Bild ist (data-pausiert, gesetzt per
+       IntersectionObserver und bei verborgenem Tab).
+     - Unter 768px steht sie still (Bewegung dort ist Akku-Arbeit fuer nichts),
+       bei prefers-reduced-motion steht sie still und liegt flach.
+  ------------------------------------------------------------------- */
+  .wand {
+    position: relative;
+    overflow: hidden;
+    /* Oben/unten und links/rechts ins Papier ausgeblendet — zwei Masken,
+       geschnitten (intersect), damit keine harte Kante stehen bleibt. */
+    -webkit-mask-image:
+      linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent),
+      linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent),
+      linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+    mask-composite: intersect;
+  }
+  .wand__buehne {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: flex;
+    gap: 1.1rem;
+    transform: translate(-50%, -50%) perspective(1600px) rotateX(8deg) rotateY(-14deg) rotateZ(4deg);
+    transform-style: preserve-3d;
+  }
+  .wand__spalte {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    will-change: transform;
+    animation: wand-auf var(--dauer, 56s) linear infinite;
+  }
+  .wand__spalte--ab {
+    animation-name: wand-ab;
+  }
+  .wand[data-pausiert='true'] .wand__spalte {
+    animation-play-state: paused;
+  }
+  @keyframes wand-auf {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(0, -50%, 0);
+    }
+  }
+  @keyframes wand-ab {
+    from {
+      transform: translate3d(0, -50%, 0);
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  @media (max-width: 767px) {
+    .wand__spalte {
+      animation: none;
+      will-change: auto;
+      transform: translate3d(0, -12%, 0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wand__spalte {
+      animation: none;
+      will-change: auto;
+    }
+    .wand__buehne {
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  /* -------------------------------------------------------------------
+     Browser-Rahmen mit langer Aufnahme: in den Demo-Karten scrollt die Website
+     beim Hovern von oben nach unten (6 s), beim Verlassen kehrt sie zurueck.
+     Container-Einheiten liefern die Rahmenhoehe (100cqh), damit das Bild exakt
+     am unteren Rand haelt. Nur mit Maus — auf Touch steht der erste Bildschirm.
+  ------------------------------------------------------------------- */
+  .rahmen {
+    container-type: size;
+  }
+  .rahmen__bild {
+    transform: translate3d(0, 0, 0);
+    transition: transform 1.2s var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .demo-karte:hover .rahmen__bild,
+    .demo-karte:focus-visible .rahmen__bild {
+      transform: translate3d(0, calc(-100% + 100cqh), 0);
+      transition: transform 6.5s linear;
+    }
+  }
+
+  /* -------------------------------------------------------------------
+     Das Laufband: eine Reihe Text, die langsam nach links zieht. Die Liste ist
+     verdoppelt; -50 % ergibt die nahtlose Schleife. Raender per Maske ins
+     Papier ausgeblendet, haelt bei Hover und steht bei reduzierter Bewegung.
+  ------------------------------------------------------------------- */
+  .laufband {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  }
+  .laufband__spur {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+    animation: laufband 70s linear infinite;
+  }
+  .laufband:hover .laufband__spur {
+    animation-play-state: paused;
+  }
+  @keyframes laufband {
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .laufband {
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+    .laufband__spur {
+      animation: none;
+      width: auto;
+      flex-wrap: wrap;
+      justify-content: center;
+      row-gap: 0.5rem;
+    }
+    .laufband__spur[aria-hidden='true'] {
+      display: none;
+    }
+  }
+
+  /* -------------------------------------------------------------------
+     Die Ringe im Erkennen-Abschnitt: duenne Kreise, zwei davon drehen sich
+     langsam als ganzes SVG (eine Compositor-Ebene je Ring, kein Repaint).
+     Heisst «orbit», nicht «ring»: `ring` ist eine Tailwind-Utility (3px blauer
+     box-shadow) und hatte die SVG-Boxen als blaue Rechtecke gezeichnet.
+  ------------------------------------------------------------------- */
+  .orbit {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    pointer-events: none;
+    will-change: transform;
+    animation: orbit-drehen 110s linear infinite;
+  }
+  .orbit--gegen {
+    animation-direction: reverse;
+    animation-duration: 150s;
+  }
+  .orbit--still {
+    animation: none;
+    will-change: auto;
+  }
+  [data-pausiert='true'] .orbit {
+    animation-play-state: paused;
+  }
+  @keyframes orbit-drehen {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .orbit {
+      animation: none;
+      will-change: auto;
+    }
+  }
+
+  /* Karten ausserhalb des Bildes muss der Browser nicht layouten. Nur die Hoehe
+     als Platzhalter — eine Breite wuerde das Raster auf Mobil sprengen. */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-height: auto 34rem;
+  }
+
+  /* -------------------------------------------------------------------
+     Vergleichstabelle: Hairlines, erste Datenspalte eingelassen und mit
+     Kobalt-Kopf — das ist das Angebot dieser Seite.
+  ------------------------------------------------------------------- */
+  .vergleich th,
+  .vergleich td {
+    border-bottom: 1px solid rgb(var(--hairline));
+    vertical-align: top;
+  }
+  .vergleich tbody tr:last-child th,
+  .vergleich tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .vergleich .spalte--ich {
+    background: rgb(var(--sunk) / 0.7);
   }
 
   /* -------------------------------------------------------------------
@@ -370,7 +629,6 @@
       0 0 0 1.5px rgb(var(--kobalt-lift) / 0.9),
       0 30px 70px -24px rgb(var(--kobalt) / 0.6);
   }
-  /* Nur mit Maus: auf Touch gibt es kein Schweben, also auch kein Zuruecktreten. */
   @media (hover: hover) and (pointer: fine) {
     .preisraster:hover .preiskarte:not(:hover) > :not(.preisglanz) {
       opacity: 0.55;
@@ -403,11 +661,8 @@
     opacity: 1;
   }
 
-  /* Umgebungslicht: zwei weiche Flecken hinter dem Hero. Sie sind der Grund,
-     warum das Glas darueber ueberhaupt als Glas lesbar ist.
-     Als radial-gradient, nicht als filter: blur() — ein 42rem-Element mit 80px
-     Weichzeichnung, dauerhaft animiert, war ein messbarer Teil des Ruckelns.
-     Der Verlauf sieht gleich aus und kostet nichts. */
+  /* Umgebungslicht: zwei weiche Flecken hinter dem Hero — statisch, als
+     radial-gradient statt filter: blur() (das hatte messbar geruckelt). */
   .ambient {
     position: absolute;
     inset: 0;
@@ -417,17 +672,12 @@
     -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
     mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
   }
-  /* Statisch. Zwei dauerhaft animierte Ebenen dieser Groesse hinter einer
-     Maske halten den Compositor beschaeftigt — fuer eine Bewegung, die niemand
-     bewusst sieht. */
   .ambient::before,
   .ambient::after {
     content: '';
     position: absolute;
     border-radius: 999px;
   }
-  /* Variante fuer Sections in der Seitenmitte: Licht von beiden Seiten, nach
-     oben und unten ausgeblendet, damit es sich nicht an die Nachbarn anlehnt. */
   .ambient--mitte {
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent);
     mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent);

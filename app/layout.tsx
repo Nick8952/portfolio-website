@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Bricolage_Grotesque, Instrument_Sans } from 'next/font/google'
+import { Bricolage_Grotesque, Geist_Mono, Instrument_Sans } from 'next/font/google'
 import type { ReactNode } from 'react'
 
 import Cursor from '@/components/motion/Cursor'
@@ -9,9 +9,11 @@ import { siteUrl } from '@/lib/utils'
 import './globals.css'
 
 /**
- * Zwei Schriften, beide beim Build selbst gehostet — kein Abruf bei Google
- * zur Laufzeit. Bricolage traegt die Headlines und hat eine optische Groesse:
- * bei Displaygrad wird sie enger und haerter, bei Textgrad offener.
+ * Drei Schriften, alle beim Build selbst gehostet — kein Abruf bei Google zur
+ * Laufzeit. Bricolage traegt die Headlines und hat eine optische Groesse: bei
+ * Displaygrad wird sie enger und haerter, bei Textgrad offener. Instrument Sans
+ * ist der Fliesstext. Geist Mono ist das Etikett-System: Eyebrows, Meta-Zeilen,
+ * die Uhr in der Navigation, Kennzahl-Labels — nie Fliesstext.
  */
 const display = Bricolage_Grotesque({
   subsets: ['latin'],
@@ -24,6 +26,13 @@ const sans = Instrument_Sans({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-sans',
+})
+
+const mono = Geist_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['400', '500'],
+  variable: '--font-mono',
 })
 
 export const viewport: Viewport = {
@@ -52,7 +61,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="de-CH" className={`${display.variable} ${sans.variable}`}>
+    <html lang="de-CH" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       <body>
         <a
           href="#inhalt"

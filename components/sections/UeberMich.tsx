@@ -1,6 +1,8 @@
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 
+import Reveal from '@/components/motion/Reveal'
+import Kennzahlen from '@/components/sections/Kennzahlen'
 import { person, ueberMich } from '@/lib/content'
 import { asset } from '@/lib/utils'
 
@@ -10,60 +12,71 @@ export default function UeberMich() {
   const hatPortrait = existsSync(path.join(process.cwd(), 'public', person.portrait))
 
   return (
-    <section id="ueber-mich" className="section">
-      <div className="shell grid gap-12 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-5">
-          {hatPortrait ? (
-            <div className="aspect-[4/5] w-full max-w-[26rem] overflow-hidden rounded-card bg-sunk">
-              <img
-                src={asset(person.portrait)}
-                alt={person.name}
-                width={828}
-                height={1101}
-                loading="lazy"
-                // Der Kopf sitzt im oberen Drittel — dort bleibt der Ausschnitt.
-                className="h-full w-full object-cover object-[50%_28%]"
-              />
-            </div>
-          ) : (
-            <div className="flex aspect-[4/5] w-full max-w-[26rem] items-end rounded-card bg-sunk p-6">
-              <p className="text-sm text-muted">Portrait folgt.</p>
-            </div>
-          )}
+    <section id="ueber-mich" className="section border-t border-hairline">
+      <div className="shell">
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
+          <Reveal className="lg:col-span-5">
+            {hatPortrait ? (
+              <div className="relative aspect-[4/5] w-full max-w-[26rem] overflow-hidden rounded-card bg-sunk">
+                <img
+                  src={asset(person.portrait)}
+                  alt={person.name}
+                  width={828}
+                  height={1101}
+                  loading="lazy"
+                  // Der Kopf sitzt im oberen Drittel — dort bleibt der Ausschnitt.
+                  className="h-full w-full object-cover object-[50%_28%]"
+                />
+                <p className="eyebrow eyebrow--box absolute bottom-4 left-4 bg-paper/90 text-ink">
+                  {person.ausbildung.titel} · {person.ausbildung.stand}
+                </p>
+              </div>
+            ) : (
+              <div className="flex aspect-[4/5] w-full max-w-[26rem] items-end rounded-card bg-sunk p-6">
+                <p className="text-sm text-muted">Portrait folgt.</p>
+              </div>
+            )}
 
-          <dl className="mt-10 max-w-[26rem]">
-            <dt className="text-sm text-muted">{ueberMich.ausbildungTitel}</dt>
-            {ueberMich.ausbildung.map((e) => (
-              <dd key={e.was} className="mt-2 border-t border-hairline pt-3">
-                <p className="font-medium">{e.was}</p>
-                <p className="text-ink/70">{e.detail}</p>
+            <dl className="mt-10 max-w-[26rem]">
+              <dt className="eyebrow">{ueberMich.ausbildungTitel}</dt>
+              {ueberMich.ausbildung.map((e) => (
+                <dd key={e.was} className="mt-2 border-t border-hairline pt-3">
+                  <p className="font-medium">{e.was}</p>
+                  <p className="text-ink/70">{e.detail}</p>
+                </dd>
+              ))}
+
+              <dt className="eyebrow mt-8">{ueberMich.werkzeugeTitel}</dt>
+              <dd className="mt-2 border-t border-hairline pt-3">
+                <ul className="flex flex-wrap gap-x-4 gap-y-1.5 text-ink/80">
+                  {ueberMich.werkzeuge.map((w) => (
+                    <li key={w}>{w}</li>
+                  ))}
+                </ul>
               </dd>
-            ))}
+            </dl>
+          </Reveal>
 
-            <dt className="mt-8 text-sm text-muted">{ueberMich.werkzeugeTitel}</dt>
-            <dd className="mt-2 border-t border-hairline pt-3">
-              <ul className="flex flex-wrap gap-x-4 gap-y-1.5 text-ink/80">
-                {ueberMich.werkzeuge.map((w) => (
-                  <li key={w}>{w}</li>
-                ))}
-              </ul>
-            </dd>
-          </dl>
+          <Reveal className="lg:col-span-6 lg:col-start-7" delay={0.1}>
+            <p className="eyebrow eyebrow--slash">{ueberMich.eyebrow}</p>
+            <h2 className="mt-4 font-display text-display-lg font-semibold text-balance">{ueberMich.titel}</h2>
+            <div className="mt-8 max-w-measure space-y-6 text-lede text-ink/80 text-pretty">
+              {ueberMich.absaetze.map((a) => (
+                <p key={a.slice(0, 24)}>{a}</p>
+              ))}
+            </div>
+            <p className="mt-10 text-base">
+              <a href={person.github} target="_blank" rel="noopener noreferrer" className="link">
+                Code auf GitHub
+                <span className="sr-only"> (öffnet in neuem Tab)</span>
+              </a>
+            </p>
+          </Reveal>
         </div>
 
-        <div className="lg:col-span-6 lg:col-start-7">
-          <h2 className="font-display text-display-lg font-semibold text-balance">{ueberMich.titel}</h2>
-          <div className="mt-8 space-y-6 max-w-measure text-lede text-ink/80 text-pretty">
-            {ueberMich.absaetze.map((a) => (
-              <p key={a.slice(0, 24)}>{a}</p>
-            ))}
-          </div>
-          <p className="mt-10 text-base">
-            <a href={person.github} target="_blank" rel="noopener noreferrer" className="link">
-              Code auf GitHub
-            </a>
-          </p>
-        </div>
+        <Reveal className="mt-16 md:mt-24">
+          <Kennzahlen />
+        </Reveal>
       </div>
     </section>
   )

@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "screenshots": "node tools/screenshots.mjs"
+    "screenshots": "node tools/screenshots.mjs",
+    "vorschau": "node tools/vorschau.mjs pruefung"
   },
   "dependencies": {
     "framer-motion": "^12.43.0",

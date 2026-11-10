@@ -8,10 +8,9 @@ import { hero, navigation, person } from '@/lib/content'
 import { cn } from '@/lib/utils'
 
 /**
- * Schwebende Glas-Pille, wie Apple sie ueber Inhalt legt: Name links, Ziele
- * in der Mitte, eine Schaltflaeche rechts. Das Glas ist hier kein Schmuck —
- * die Pille liegt beim Scrollen ueber Headlines und Screenshots, und die
- * Weichzeichnung haelt die Links lesbar, ohne den Inhalt zu verdecken.
+ * Eine vollbreite Leiste mit Hairline — wie ein Fensterrahmen ueber der Seite:
+ * Name links, Ziele in der Mitte, Uhr und Schaltflaeche rechts. Beim Scrollen
+ * wird sie etwas flacher. Das einzige fixierte Element mit backdrop-filter.
  */
 export default function Nav() {
   const [gescrollt, setGescrollt] = useState(false)
@@ -21,7 +20,7 @@ export default function Nav() {
   const reduziert = useReducedMotion()
 
   useEffect(() => {
-    const beiScroll = () => setGescrollt(window.scrollY > 12)
+    const beiScroll = () => setGescrollt(window.scrollY > 24)
     beiScroll()
     window.addEventListener('scroll', beiScroll, { passive: true })
     return () => window.removeEventListener('scroll', beiScroll)
@@ -47,31 +46,20 @@ export default function Nav() {
   }
 
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 pt-3 md:pt-5">
-      <div className="shell">
-        <nav
-          aria-label="Hauptnavigation"
-          className={cn(
-            // Oben kompakt, beim Scrollen waechst die Pille nach aussen auf die
-            // volle Spaltenbreite. max-width und Hoehe werden animiert; die
-            // Pille selbst bleibt dieselbe, sie dehnt sich nur.
-            'glass pointer-events-auto mx-auto flex items-center justify-between gap-4 rounded-pill pl-5 pr-2',
-            // Nur max-width und Schatten: die Hoehe konstant zu halten spart 1,2 s
-            // Layout-Arbeit pro Aufweitung, und will-change auf max-width bringt nichts.
-            'h-14 transition-[max-width,box-shadow] duration-[1200ms] ease-[cubic-bezier(0.32,0.72,0,1)]',
-            // Gescrollt liegt die Pille auch ueber der schwarzen Preis-Section: 70 %
-            // Fuellung halten die Links dort bei ueber 4,5:1 (38 % ergaeben 2,6:1).
-            gescrollt ? 'max-w-shell bg-paper/70 shadow-lift' : 'max-w-3xl',
-          )}
-        >
-          <a
-            href="#top"
-            className="font-display text-[1.0625rem] font-semibold tracking-[-0.01em] text-ink"
-          >
+    <header className="fixed inset-x-0 top-0 z-50">
+      <nav
+        aria-label="Hauptnavigation"
+        className={cn(
+          'navleiste transition-[height] duration-500 ease-out',
+          gescrollt ? 'h-14 md:h-16' : 'h-16 md:h-20',
+        )}
+      >
+        <div className="shell flex h-full items-center justify-between gap-6">
+          <a href="#top" className="font-display text-[1.0625rem] font-semibold tracking-[-0.01em] text-ink">
             {person.name}
           </a>
 
-          <ul className="hidden items-center gap-1 md:flex">
+          <ul className="hidden items-center gap-1 lg:flex">
             {navigation.map((eintrag) => (
               <li key={eintrag.href}>
                 <a
@@ -84,12 +72,11 @@ export default function Nav() {
             ))}
           </ul>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3 md:gap-5">
+            <Uhr />
+
             <Magnetic staerke={0.25} className="hidden md:block">
-              <a
-                href="#anfrage"
-                className="inline-flex h-10 items-center rounded-pill bg-ink px-5 text-[0.9375rem] font-medium text-paper transition-colors duration-200 ease-out hover:bg-kobalt"
-              >
+              <a href="#anfrage" className="btn btn--ink h-10 px-5 text-[0.9375rem]">
                 {hero.cta}
               </a>
             </Magnetic>
@@ -100,7 +87,7 @@ export default function Nav() {
               onClick={() => setOffen(true)}
               aria-expanded={offen}
               aria-controls="menue"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-pill text-ink transition-colors duration-200 ease-out hover:bg-ink/5 md:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-pill border border-hairline text-ink transition-colors duration-200 ease-out hover:bg-ink/5 lg:hidden"
             >
               <span className="sr-only">Menü öffnen</span>
               <svg
@@ -116,8 +103,8 @@ export default function Nav() {
               </svg>
             </button>
           </div>
-        </nav>
-      </div>
+        </div>
+      </nav>
 
       <AnimatePresence>
         {offen && (
@@ -126,7 +113,7 @@ export default function Nav() {
             role="dialog"
             aria-modal="true"
             aria-label="Navigation"
-            className="glass-strong pointer-events-auto fixed inset-0 z-50 md:hidden"
+            className="glass-strong fixed inset-0 z-50 lg:hidden"
             initial={reduziert ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={reduziert ? undefined : { opacity: 0 }}
@@ -157,24 +144,21 @@ export default function Nav() {
               </div>
 
               <ul className="mt-6 divide-y divide-hairline border-y border-hairline">
-                {navigation.map((eintrag) => (
+                {navigation.map((eintrag, i) => (
                   <li key={eintrag.href}>
                     <a
                       href={eintrag.href}
                       onClick={() => setOffen(false)}
-                      className="block py-5 font-display text-3xl font-semibold tracking-[-0.02em]"
+                      className="flex items-baseline gap-4 py-4 font-display text-3xl font-semibold tracking-[-0.02em]"
                     >
+                      <span className="eyebrow tnum w-7">{String(i + 1).padStart(2, '0')}</span>
                       {eintrag.label}
                     </a>
                   </li>
                 ))}
               </ul>
 
-              <a
-                href="#anfrage"
-                onClick={() => setOffen(false)}
-                className="mt-auto mb-8 inline-flex h-14 items-center justify-center rounded-pill bg-ink text-base font-medium text-paper"
-              >
+              <a href="#anfrage" onClick={() => setOffen(false)} className="btn btn--ink mb-8 mt-auto w-full">
                 {hero.cta}
               </a>
             </div>
@@ -182,5 +166,55 @@ export default function Nav() {
         )}
       </AnimatePresence>
     </header>
+  )
+}
+
+/**
+ * Die Uhr: Schweizer Zeit, Sekunden inklusive. Sie schreibt direkt in den Knoten,
+ * statt pro Sekunde ein React-Rendering der Navigation auszuloesen; sie ist
+ * fuer Screenreader unsichtbar (keine Live-Region, die jede Sekunde spricht),
+ * daneben steht ein stabiler Text. Der Server rendert einen Platzhalter, damit
+ * die Hydration nicht an der Uhrzeit scheitert.
+ */
+function Uhr() {
+  const ref = useRef<HTMLSpanElement>(null)
+
+  useEffect(() => {
+    const format = new Intl.DateTimeFormat('de-CH', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+      timeZone: 'Europe/Zurich',
+    })
+    let timer = 0
+    const schreiben = () => {
+      if (ref.current) ref.current.textContent = format.format(new Date())
+    }
+    const starten = () => {
+      schreiben()
+      window.clearInterval(timer)
+      timer = window.setInterval(schreiben, 1000)
+    }
+    const beiSichtbarkeit = () => {
+      if (document.visibilityState === 'visible') starten()
+      else window.clearInterval(timer)
+    }
+    starten()
+    document.addEventListener('visibilitychange', beiSichtbarkeit)
+    return () => {
+      window.clearInterval(timer)
+      document.removeEventListener('visibilitychange', beiSichtbarkeit)
+    }
+  }, [])
+
+  return (
+    <p className="hidden items-baseline gap-2 sm:flex">
+      <span className="eyebrow">Schweiz</span>
+      <span ref={ref} aria-hidden="true" className="font-mono text-sm tabular-nums text-ink">
+        ––:––:––
+      </span>
+      <span className="sr-only">Ortszeit Schweiz</span>
+    </p>
   )
 }

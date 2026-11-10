@@ -3,14 +3,15 @@
 import { useId, useState, type FormEvent } from 'react'
 
 import Magnetic from '@/components/motion/Magnetic'
+import Reveal from '@/components/motion/Reveal'
 import { anfrage, person } from '@/lib/content'
 import { cn } from '@/lib/utils'
 
 /**
  * Versand ueber FormSubmit — ein Dienst, der ohne Konto und ohne Backend
- * funktioniert und deshalb auf GitHub Pages laeuft. Beim allerersten Versand
- * schickt FormSubmit eine Aktivierungs-Mail an die Empfaengeradresse; erst
- * nach dem Klick darin werden Anfragen zugestellt (siehe README).
+ * funktioniert und deshalb auf statischem Hosting laeuft. Beim allerersten
+ * Versand schickt FormSubmit eine Aktivierungs-Mail an die Empfaengeradresse;
+ * erst nach dem Klick darin werden Anfragen zugestellt (siehe README).
  *
  * Schlaegt der Versand fehl, steht die E-Mail-Adresse direkt da. Niemand soll
  * an einem kaputten Formular scheitern.
@@ -66,74 +67,80 @@ export default function Anfrage() {
   }
 
   return (
-    <section id="anfrage" className="section border-t border-hairline">
-      <div className="shell grid gap-12 lg:grid-cols-12 lg:gap-8">
+    <section id="anfrage" className="section relative overflow-hidden border-t border-hairline">
+      <div aria-hidden="true" className="ambient ambient--mitte" />
+      <div className="shell relative z-[1] grid gap-12 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-5">
           <div className="lg:sticky lg:top-28">
-            <h2 className="font-display text-display-lg font-semibold text-balance">{anfrage.titel}</h2>
-            <p className="mt-5 max-w-measure text-lede text-ink/70 text-pretty">{anfrage.text}</p>
-            <p className="mt-8 text-base text-ink/70">
-              Oder direkt:{' '}
-              <a href={`mailto:${person.email}`} className="link">
-                {person.email}
-              </a>
-            </p>
+            <Reveal>
+              <p className="eyebrow eyebrow--slash">{anfrage.eyebrow}</p>
+              <h2 className="mt-4 font-display text-display-lg font-semibold text-balance">{anfrage.titel}</h2>
+              <p className="mt-5 max-w-measure text-lede text-ink/70 text-pretty">{anfrage.text}</p>
+              <p className="mt-8 text-base text-ink/70">
+                Oder direkt:{' '}
+                <a href={`mailto:${person.email}`} className="link">
+                  {person.email}
+                </a>
+              </p>
+            </Reveal>
           </div>
         </div>
 
-        <form onSubmit={senden} className="lg:col-span-6 lg:col-start-7" noValidate={false}>
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Feld id={`${id}-name`} label="Name" name="name" autoComplete="name" required />
-            <Feld id={`${id}-betrieb`} label="Betrieb" name="betrieb" autoComplete="organization" required />
-            <Feld id={`${id}-email`} label="E-Mail" name="email" type="email" autoComplete="email" required />
-            <Feld id={`${id}-telefon`} label="Telefon" name="telefon" type="tel" autoComplete="tel" optional />
-            <div className="sm:col-span-2">
-              <Feld
-                id={`${id}-website`}
-                label="Ihre heutige Website"
-                name="website"
-                type="url"
-                placeholder="https://"
-                optional
-              />
+        <Reveal className="lg:col-span-6 lg:col-start-7" delay={0.1}>
+          <form onSubmit={senden} className="glass-lite rounded-stage p-6 sm:p-8" noValidate={false}>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Feld id={`${id}-name`} label="Name" name="name" autoComplete="name" required />
+              <Feld id={`${id}-betrieb`} label="Betrieb" name="betrieb" autoComplete="organization" required />
+              <Feld id={`${id}-email`} label="E-Mail" name="email" type="email" autoComplete="email" required />
+              <Feld id={`${id}-telefon`} label="Telefon" name="telefon" type="tel" autoComplete="tel" optional />
+              <div className="sm:col-span-2">
+                <Feld
+                  id={`${id}-website`}
+                  label="Ihre heutige Website"
+                  name="website"
+                  type="url"
+                  placeholder="https://"
+                  optional
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label htmlFor={`${id}-nachricht`} className="mb-2 block text-sm font-medium">
+                  Nachricht <span className="font-normal text-muted">optional</span>
+                </label>
+                <textarea id={`${id}-nachricht`} name="nachricht" rows={4} className={cn(FELD, 'resize-y')} />
+              </div>
             </div>
-            <div className="sm:col-span-2">
-              <label htmlFor={`${id}-nachricht`} className="mb-2 block text-sm font-medium">
-                Nachricht <span className="font-normal text-muted">optional</span>
-              </label>
-              <textarea id={`${id}-nachricht`} name="nachricht" rows={4} className={cn(FELD, 'resize-y')} />
+
+            <div className="absolute left-[-9999px]" aria-hidden="true">
+              <label htmlFor={`${id}-honey`}>Bitte frei lassen</label>
+              <input id={`${id}-honey`} name="_honey" type="text" tabIndex={-1} autoComplete="off" />
             </div>
-          </div>
 
-          <div className="absolute left-[-9999px]" aria-hidden="true">
-            <label htmlFor={`${id}-honey`}>Bitte frei lassen</label>
-            <input id={`${id}-honey`} name="_honey" type="text" tabIndex={-1} autoComplete="off" />
-          </div>
+            <div className="mt-8 flex flex-col gap-5 sm:flex-row sm:items-center">
+              <Magnetic staerke={0.25}>
+                <button
+                  type="submit"
+                  disabled={zustand === 'sendet'}
+                  className="btn btn--kobalt disabled:cursor-progress disabled:opacity-70"
+                >
+                  {zustand === 'sendet' ? 'Wird gesendet …' : anfrage.senden}
+                </button>
+              </Magnetic>
 
-          <div className="mt-8 flex flex-col gap-5 sm:flex-row sm:items-center">
-            <Magnetic staerke={0.25}>
-              <button
-                type="submit"
-                disabled={zustand === 'sendet'}
-                className="inline-flex h-13 items-center rounded-pill bg-kobalt px-7 text-base font-medium text-paper transition-colors duration-200 ease-out hover:bg-ink disabled:cursor-progress disabled:opacity-70"
-              >
-                {zustand === 'sendet' ? 'Wird gesendet …' : anfrage.senden}
-              </button>
-            </Magnetic>
-
-            <p role="status" aria-live="polite" className="text-base text-ink/80">
-              {zustand === 'gesendet' && anfrage.erfolg}
-              {zustand === 'fehler' && (
-                <>
-                  {anfrage.fehler}{' '}
-                  <a href={`mailto:${person.email}`} className="link">
-                    {person.email}
-                  </a>
-                </>
-              )}
-            </p>
-          </div>
-        </form>
+              <p role="status" aria-live="polite" className="text-base text-ink/80">
+                {zustand === 'gesendet' && anfrage.erfolg}
+                {zustand === 'fehler' && (
+                  <>
+                    {anfrage.fehler}{' '}
+                    <a href={`mailto:${person.email}`} className="link">
+                      {person.email}
+                    </a>
+                  </>
+                )}
+              </p>
+            </div>
+          </form>
+        </Reveal>
       </div>
     </section>
   )

@@ -7,79 +7,87 @@
 
 Nicks Website als Verkaufsinstrument für seinen Website-Nebenerwerb. Zielgruppe:
 Inhaber kleiner Schweizer Betriebe, die den Link vom Handy aus öffnen. Ziel der
-Seite: eine Anfrage über das Formular. **Live:** https://nick8952.github.io/portfolio-website/
+Seite: eine Anfrage über das Formular.
 
-Version 2 (2026-09-13) — der frühere Sanity/WebGL-Stand wurde komplett ersetzt.
-Glasoptik und Dock statt Stapel: 2026-09-13, zweite Runde.
-Git-Historie vor `v2` ist nur noch Archiv.
+**Live (primär):** https://nick-hbr.vercel.app/ · Spiegel: https://nick8952.github.io/portfolio-website/
+
+Version 3 (2026-11-10): Umbau «wie kingofon.ch» — Dramaturgie, Effekte und
+Darstellungsformen einer Premium-Agenturseite, aber hell, mit belegten Inhalten
+und der ersten echten Referenz (Thai Restaurant Suwannaphum). Version 2
+(2026-09-13, Glas-Pille + Dock/Sheet) ist Git-Historie; v1 (Sanity/WebGL) = Tag `v1-archiv`.
 
 ## Stack
 
-Next.js 15 (App Router) · TypeScript · Tailwind 3.4 · Framer Motion 12. **Kein Lenis mehr** —
+Next.js 15 (App Router) · TypeScript · Tailwind 3.4 · Framer Motion 12. **Kein Lenis** —
 natives Scrollen, Ankerlinks per CSS `scroll-behavior: smooth`.
-**Statischer Export** (`output: 'export'`) auf GitHub Pages, Basispfad
-`/portfolio-website`. Kein CMS, kein Backend, keine Server-Routen.
+**Statischer Export** (`output: 'export'`), derselbe Code für zwei Ziele:
+Vercel (Basispfad leer, erkannt an `process.env.VERCEL`) und GitHub Pages
+(Basispfad `/portfolio-website`, gesetzt im Workflow). Kein CMS, kein Backend.
 
 ## Wo was liegt
 
 ```
-lib/content.ts        ALLE Texte, Preise, Websites. Hier pflegen, sonst nirgends.
+lib/content.ts        ALLE Texte, Preise, Referenz, Demos, FAQ, Vergleich, Kennzahlen.
 lib/utils.ts          cn(), chf(), asset() — asset() setzt den Basispfad davor.
-app/                  layout (Fonts, Meta), page (Reihenfolge), robots, sitemap, icon
-components/layout     Nav, Footer
-components/sections   Hero, Websites, Ablauf, Preise, UeberMich, Anfrage
-components/motion     Cursor (Kobalt-Ring), Magnetic
-components/ui/IPhone  Das iPhone aus Geometrie — Hero und Sheet nutzen dasselbe
-tools/screenshots.mjs Erzeugt public/websites/*.jpg aus den Live-Demos
+app/                  layout (3 Fonts, Meta), page (Reihenfolge + JSON-LD), robots, sitemap, icon
+components/layout     Nav (vollbreite Leiste, Uhr, Menü-Dialog), Footer
+components/sections   Hero (Schaufenster-Wand) · Laufband · Referenz (Scroll-Scrub) ·
+                      Erkennen (Ringe + Pillen) · Websites (Demo-Karten) · Ablauf · Preise ·
+                      Vergleich · UeberMich (+ Kennzahlen) · Faq · Anfrage
+components/motion     Cursor (Kobalt-Ring), Magnetic, Reveal, useSichtbar/useMedia
+components/ui         IPhone (Geometrie), Browser (Fensterrahmen), AnfrageKarte
+tools/screenshots.mjs Erzeugt public/websites/<slug>-{desktop,desktop-lang,mobile,mobile-lang,mobile-klein}.webp
 tools/websites-source.mjs  Adressen dafür — Slugs müssen zu content.ts passen
+tools/vorschau.mjs    Fotografiert den Build (Desktop/Mobil in Scroll-Schritten) nach pruefung/
 ```
 
 ## Regeln, die nicht verhandelbar sind
 
 - **Nur belegte Inhalte.** Keine Kundenlogos, keine Testimonials, keine Zahl
-  «zufriedener Kunden», kein Lehrbetrieb, kein Standort — nichts davon ist bestätigt.
-  `fahrschule-ch.ch` zeigt auf die *alte* Kundenseite und gehört nicht in die Liste.
+  «zufriedener Kunden», kein Lehrbetrieb, kein Standort. Jede Kennzahl hat eine
+  Fussnote, worauf sie sich bezieht. `fahrschule-ch.ch` zeigt weiterhin auf die
+  *alte* Kundenseite (Weblication CMS, geprüft 10.11.2026) und gehört nicht in die Liste.
 - **Drei Farben.** Papier, Tinte, Kobalt (`#1c50be`). Grau nur als Ableitung. Kobalt
   ist auf Dunkel 2,8:1 — dort nur als Fläche; für Text `kobalt-lift`.
-- **Keine Eyebrows über Headlines, keine Sektionsnummern** ausser im Ablauf (dort ist
-  die Reihenfolge Information). Kartenraster nur bei den Preisen — Nicks Vorlage,
-  bewusste Ausnahme. Siehe `DESIGN.md`.
-- **Websites nur auf Wunsch.** Das Dock in `Websites.tsx` ist eine Reihe kleiner
-  Kacheln; die grosse Ansicht kommt erst im Sheet nach dem Antippen. Ein Stapel aus
-  Vollbild-Panels, an dem man nicht vorbeikommt, war Nicks ausdrücklicher Einwand —
-  nicht wieder einbauen.
-- **Glas nur auf der schwebenden Schicht:** Navigation, Sekundär-Buttons, Dock-Kacheln,
-  Sheet, das Regelfall-Panel in den Preisen. Nie als Füllung ganzer Sections.
-  Klassen `glass`, `glass-strong`, `glass-dark` in `globals.css`; das Umgebungslicht
-  (`.ambient`) im Hero ist der Grund, warum das Glas überhaupt als Glas lesbar ist.
+- **Hell.** Nicks Entscheid vom 10.11.2026: kingofon ist dunkel, diese Seite bleibt
+  weiss. Schwarz nur als Karte (Regelfall-Preis) und Schaltfläche.
+- **Etiketten in Geist Mono** (`.eyebrow`): ein Schrägstrich-Eyebrow über jeder Section,
+  Meta-Zeilen in Karten, Uhr, Kennzahl-Labels. Nie Fliesstext, nie als Terminal-Kostüm.
+- **Die Referenz wiegt mehr als die Demos.** Suwannaphum bekommt die grosse Bühne;
+  die Demos stehen als Karten (sechs sofort, Rest nach Klick) und sind als «ohne
+  Auftrag gebaut» gekennzeichnet. Kein Stapel aus Vollbild-Panels.
+- **Bewegung nur, wo sie Compositor-Arbeit ist** (transform/opacity) und nur, wo
+  Bedeutung drin ist. Alles steht unter `prefers-reduced-motion` sofort im Endzustand.
 - Schweizer Schreibweise, «Sie», CHF mit Apostroph (`chf()`).
 
 ## Technische Fallen
 
 - **`asset()` für alles unter `public/`.** `next/image` ist aus (`unoptimized`), ein
-  plain `<img src="/x.jpg">` würde auf GitHub Pages den Basispfad verfehlen → 404.
+  plain `<img src="/x.webp">` würde auf GitHub Pages den Basispfad verfehlen → 404.
+- **Tailwind-Utility-Namen nicht als eigene Klassen verwenden.** `.ring` war Tailwinds
+  `ring` (3px blauer box-shadow) und zeichnete blaue Rechtecke um die SVG-Ringe → heisst
+  jetzt `.orbit`. Vor neuen Klassennamen kurz prüfen (`ring`, `shadow`, `border`, `grid`…).
+- **`contain-intrinsic-size: auto 34rem` setzt auch die Breite.** Mit `content-visibility:
+  auto` wurden die Demo-Karten auf Mobil 34rem breit (174px Überlauf). Nur
+  `contain-intrinsic-height` setzen.
 - **Scroll-Ruckeln (14.09.2026, von Nick gemeldet).** Ursachen, alle entfernt — nicht
-  wieder einbauen: Lenis-Smooth-Scroll (fühlt sich auf dem Trackpad verzögert an);
-  SVG-`feDisplacementMap` als `backdrop-filter` auf der fixierten Nav (verzerrt bei jedem
-  Frame den Hintergrund neu); `filter: blur(80px)` auf grossen, dauerhaft animierten
-  Flächen (jetzt statischer `radial-gradient`); `backdrop-filter` auf Dock-Kacheln und
-  Preis-Panel (über einfarbigem Grund wirkungslos → `glass-lite`). Dazu: Hero-Wechsel
-  pausiert ausserhalb des Viewports, Cursor-rAF läuft nur, solange der Ring unterwegs ist.
-  `backdrop-filter` bleibt nur auf Nav, Sheet, Menü.
-- **`@supports (backdrop-filter: url(#x))` ist in Safari eine Falle.** Safari 18+ besteht
-  den Test, rendert aber keine SVG-Backdrop-Filter und verwirft dabei die ganze Kette
-  samt Blur. (Die SVG-Linse ist inzwischen ganz raus — wegen Ruckeln.) Fund von Codex.
-- **Glas über Schwarz braucht Füllung.** 38 % Papier ergibt 2,6:1; die gescrollte Nav
-  hat 70 % (die Preis-Section ist inzwischen hell, die Regelfall-Karte aber schwarz). Fund von Codex.
-- **Prozent-Insets sind nicht quadratisch.** `inset-[2.4%]` misst oben/unten an der
-  Höhe, seitlich an der Breite — beim iPhone (2,06:1) wäre der Rand oben doppelt so
-  dick. Deshalb `inset-x-[2.4%] inset-y-[1.165%]`. Fund von Codex.
-- **Tailwind-Deckkraft nur in 5er-Schritten.** `bg-ink/6` erzeugt stillschweigend keine
-  Klasse. Zweimal hineingelaufen.
-- **`sitemap.ts` / `robots.ts` brauchen `dynamic = 'force-static'`**, sonst bricht
-  der Export.
-- **Screenshots mit `waitUntil: 'load'`**, nicht networkidle — Demos mit
-  Canvas-Animation werden sonst nie «idle» und das Skript läuft in den Timeout.
+  wieder einbauen: Lenis; SVG-`feDisplacementMap` als `backdrop-filter`; `filter: blur(80px)`
+  auf grossen animierten Flächen; `backdrop-filter` auf statischen Kacheln. Heute hat nur
+  die Navigationsleiste und das Mobil-Menü `backdrop-filter`. Hero-Wand, Laufband und
+  Ringe laufen als CSS-Keyframes auf `transform`, pausieren per IntersectionObserver
+  (`data-pausiert`) und bei verborgenem Tab (`useSichtbar`).
+- **Framer Motion überschreibt `transform`.** Ein Element mit `style={{ x, y, scale }}`
+  verliert Tailwind-Translate-Klassen → Zentrierung über `x: '-50%'` im style.
+- **Hero-Wort-Wechsel ohne `mode="wait"`** — sonst steht für 0,5 s eine leere Zeile.
+- **Container-Einheiten in den Demo-Karten:** `.rahmen { container-type: size }` liefert
+  `100cqh`, damit das lange Bild beim Hover exakt am unteren Rand hält.
+- **`@supports (backdrop-filter: url(#x))` ist in Safari eine Falle** (SVG-Linse ist raus).
+- **Prozent-Insets sind nicht quadratisch** — beim iPhone `inset-x-[2.4%] inset-y-[1.165%]`.
+- **Tailwind-Deckkraft nur in 5er-Schritten.** `bg-ink/6` erzeugt stillschweigend keine Klasse.
+- **`sitemap.ts` / `robots.ts` brauchen `dynamic = 'force-static'`**, sonst bricht der Export.
+- **Screenshots mit `waitUntil: 'load'`**, nicht networkidle. `www.suwannaphum.ch` liegt
+  hinter dem Vercel-Sicherheits-Checkpoint → aufgenommen wird der vercel.app-Alias
+  (gleiche Veröffentlichung), verlinkt die echte Domain.
 - Formular: FormSubmit (AJAX-Endpunkt). Beim **allerersten** Versand kommt eine
   Aktivierungs-Mail an `holzbechernick@gmail.com`; erst nach dem Klick darin werden
   Anfragen zugestellt. Fallback im Fehlerfall: Mailto.
@@ -87,20 +95,26 @@ tools/websites-source.mjs  Adressen dafür — Slugs müssen zu content.ts passe
 ## Befehle
 
 ```
-npm run dev           lokal, http://localhost:3000
-npm run build         statischer Export nach out/
+npm run dev           lokal, http://localhost:3000 (Basispfad /portfolio-website!)
+npm run build         statischer Export nach out/ (GitHub-Pages-Variante)
+BASE_PATH= SITE_ORIGIN=http://localhost:4173 npm run build && npm run vorschau
+                      Vercel-Variante bauen und nach pruefung/ fotografieren
 npm run screenshots   Vorschaubilder neu erzeugen (Chrome nötig; ONLY=<slug> für eine)
 npm run lint / typecheck
 ```
 
-Deploy: Push auf `main` → `.github/workflows/deploy.yml` → GitHub Pages.
+Deploy: Push auf `main` → Vercel baut automatisch (Projekt `nick-hbr`, Scope nick-3488,
+GitHub verbunden) **und** `.github/workflows/deploy.yml` → GitHub Pages.
 
 ## Offen
 
-(Portrait ist drin: `public/portrait.jpg`, neu kodiert ohne Metadaten. Zum Tauschen einfach
-die Datei ersetzen — gleicher Name, Hochformat.)
-
-- FormSubmit: Testanfrage am 14.09.2026 gesendet (HTTP 200) → **Aktivierungs-Mail in
-  holzbechernick@gmail.com bestätigen**, sonst werden Anfragen nicht zugestellt
-- Fahrschule CH wieder aufnehmen, sobald die Domain auf die Demo zeigt
-- Eigene Domain (Ablauf im Workflow kommentiert)
+- FormSubmit: Aktivierungs-Mail in holzbechernick@gmail.com bestätigen (Testanfrage 14.09.2026)
+- Eigene Domain (dann `SITE_ORIGIN` als Vercel-Env setzen; GitHub-Pages-Spiegel ggf. abschalten
+  oder auf noindex stellen — zwei indexierte Kopien sind unnötig)
+- Offline gegangene Demos: Gusto Campano (GitHub Pages aus, Vercel-Projekt am 3.11. gelöscht),
+  Fahrschul-Center und FKM Fahrschule (GitLab-Projekte nicht mehr öffentlich) — wieder
+  aufnehmen, sobald sie erreichbar sind (Eintrag in content.ts + websites-source.mjs,
+  `ONLY=<slug> npm run screenshots`)
+- Suwannaphum als Referenz: das Restaurant wollte Nick auf *seiner* Website nicht als
+  Gestalter nennen (22.10.2026) — ob es mit der Nennung *hier* einverstanden ist, hat Nick
+  zu klären
