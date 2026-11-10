@@ -34,7 +34,9 @@ export default function Erkennen() {
       // Ringe clippt die Buehne selbst.
       className="erkennen section relative border-t border-hairline"
     >
-      <div className="erkennen__buehne relative flex min-h-[32rem] flex-col items-center justify-center overflow-hidden py-10">
+      {/* position, min-height und padding stehen in globals.css (.erkennen__buehne):
+          Tailwind-Utilities wuerden die sticky-Regel der Media Query ueberstimmen. */}
+      <div className="erkennen__buehne flex flex-col items-center justify-center overflow-hidden">
         {/* Die Ringe: drei Kreise, zwei davon mit Luecke und langsam drehend.
             Klasse «orbit» — «ring» waere Tailwinds box-shadow-Utility. */}
         <Ring groesse="min(120vw, 62rem)" dash />
@@ -53,7 +55,9 @@ export default function Erkennen() {
             <p className="mx-auto mt-5 max-w-measure text-lede text-ink/70 text-pretty">{erkennen.text}</p>
           </Reveal>
 
-          <ul className="erkennen__fluss mt-10 flex flex-wrap justify-center gap-3" aria-label="Fünf Merkmale">
+          {/* display steht in globals.css — eine Tailwind-flex-Utility wuerde das
+              display: none der Media Query ueberstimmen. */}
+          <ul className="erkennen__fluss mt-10" aria-label="Fünf Merkmale">
             {erkennen.punkte.map((p, i) => (
               <Reveal key={p} delay={0.07 * i}>
                 <li className="glass-lite inline-flex items-center gap-2.5 rounded-pill px-4 py-2.5 text-[0.9375rem] font-medium">

@@ -566,6 +566,17 @@
      der Hydration, sonst springt das Layout auf dem Desktop nachtraeglich um.
      Zwei Pillen-Varianten sind im DOM; CSS zeigt die passende.
   ------------------------------------------------------------------- */
+  .erkennen__buehne {
+    position: relative;
+    min-height: 32rem;
+    padding: 2.5rem 0;
+  }
+  .erkennen__fluss {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
   .erkennen__schwebend {
     display: none;
   }
