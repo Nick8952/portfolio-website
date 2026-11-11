@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useId, useState, type FormEvent } from 'react'
 
 import Magnetic from '@/components/motion/Magnetic'
@@ -139,6 +140,14 @@ export default function Anfrage() {
                 )}
               </p>
             </div>
+
+            <p className="mt-5 text-sm text-muted">
+              Mehr zur Bearbeitung Ihrer Angaben in der{' '}
+              <Link href="/datenschutz/" className="link">
+                Datenschutzerklärung
+              </Link>
+              .
+            </p>
           </form>
         </Reveal>
       </div>

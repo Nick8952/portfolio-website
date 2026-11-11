@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 import { footer, navigation, person } from '@/lib/content'
 
 /**
@@ -54,7 +56,12 @@ export default function Footer() {
       <div className="border-t border-hairline">
         <div className="shell flex flex-col gap-3 py-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="eyebrow normal-case tracking-[0.05em]">{footer.technik}</p>
-          <p className="eyebrow tnum">© {new Date().getFullYear()} {person.name}</p>
+          <p className="eyebrow tnum">
+            <Link href="/datenschutz/" className="transition-colors duration-200 ease-out hover:text-kobalt">
+              Datenschutz
+            </Link>
+            <span className="mx-3" aria-hidden="true">·</span>© {new Date().getFullYear()} {person.name}
+          </p>
         </div>
       </div>
     </footer>

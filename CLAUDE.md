@@ -30,6 +30,8 @@ Vercel (Basispfad leer, erkannt an `process.env.VERCEL`) und GitHub Pages
 ```
 lib/content.ts        ALLE Texte, Preise, Referenz, Demos, FAQ, Vergleich, Kennzahlen.
 lib/utils.ts          cn(), chf(), asset() — asset() setzt den Basispfad davor.
+lib/datenschutz.ts    Datenschutzerklärung (revDSG), gerendert unter /datenschutz/ — URL steht im Meta-Sofortformular.
+                      Neuer Dienst (Pixel, Statistik, Karte, anderer Formulardienst) → Text VORHER anpassen.
 app/                  layout (3 Fonts, Meta), page (Reihenfolge + JSON-LD), robots, sitemap, icon
 components/layout     Nav (vollbreite Leiste, Uhr, Menü-Dialog), Footer
 components/sections   Hero (Schaufenster-Wand) · Laufband · Referenz (Scroll-Scrub) ·
@@ -120,6 +122,8 @@ GitHub verbunden) **und** `.github/workflows/deploy.yml` → GitHub Pages.
 
 ## Offen
 
+- FormSubmit legt Sitz/Bearbeitungsort nicht offen (Codex-Review 11.11.2026) → mittelfristig durch CH/EU-Formulardienst ersetzen und `lib/datenschutz.ts` nachziehen
+- Datenschutz: Postadresse beim Verantwortlichen ergänzen, falls Nick sie nennen will
 - FormSubmit: Aktivierungs-Mail in holzbechernick@gmail.com bestätigen (Testanfrage 14.09.2026)
 - Eigene Domain (dann `SITE_ORIGIN` + `SITE_KANONISCH` als Vercel-Env setzen; der GitHub-Pages-Spiegel
   ist bereits noindex)
