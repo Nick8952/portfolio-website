@@ -27,6 +27,28 @@
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  /* Dunkles Design: dieselben drei Farben, Papier und Tinte getauscht. Kobalt
+     wird zur hellen Stufe (6,4:1 auf Dunkel), die Lift-Stufe zum satten Blau —
+     so stimmen alle Kontraste, ohne dass eine Komponente etwas wissen muss.
+     Gesetzt per data-theme am <html> (Inline-Skript in layout.tsx, Schalter in
+     components/ui/ThemeToggle.tsx), gespeichert in localStorage «design». */
+  html[data-theme='dark'] {
+    --paper: 11 11 12; /* #0B0B0C */
+    --ink: 245 245 245; /* #F5F5F5 */
+    --kobalt: 107 143 240; /* #6B8FF0 */
+    --kobalt-lift: 28 80 190; /* #1C50BE — fuer Text auf der hellen Regelfall-Karte */
+    --muted: 160 160 160; /* #A0A0A0 — 8,3:1 auf #0B0B0C */
+    --hairline: 38 38 41; /* #262629 */
+    --sunk: 20 20 22; /* #141416 */
+    color-scheme: dark;
+  }
+  /* Der Schalter zeigt das Symbol des jeweils anderen Designs — per CSS, damit
+     Server und Client dasselbe Markup rendern. */
+  html[data-theme='dark'] .nur-hell,
+  html:not([data-theme='dark']) .nur-dunkel {
+    display: none;
+  }
+
   html {
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: 5.5rem;
@@ -509,6 +531,11 @@
       transform: translate3d(0, calc(-100% + 100cqh), 0);
       transition: transform 6.5s linear;
     }
+  }
+  /* Auf Touch: Antippen startet dieselbe Fahrt (aria-pressed-Schalter in Websites.tsx). */
+  .demo-karte[data-aktiv='true'] .rahmen__bild {
+    transform: translate3d(0, calc(-100% + 100cqh), 0);
+    transition: transform 6.5s linear;
   }
 
   /* -------------------------------------------------------------------

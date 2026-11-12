@@ -117,6 +117,19 @@ export default function Anfrage() {
               <input id={`${id}-honey`} name="_honey" type="text" tabIndex={-1} autoComplete="off" />
             </div>
 
+            {/* Ausdrueckliche Einwilligung in die Weiterleitung ueber FormSubmit
+                (Sitz unbekannt → Art. 17 Abs. 1 Bst. a DSG). Pflichtfeld. */}
+            <label htmlFor={`${id}-einwilligung`} className="mt-6 flex items-start gap-3 text-sm leading-relaxed text-ink/80">
+              <input
+                id={`${id}-einwilligung`}
+                name="einwilligung"
+                type="checkbox"
+                required
+                className="mt-1 h-4 w-4 shrink-0 accent-kobalt"
+              />
+              <span>{anfrage.einwilligung}</span>
+            </label>
+
             <div className="mt-8 flex flex-col gap-5 sm:flex-row sm:items-center">
               <Magnetic staerke={0.25}>
                 <button

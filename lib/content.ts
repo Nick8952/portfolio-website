@@ -5,10 +5,13 @@
  * - Nur, was stimmt. Keine Kundenlogos, keine Testimonials, keine Zahlen, die
  *   nicht belegt sind. Fehlt etwas, fehlt es — statt erfunden zu werden.
  * - Schweizer Schreibweise («ss»), Preise in CHF, Anrede «Sie».
- * - Websites: nur oeffentlich erreichbare, und nur eigene. fahrschule-ch.ch zeigt
- *   weiterhin auf die alte Kundenseite und gehoert deshalb NICHT hierher.
- *   Adressen werden beim Build nicht geprueft — nach dem Abschalten einer Demo
- *   den Eintrag hier UND in tools/websites-source.mjs entfernen.
+ * - Beispiel-Websites (status 'beispiel'): ohne Auftrag entworfen, der Betrieb
+ *   dahinter hat NICHT zugestimmt, damit geworben zu werden. Deshalb erscheinen
+ *   sie nur als Musterbetrieb: neutraler Slug (steht in den Bild-URLs!), kein
+ *   Name, kein Link, Screenshots mit ersetzten Namen/Logos/Kontaktdaten und
+ *   weichgezeichneten Fotos (tools/anonymisieren.mjs). Nicks Regel vom 11.11.2026.
+ * - Die Referenz (status 'kunde') ist ein abgeschlossener Auftrag und wird auf
+ *   Nicks Entscheid (11.11.2026) mit Namen und Link gezeigt.
  */
 
 export const person = {
@@ -16,34 +19,39 @@ export const person = {
   vorname: 'Nick',
   rolle: 'Websites für kleine Betriebe',
   email: 'holzbechernick@gmail.com',
+  /** Postadresse laut Nick (11.11.2026): nur PLZ und Ort — Strasse siehe CLAUDE.md «Offen». */
+  adresse: { plz: '8952', ort: 'Schlieren', land: 'Schweiz' },
+  linkedin: 'https://www.linkedin.com/in/nick-h-134b5436a/',
   ausbildung: {
     titel: 'Informatiker EFZ',
     fachrichtung: 'Plattformentwicklung',
     stand: '3. Lehrjahr',
   },
-  github: 'https://github.com/Nick8952',
   /** Liegt unter public/portrait.jpg. Fehlt die Datei, zeigt UeberMich den Platzhalter. */
   portrait: '/portrait.jpg',
 } as const
 
 export type Website = {
+  /** Neutraler Slug — er steht in den Bild-URLs und darf keinen Betrieb verraten. */
   slug: string
+  /** Anzeigetitel: beim Kunden der Name, bei Beispielen eine Beschreibung. */
   name: string
   branche: string
   ort: string
   jahr: number
-  /** Echter Kunde mit eigener Domain — oder Demo, die ohne Auftrag entstand. */
-  status: 'kunde' | 'demo'
-  url: string
+  /** Echter Kunde mit eigener Domain — oder Beispiel, das ohne Auftrag entstand. */
+  status: 'kunde' | 'beispiel'
+  /** Nur beim Kunden: die echte Adresse. Beispiele haben keinen Link. */
+  url?: string
+  /** Angezeigte Adresse in der Browser-Zeile des Rahmens; bei Beispielen eine .example-Adresse. */
+  anzeigeUrl: string
   /** Was an dieser Website bemerkenswert ist — ein Satz, keine Feature-Liste. */
   satz: string
   /** Oberer Rand der Website ist hell → dunkle Glyphen in der iPhone-Statusleiste. */
   hellerKopf?: boolean
-  /** Angezeigte Adresse ohne Protokoll, fuer die Browser-Zeile im Rahmen. */
-  anzeigeUrl: string
 }
 
-/** Die Referenz: der erste Kunde, dessen Website live ist. Steht gesondert vor den Demos. */
+/** Die Referenz: der erste Kunde, dessen Website live ist. Steht gesondert vor den Beispielen. */
 export const referenz = {
   slug: 'suwannaphum',
   eyebrow: '2026 · Restaurant · Schlieren',
@@ -58,14 +66,15 @@ export const referenz = {
   linkLabel: 'suwannaphum.ch öffnen',
   kennzahlen: [
     { wert: '5', einheit: 'Tage', label: 'Demo bis Veröffentlichung' },
-    { wert: '0', einheit: 'Cookies', label: 'kein Banner nötig' },
-    { wert: '0', einheit: 'CHF', label: 'Vorabkosten im Projekt' },
+    { wert: '0', einheit: 'Cookies', label: 'kein Tracking, kein Banner' },
+    { wert: '11', einheit: 'Bilder', label: 'der Karte wurden eine Speisekarte' },
   ],
 } as const
 
 /**
- * Die Demos — alle ohne Auftrag gebaut, alle oeffentlich erreichbar (geprueft
- * 10.11.2026). Reihenfolge: die staerksten zuerst.
+ * Referenz und Beispiele. Reihenfolge: die staerksten zuerst. Die Beispiele
+ * tragen neutrale Slugs; welche Demo dahintersteht, weiss nur
+ * tools/websites-source.mjs (fuer die anonymisierten Aufnahmen).
  */
 export const websites: Website[] = [
   {
@@ -81,143 +90,143 @@ export const websites: Website[] = [
     hellerKopf: true,
   },
   {
-    slug: 'advokatur-kanonengasse',
-    name: 'Advokatur Kanonengasse',
+    slug: 'kanzlei',
+    name: 'Mehrsprachige Kanzlei',
     branche: 'Anwaltskanzlei',
-    ort: 'Zürich, Kreis 4',
+    ort: 'Region Zürich',
     jahr: 2026,
-    status: 'demo',
-    url: 'https://nick8952.github.io/advokatur-kanonengasse-demo/',
-    anzeigeUrl: 'advokatur-kanonengasse-demo',
-    satz: 'Sechs Sprachen, Arabisch von rechts nach links — für eine Bürogemeinschaft mitten im Kreis 4.',
+    status: 'beispiel',
+    anzeigeUrl: 'kanzlei-muster.example',
+    satz: 'Mehrsprachiger Auftritt, auch für Schriften von rechts nach links — jede Sprache führt gleich klar zum Kontakt.',
     hellerKopf: true,
   },
   {
-    slug: 'praxis-zuerichberg',
-    name: 'Praxis am Zürichberg',
+    slug: 'zahnarzt',
+    name: 'Zweisprachige Praxis',
     branche: 'Zahnarztpraxis',
-    ort: 'Zürich',
+    ort: 'Region Zürich',
     jahr: 2026,
-    status: 'demo',
-    url: 'https://nick8952.github.io/praxis-zuerichberg-website/',
-    anzeigeUrl: 'praxis-zuerichberg-website',
-    satz: 'Zweisprachig Deutsch und Englisch; jede medizinische Angabe im Wortlaut der Praxis.',
+    status: 'beispiel',
+    anzeigeUrl: 'praxis-muster.example',
+    satz: 'Deutsche und englische Fassung mit identischer Struktur; Behandlungen übersichtlich gegliedert.',
     hellerKopf: true,
   },
   {
-    slug: 'casatex',
-    name: 'Casatex Zürich',
+    slug: 'bodenleger',
+    name: 'Bodenleger mit Materialregister',
     branche: 'Bodenleger',
-    ort: 'Zürich-Altstetten',
+    ort: 'Region Zürich',
     jahr: 2026,
-    status: 'demo',
-    url: 'https://nick8952.github.io/casatex-zuerich-demo/',
-    anzeigeUrl: 'casatex-zuerich-demo',
-    satz: 'Die alte Adresse zeigte nur eine Wartungsseite — hier steht der ganze Betrieb auf einer Seite.',
+    status: 'beispiel',
+    anzeigeUrl: 'boeden-muster.example',
+    satz: 'Materialien zum Durchklicken statt Prospekt — Parkett, Teppich und Beläge auf einen Blick.',
     hellerKopf: true,
   },
   {
-    slug: 'new-york-nails',
-    name: 'New York Nails',
+    slug: 'nagelstudio',
+    name: 'Nagelstudio mit Preisliste',
     branche: 'Nagelstudio',
-    ort: 'Schlieren',
+    ort: 'Region Zürich',
     jahr: 2026,
-    status: 'demo',
-    url: 'https://nick8952.github.io/new-york-nails-schlieren-demo/',
-    anzeigeUrl: 'new-york-nails-schlieren-demo',
-    satz: '31 Behandlungen mit Preisen, direkt aus dem Buchungssystem des Studios übernommen.',
+    status: 'beispiel',
+    anzeigeUrl: 'nails-muster.example',
+    satz: 'Übersichtliche Leistungs- und Preisdarstellung mit direktem Weg zur Online-Terminbuchung.',
   },
   {
-    slug: 'vitis-sportcenter',
-    name: 'VITIS SportCenter',
-    branche: 'Racketsport-Center',
-    ort: 'Schlieren',
+    slug: 'sportcenter',
+    name: 'Racketsport-Center',
+    branche: 'Sportcenter',
+    ort: 'Region Zürich',
     jahr: 2026,
-    status: 'demo',
-    url: 'https://nick8952.github.io/vitis-sportcenter-website/',
-    anzeigeUrl: 'vitis-sportcenter-website',
-    satz: 'Massstäbliche Spielfeld-Grafiken je Sportart; die Reservation führt ins bestehende Buchungssystem.',
+    status: 'beispiel',
+    anzeigeUrl: 'sportcenter-muster.example',
+    satz: 'Massstäbliche Spielfeld-Grafiken je Sportart; die Reservation läuft über ein externes Buchungssystem.',
   },
   {
-    slug: 'maler-attinger',
-    name: 'Maler Attinger',
+    slug: 'maler',
+    name: 'Malerbetrieb mit Farbkarte',
     branche: 'Malerbetrieb',
-    ort: 'Zürich',
+    ort: 'Region Zürich',
     jahr: 2026,
-    status: 'demo',
-    url: 'https://nick8952.github.io/maler-attinger-website/',
-    anzeigeUrl: 'maler-attinger-website',
+    status: 'beispiel',
+    anzeigeUrl: 'maler-muster.example',
     satz: 'Eine Farbkarte als Gestaltungsidee: jede Leistung hat ihren Ton, der Auftritt bleibt ruhig.',
     hellerKopf: true,
   },
   {
-    slug: 'styling-azzurro',
-    name: 'Styling Azzurro',
+    slug: 'coiffeur',
+    name: 'Coiffeursalon',
     branche: 'Coiffeursalon',
-    ort: 'Zürich-Schwamendingen',
+    ort: 'Region Zürich',
     jahr: 2026,
-    status: 'demo',
-    url: 'https://nick8952.github.io/styling-azzurro-website/',
-    anzeigeUrl: 'styling-azzurro-website',
-    satz: 'Karte erst nach einem Klick, keine Drittanbieter beim Laden — und deshalb kein Cookie-Banner.',
+    status: 'beispiel',
+    anzeigeUrl: 'coiffeur-muster.example',
+    satz: 'Karte erst nach einem Klick, keine Drittanbieter beim Laden — ohne Cookie-Banner.',
     hellerKopf: true,
   },
   {
-    slug: 'clean-express',
-    name: 'Clean-Express',
+    slug: 'reinigung',
+    name: 'Reinigungsfirma',
     branche: 'Reinigung',
-    ort: 'Birmensdorf ZH',
+    ort: 'Region Zürich',
     jahr: 2026,
-    status: 'demo',
-    url: 'https://nick8952.github.io/clean-express-website/',
-    anzeigeUrl: 'clean-express-website',
+    status: 'beispiel',
+    anzeigeUrl: 'reinigung-muster.example',
     satz: 'Leistungen klar getrennt, Offertanfrage in drei Feldern — für Kunden, die schnell entscheiden.',
     hellerKopf: true,
   },
   {
-    slug: 'hg-dienstleistungen',
-    name: 'H&G Dienstleistungen',
-    branche: 'Hauswartung & Garten',
-    ort: 'Zufikon AG',
+    slug: 'hauswartung',
+    name: 'Hauswartung & Garten',
+    branche: 'Hauswartung',
+    ort: 'Aargau',
     jahr: 2026,
-    status: 'demo',
-    url: 'https://nick8952.github.io/hg-dienstleistungen-website/',
-    anzeigeUrl: 'hg-dienstleistungen-website',
+    status: 'beispiel',
+    anzeigeUrl: 'hauswartung-muster.example',
     satz: 'Drei Geschäftsbereiche auf einer Seite, ohne dass einer den anderen erdrückt.',
     hellerKopf: true,
   },
   {
-    slug: 'altec-elektro',
-    name: 'Altec Elektro',
+    slug: 'elektro',
+    name: 'Elektrobetrieb mit Notfallnummer',
     branche: 'Elektro-Installationen',
-    ort: 'Zürich',
+    ort: 'Region Zürich',
     jahr: 2026,
-    status: 'demo',
-    url: 'https://nick8952.github.io/altec-elektro-demo/',
-    anzeigeUrl: 'altec-elektro-demo',
+    status: 'beispiel',
+    anzeigeUrl: 'elektro-muster.example',
     satz: 'Notfallnummer immer sichtbar, Referenzen als Belege statt als Galerie.',
     hellerKopf: true,
   },
 ]
 
-/** Die Demos ohne die Referenz — fuer das Raster. */
-export const demos = websites.filter((w) => w.status === 'demo')
+/** Die Beispiele ohne die Referenz — fuer das Raster. */
+export const beispiele = websites.filter((w) => w.status === 'beispiel')
+
+export const beispieleSektion = {
+  eyebrow: 'Beispiele · ohne Auftrag entworfen',
+  titel: 'Zehn Beispiele, wie Ihre Website aussehen könnte.',
+  text:
+    'Jedes entstand als Vorschlag für einen echten Betrieb. Damit niemand ohne sein Einverständnis gezeigt wird, sind Namen, Logos, Fotos und Kontaktdaten durch Musterangaben ersetzt — Aufbau, Typografie und Gestaltung sind echt.',
+  hinweis: 'Mit der Maus darüber oder antippen: die Website scrollt durch.',
+  knopf: 'Beispiel durchscrollen',
+} as const
 
 /**
  * Das Wort, das im Hero wechselt — mit Artikel, damit der Satz stimmt
- * («für Ihr Restaurant», «für Ihren Elektrobetrieb»). Nur Branchen, fuer die
- * eine Website oeffentlich zu sehen ist.
+ * («für Ihr Restaurant», «für Ihren Betrieb»). Kurz gehalten: die Zeile
+ * passt sich zwar automatisch an (Hero.tsx misst das laengste Wort), aber
+ * je kuerzer die Woerter, desto weniger muss sie schrumpfen.
  */
 export const branchen = [
   'Ihr Restaurant',
   'Ihre Kanzlei',
-  'Ihre Zahnarztpraxis',
-  'Ihren Elektrobetrieb',
-  'Ihren Coiffeursalon',
+  'Ihre Praxis',
+  'Ihren Betrieb',
   'Ihr Nagelstudio',
-  'Ihre Reinigungsfirma',
+  'Ihren Salon',
   'Ihr Sportcenter',
-  'Ihren Malerbetrieb',
+  'Ihre Reinigung',
+  'Ihr Handwerk',
   'Ihre Hauswartung',
 ] as const
 
@@ -227,17 +236,17 @@ export const hero = {
   /** Wird als erster, fetter Satz der Unterzeile gesetzt — nicht in der Headline. */
   versprechen: 'Gebaut, bevor Sie sich entscheiden.',
   text:
-    'Ich baue Ihre bestehende Website als moderne Version neu und schicke Ihnen den Link. Sie sehen das Ergebnis, dann reden wir. Keine Vorabkosten, kein Pflichtenheft.',
+    'Ich baue Ihre bestehende Website als moderne Version neu und schicke Ihnen den Link. Sie sehen das Ergebnis, dann reden wir. Unverbindlich, ohne Pflichtenheft.',
   cta: 'Demo anfragen',
   ctaSekundaer: 'Referenz ansehen',
   /** Die kleine Karte unten rechts — wie eine Terminbuchung, nur ohne Termin. */
   karte: {
     titel: 'Demo anfragen',
-    meta: 'Kostenlos · auf mein Risiko',
-    text: 'Antwort innert zwei Werktagen.',
+    meta: 'Unverbindlich · auf mein Risiko',
+    text: 'Eine Demo kann nach ein bis zwei Tagen online sein.',
   },
   /** Beschriftung der Schaufenster-Wand, fuer Screenreader und als Bildlegende. */
-  wandLabel: 'Elf Websites, die ich gebaut habe — laufen als Schaufenster durch.',
+  wandLabel: 'Elf Websites, die ich gebaut habe — laufen als Schaufenster durch. Beispiele mit Musterangaben.',
 } as const
 
 export const erkennen = {
@@ -256,11 +265,11 @@ export const erkennen = {
 export const ablauf = [
   {
     titel: 'Ich baue zuerst',
-    text: 'Sie schicken mir die Adresse Ihrer heutigen Website. Ich baue daraus eine neue Version — unaufgefordert und auf mein Risiko.',
+    text: 'Sie schicken mir die Adresse Ihrer heutigen Website. Ich baue daraus eine neue Version — unaufgefordert und auf mein Risiko. Sie kann nach ein bis zwei Tagen online sein.',
   },
   {
     titel: 'Sie sehen das Ergebnis',
-    text: 'Sie bekommen einen Link. Auf dem Handy, am Computer, ohne Installation. Gefällt es nicht, war es das — Sie schulden mir nichts.',
+    text: 'Sie bekommen einen Link. Auf dem Handy, am Computer, ohne Installation. Gefällt es nicht, war es das — die Demo ist unverbindlich.',
   },
   {
     titel: 'Wir reden über Details',
@@ -332,8 +341,10 @@ export const preise: readonly Preis[] = [
 ]
 
 export const betrieb = {
-  satz: 'Hosting, Sicherheitsupdates und kleine Anpassungen: ab CHF 19 pro Monat. Ohne Abo CHF 90 pro Stunde. Keine Mindestlaufzeit über zwölf Monate.',
-  hinweis: 'Alle Preise ohne MwSt. Der genaue Betrag steht nach dem Gespräch schriftlich fest, bevor Sie etwas zahlen.',
+  satz: 'Hosting, Sicherheitsupdates und kleine Anpassungen: ab CHF 19 pro Monat. Ohne Abo CHF 90 pro Stunde. Laufzeit höchstens zwölf Monate.',
+  /** Nick ist nicht im MwSt-Register (Auskunft 11.11.2026). */
+  hinweis:
+    'Preise in CHF. Ich bin nicht mehrwertsteuerpflichtig; es wird keine MwSt. verrechnet. Der genaue Betrag steht nach dem Gespräch schriftlich fest.',
 } as const
 
 /**
@@ -343,7 +354,7 @@ export const betrieb = {
 export const vergleich = {
   eyebrow: 'Der Unterschied',
   titel: 'Demo zuerst — oder Offerte zuerst.',
-  text: 'Was Sie sehen, bevor Sie etwas zahlen, unterscheidet die drei Wege am deutlichsten. Wo Angebote variieren, steht es so da.',
+  text: 'Was Sie sehen, bevor Sie sich entscheiden, unterscheidet die drei Wege am deutlichsten. Wo Angebote variieren, steht es so da.',
   spalten: ['Demo zuerst', 'Agentur', 'Baukasten'],
   zeilen: [
     {
@@ -352,7 +363,7 @@ export const vergleich = {
     },
     {
       merkmal: 'Erste sichtbare Vorschau',
-      werte: ['Die fertige Demo, bevor Sie zahlen', 'Nach Konzept und Entwurf, je nach Anbieter', 'Sobald Sie selbst gebaut haben'],
+      werte: ['Die fertige Demo, unverbindlich', 'Nach Konzept und Entwurf, je nach Anbieter', 'Sobald Sie selbst gebaut haben'],
     },
     {
       merkmal: 'Anpassungen später',
@@ -360,7 +371,7 @@ export const vergleich = {
     },
     {
       merkmal: 'Laufende Pflege',
-      werte: ['Ab CHF 19 pro Monat, höchstens zwölf Monate Laufzeit', 'Abhängig vom Anbieter', 'Je nach Anbieter im Abo enthalten'],
+      werte: ['Ab CHF 19 pro Monat, Laufzeit höchstens zwölf Monate', 'Abhängig vom Anbieter', 'Je nach Anbieter im Abo enthalten'],
     },
     {
       merkmal: 'Kostenmodell',
@@ -369,12 +380,12 @@ export const vergleich = {
   ],
 } as const
 
-/** Zaehler. Jede Zahl ist belegt: Repos, Projektablauf Suwannaphum, dieses Angebot. */
+/** Zaehler. Jede Zahl ist belegt: Repos, Projektablauf Suwannaphum, Nicks Erfahrungswert. */
 export const kennzahlen = [
   { wert: 20, suffix: '+', prefix: '', label: 'Websites gebaut', fussnote: 'Demos und Kundenprojekte' },
+  { wert: 15, suffix: '+', prefix: '', label: 'Branchen', fussnote: 'vom Restaurant bis zur Kanzlei' },
   { wert: 5, suffix: '', prefix: '', label: 'Tage von der Demo bis live', fussnote: 'Suwannaphum, 16.–21.10.2026' },
-  { wert: 0, suffix: '', prefix: 'CHF ', label: 'Vorabkosten', fussnote: 'bei jeder Demo' },
-  { wert: 2, suffix: '', prefix: '', label: 'Werktage bis zur Antwort', fussnote: 'auf jede Anfrage' },
+  { wert: 2, suffix: '', prefix: '', label: 'Tage, bis eine Demo online sein kann', fussnote: 'ein bis zwei Tage sind möglich' },
 ] as const
 
 export const faq = {
@@ -383,7 +394,7 @@ export const faq = {
   eintraege: [
     {
       frage: 'Was passiert, wenn mir die Demo nicht gefällt?',
-      antwort: 'Nichts. Sie schulden mir nichts, die Demo verschwindet wieder. Das Risiko liegt bewusst bei mir — deshalb baue ich zuerst.',
+      antwort: 'Nichts. Die Demo ist unverbindlich — gefällt sie nicht, verschwindet sie wieder. Das Risiko liegt bewusst bei mir, deshalb baue ich zuerst.',
     },
     {
       frage: 'Warum bauen Sie, bevor ein Auftrag da ist?',
@@ -391,19 +402,19 @@ export const faq = {
     },
     {
       frage: 'Was kostet es wirklich?',
-      antwort: 'Richtwerte stehen oben: ab CHF 1’200, der Regelfall ab CHF 2’500. Der genaue Betrag steht nach dem Gespräch schriftlich fest, bevor Sie etwas zahlen. Alle Preise ohne MwSt.',
+      antwort: 'Richtwerte stehen oben: ab CHF 1’200, der Regelfall ab CHF 2’500. Der genaue Betrag steht nach dem Gespräch schriftlich fest. Preise in CHF; ich bin nicht mehrwertsteuerpflichtig, es kommt keine MwSt. dazu.',
     },
     {
       frage: 'Kann ich Texte, Preise und Öffnungszeiten später selbst ändern?',
-      antwort: 'Ja. Ab der Stufe «Website» bearbeiten Sie Inhalte selbst, ohne Technik. Hosting, Sicherheitsupdates und kleine Anpassungen übernehme ich ab CHF 19 pro Monat — keine Laufzeit über zwölf Monate.',
+      antwort: 'Ja. Ab der Stufe «Website» bearbeiten Sie Inhalte selbst, ohne Technik. Hosting, Sicherheitsupdates und kleine Anpassungen übernehme ich ab CHF 19 pro Monat — Laufzeit höchstens zwölf Monate.',
     },
     {
       frage: 'Wie lange dauert es bis zur fertigen Website?',
-      antwort: 'Auf Ihre Anfrage antworte ich innert zwei Werktagen — mit einem Link zur Demo oder mit Rückfragen. Von der Demo bis live hängt es davon ab, wie schnell Texte, Fotos und Freigaben kommen: bei Suwannaphum waren es fünf Tage.',
+      antwort: 'Eine Demo kann nach ein bis zwei Tagen online sein. Von der Demo bis zur fertigen Website hängt es davon ab, wie schnell Texte, Fotos und Freigaben kommen: bei Suwannaphum waren es fünf Tage.',
     },
     {
       frage: 'Wer sind Sie — und warum so günstig?',
-      antwort: 'Ich bin im dritten Lehrjahr zum Informatiker EFZ, Fachrichtung Plattformentwicklung, und baue Websites nebenbei. Meine Preise liegen unter Agenturniveau, weil ich am Anfang stehe und das nicht verstecke. Wer mir eine Referenz erlaubt, bekommt einen Nachlass.',
+      antwort: 'Ich bin im dritten Lehrjahr zum Informatiker EFZ, Fachrichtung Plattformentwicklung, und baue Websites nebenbei. Meine Preise sind bewusst Einstiegspreise, weil ich am Anfang stehe und das nicht verstecke. Wer mir eine Referenz erlaubt, bekommt einen Nachlass.',
     },
   ],
 } as const
@@ -414,8 +425,9 @@ export const ueberMich = {
   absaetze: [
     'Ich bin Nick, im dritten Lehrjahr zum Informatiker EFZ mit Fachrichtung Plattformentwicklung. Websites für kleine Betriebe baue ich nebenbei — abends und am Wochenende, seit ich gemerkt habe, wie viele gute Betriebe eine Website haben, die ihnen nicht gerecht wird.',
     'Deshalb der Ablauf mit der Demo zuerst: Ein Betriebsinhaber hat keine Zeit für Konzeptgespräche. Er will sehen, was er bekommt. Also zeige ich es ihm.',
-    'Meine Preise liegen unter dem, was Agenturen verlangen. Nicht, weil die Arbeit weniger wert ist, sondern weil ich am Anfang stehe und das nicht verstecke. Wer mir eine Referenz erlaubt, bekommt einen Nachlass.',
+    'Meine Preise sind bewusst Einstiegspreise: Ich stehe am Anfang und verstecke das nicht. Wer mir eine Referenz erlaubt, bekommt einen Nachlass.',
   ],
+  linkedinLabel: 'Profil auf LinkedIn',
   ausbildungTitel: 'Ausbildung',
   ausbildung: [{ was: 'Informatiker EFZ, Plattformentwicklung', detail: '3. Lehrjahr, laufend' }],
   werkzeugeTitel: 'Womit ich baue',
@@ -425,19 +437,26 @@ export const ueberMich = {
 export const anfrage = {
   eyebrow: 'Anfrage',
   titel: 'Schicken Sie mir Ihre Website.',
-  text: 'Adresse Ihrer heutigen Seite genügt. Ich melde mich innerhalb von zwei Werktagen — mit einem Link zur Demo oder mit Rückfragen.',
+  text: 'Adresse Ihrer heutigen Seite genügt. Ich melde mich mit einem Link zur Demo oder mit Rückfragen — eine Demo kann nach ein bis zwei Tagen online sein.',
   senden: 'Anfrage senden',
-  erfolg: 'Angekommen. Ich melde mich innerhalb von zwei Werktagen.',
+  erfolg: 'Gesendet. Falls Sie keine Antwort erhalten, schreiben Sie mir bitte direkt an holzbechernick@gmail.com.',
+  einwilligung:
+    'Ich bin einverstanden, dass meine Angaben über den Formulardienst FormSubmit (Sitz und Speicherort des Anbieters nicht bekannt) an das Postfach von Nick Holzbecher weitergeleitet werden. Alternativ schreibe ich direkt per E-Mail.',
   fehler: 'Das hat nicht geklappt. Schreiben Sie mir direkt:',
 } as const
 
 export const navigation = [
   { label: 'Referenz', href: '#referenz' },
-  { label: 'Websites', href: '#websites' },
+  { label: 'Beispiele', href: '#websites' },
   { label: 'Ablauf', href: '#ablauf' },
   { label: 'Preise', href: '#preise' },
   { label: 'Fragen', href: '#fragen' },
   { label: 'Über mich', href: '#ueber-mich' },
+] as const
+
+export const rechtliches = [
+  { label: 'Impressum', href: '/impressum/' },
+  { label: 'Datenschutz', href: '/datenschutz/' },
 ] as const
 
 export const footer = {

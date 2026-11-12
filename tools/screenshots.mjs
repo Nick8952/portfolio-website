@@ -24,6 +24,8 @@ import puppeteer from 'puppeteer-core'
 import { mkdirSync } from 'node:fs'
 import path from 'node:path'
 
+import { anonymisieren } from './anonymisieren.mjs'
+import { muster } from './muster.mjs'
 import { websites } from './websites-source.mjs'
 
 const CHROME =
@@ -33,6 +35,10 @@ const CHROME =
     : 'C:/Program Files/Google/Chrome/Application/chrome.exe')
 const OUT = path.resolve('public/websites')
 mkdirSync(OUT, { recursive: true })
+// JPEG-Kopien fuer die Sichtpruefung (gitignoriert): zeigen, was nach der
+// Anonymisierung wirklich im Bild steht.
+const PRUEF = path.resolve('pruefung/anonym')
+mkdirSync(PRUEF, { recursive: true })
 
 const ANSICHTEN = {
   desktop: { width: 1440, height: 900, dsf: 1, mobile: false, maxLang: 3600 },
@@ -61,6 +67,26 @@ async function durchscrollen(page, schritt) {
   await warten(600)
 }
 
+/**
+ * Scroll-Enthuellungen, die beim Durchscrollen nicht ausgeloest haben (opacity 0
+ * per IntersectionObserver oder whileInView), sichtbar schalten — sonst bleiben
+ * ganze Abschnitte im langen Bild leer. Fixierte Elemente und aria-hidden bleiben.
+ */
+async function enthuellen(page) {
+  await page.evaluate(() => {
+    document.querySelectorAll('main *, body > section *, article *').forEach((el) => {
+      const cs = getComputedStyle(el)
+      if (cs.position === 'fixed' || el.getAttribute('aria-hidden') === 'true') return
+      if (cs.opacity !== '0') return
+      const r = el.getBoundingClientRect()
+      if (r.height < 40 || r.width < 40) return
+      el.style.setProperty('opacity', '1', 'important')
+      el.style.setProperty('transform', 'none', 'important')
+      el.style.setProperty('visibility', 'visible', 'important')
+    })
+  })
+}
+
 async function aufnehmen(site, name, vp, versuch = 1) {
   const page = await browser.newPage()
   await page.setViewport({
@@ -74,10 +100,26 @@ async function aufnehmen(site, name, vp, versuch = 1) {
   // halbe Abschnitte im langen Bild leer bleiben.
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }])
 
+  // Beispiele werden zum Musterbetrieb: Regelwerk aus tools/muster.mjs. Fehlt es,
+  // wird NICHT aufgenommen — lieber kein Bild als ein erkennbarer Betrieb.
+  const regel = site.anonym ? muster[site.slug] : null
+  if (site.anonym && !regel) {
+    console.error(`FEHL ${site.slug} ${name}: anonym, aber kein Regelwerk in tools/muster.mjs`)
+    process.exitCode = 1
+    await page.close().catch(() => {})
+    return
+  }
+  const maskieren = async () => {
+    if (!regel) return
+    await anonymisieren(page, regel)
+    await warten(350)
+  }
+
   try {
     // 'load' statt networkidle: Seiten mit Canvas-Animation werden sonst nie «idle».
     await page.goto(site.url, { waitUntil: 'load', timeout: 60000 })
     await warten(2600)
+    await maskieren()
 
     // Erster Bildschirm — unveraendert zum frueheren Verhalten.
     await page.screenshot({
@@ -85,10 +127,14 @@ async function aufnehmen(site, name, vp, versuch = 1) {
       type: 'webp',
       quality: 82,
     })
+    await page.screenshot({ path: path.join(PRUEF, `${site.slug}-${name}.jpg`), type: 'jpeg', quality: 70 })
 
     // Ganze Seite, gedeckelt. Fixierte Leisten werden oben einmal eingebrannt — das
     // ist in den Karten der Kopf der Website und soll so sein.
     await durchscrollen(page, Math.round(vp.height * 0.8))
+    await enthuellen(page)
+    // Lazy nachgeladene Bilder und gewechselte Texte: noch einmal maskieren.
+    await maskieren()
     const hoehe = await page.evaluate(() => document.documentElement.scrollHeight)
     const lang = Math.min(hoehe, vp.maxLang)
     await page.screenshot({
@@ -98,11 +144,19 @@ async function aufnehmen(site, name, vp, versuch = 1) {
       captureBeyondViewport: true,
       clip: { x: 0, y: 0, width: vp.width, height: lang },
     })
+    await page.screenshot({
+      path: path.join(PRUEF, `${site.slug}-${name}-lang.jpg`),
+      type: 'jpeg',
+      quality: 60,
+      captureBeyondViewport: true,
+      clip: { x: 0, y: 0, width: vp.width, height: lang },
+    })
     if (name === 'mobile') {
       // Dieselbe Ansicht in 1x fuer die Hero-Wand: dort laufen elf Bilder gleichzeitig.
       await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }))
       await page.setViewport({ width: vp.width, height: vp.height, deviceScaleFactor: 1, isMobile: true, hasTouch: true })
       await warten(500)
+      await maskieren()
       await page.screenshot({
         path: path.join(OUT, `${site.slug}-mobile-klein.webp`),
         type: 'webp',
@@ -127,8 +181,9 @@ async function aufnehmen(site, name, vp, versuch = 1) {
   }
 }
 
-const nur = process.env.ONLY
-for (const site of websites.filter((w) => !nur || w.slug === nur)) {
+// ONLY=<slug> oder ONLY=<slug1>,<slug2> beschraenkt den Lauf.
+const nur = process.env.ONLY ? process.env.ONLY.split(',').map((s) => s.trim()) : null
+for (const site of websites.filter((w) => !nur || nur.includes(w.slug))) {
   for (const [name, vp] of Object.entries(ANSICHTEN)) {
     await aufnehmen(site, name, vp)
   }

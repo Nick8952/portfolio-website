@@ -33,7 +33,9 @@ export default function IPhone({
   helleStatusleiste = false,
   className,
 }: IPhoneProps) {
-  const glyph = helleStatusleiste ? 'text-ink' : 'text-paper'
+  // Feste Farben: die Leiste liegt ueber dem Screenshot, dessen Helligkeit sich
+  // mit dem Design der Seite nicht aendert.
+  const glyph = helleStatusleiste ? 'text-black' : 'text-white'
 
   return (
     // container-type: alle inneren Masse (Statusschrift, Blur) haengen an der
@@ -46,7 +48,7 @@ export default function IPhone({
       <span aria-hidden="true" className="iphone-taste right-[-1.6%] top-[27%] h-[9.6%]" />
 
       <div className="iphone-rahmen absolute inset-0 rounded-[15.5%/7.5%]">
-        <div className="absolute inset-x-[2.4%] inset-y-[1.165%] flex flex-col overflow-hidden rounded-[13.5%/6.6%] bg-ink">
+        <div className="absolute inset-x-[2.4%] inset-y-[1.165%] flex flex-col overflow-hidden rounded-[13.5%/6.6%] bg-black">
           {/* Statusleiste */}
           <div
             aria-hidden="true"

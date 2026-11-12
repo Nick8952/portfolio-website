@@ -12,3 +12,5 @@ next-env.d.ts
 .impeccable/
 pruefung/
 .env*
+tools/muster.mjs
+tools/privat/

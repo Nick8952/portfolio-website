@@ -37,8 +37,11 @@ const mono = Geist_Mono({
 })
 
 export const viewport: Viewport = {
-  themeColor: '#ffffff',
-  colorScheme: 'light',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0b0b0c' },
+  ],
+  colorScheme: 'light dark',
 }
 
 // Der GitHub-Pages-Spiegel zeigt per Canonical auf Vercel und wird nicht indexiert.
@@ -63,10 +66,19 @@ export const metadata: Metadata = {
   robots: { index: !istSpiegel(), follow: true },
 }
 
+/**
+ * Setzt das Design (hell/dunkel) VOR dem ersten Rendern, damit nichts aufblitzt:
+ * gespeicherte Wahl aus localStorage («design»), sonst die Systemeinstellung.
+ * Laeuft als blockierendes Inline-Skript am Anfang des Bodys. Das Attribut
+ * entsteht erst im Browser — deshalb suppressHydrationWarning am <html>.
+ */
+const DESIGN_SKRIPT = `(function(){try{var g=localStorage.getItem('design');var d=g?g==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.dataset.theme=d?'dark':'light'}catch(e){document.documentElement.dataset.theme='light'}})()`
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="de-CH" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+    <html lang="de-CH" className={`${display.variable} ${sans.variable} ${mono.variable}`} suppressHydrationWarning>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: DESIGN_SKRIPT }} />
         <a
           href="#inhalt"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[110] focus:rounded-pill focus:bg-ink focus:px-5 focus:py-3 focus:text-sm focus:text-paper"

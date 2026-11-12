@@ -12,16 +12,39 @@ Alles — Texte, Preise, Referenz, Demos, Fragen, Vergleich, Kennzahlen — steh
 **`lib/content.ts`**. Ändern, speichern, auf `main` pushen. Vercel und GitHub Pages
 bauen selbst; nach etwa zwei Minuten ist beides aktualisiert.
 
-**Eine Website hinzufügen:**
+**Ein Beispiel hinzufügen (Demo ohne Auftrag → nur als Musterbetrieb):**
 
-1. Eintrag in `lib/content.ts` unter `websites` (Slug, Name, Branche, Ort, Adresse, ein Satz).
-2. Denselben Slug mit Adresse in `tools/websites-source.mjs` eintragen.
-3. `npm run screenshots` — erzeugt die fünf WebP-Bilder in `public/websites/`
+1. Eintrag in `lib/content.ts` unter `websites` mit **neutralem Slug** (z. B. `garage`), Status
+   `beispiel`, beschreibendem Titel, Branche, Region, `.example`-Adresse, ein Satz — kein Firmenname,
+   kein Link.
+2. Denselben Slug mit der Demo-Adresse und `anonym: true` in `tools/websites-source.mjs` eintragen.
+3. Regelwerk in `tools/muster.mjs` ergänzen (Namensvarianten, Personen, Adressen, Telefone,
+   E-Mails, Logo-/Banner-/Foto-Selektoren, Textstellen mit Ersatz) — Vorlage: die anderen Einträge;
+   die Datei ist gitignoriert, Sicherung im Brain.
+4. `ONLY=<slug> npm run screenshots` und die Kontrollbilder in `pruefung/anonym/` anschauen: darf
+   nichts mehr auf den Betrieb hinweisen.
+
+**Einen Kunden hinzufügen (mit Einverständnis):** Status `kunde`, Name und `url`, in
+`tools/websites-source.mjs` `anonym: false`.
+
+Für beides danach:
+5. `npm run screenshots` — erzeugt die fünf WebP-Bilder in `public/websites/`
    (erster Bildschirm und ganze Seite, Desktop und Handy, plus eine kleine
    Handy-Aufnahme für die Wand im Hero). Nur eine Website: `ONLY=<slug> npm run screenshots`.
    Hat die Website oben einen hellen Kopf, in `content.ts` `hellerKopf: true` setzen
    (dunkle Glyphen in der iPhone-Statusleiste).
-4. Committen und pushen.
+6. Committen und pushen.
+
+## Dark Mode
+
+Folgt der Systemeinstellung; der Schalter in der Navigation überschreibt sie (localStorage
+`design`). Farben sind Variablen in `app/globals.css` (`html[data-theme='dark']`).
+
+## Rechtsseiten
+
+`/impressum/` (`lib/impressum.ts`) und `/datenschutz/` (`lib/datenschutz.ts`). Bei neuen Diensten
+(Formular, Statistik, Karte) zuerst die Datenschutzerklärung anpassen. Die Postadresse im Impressum
+ist noch unvollständig (nur PLZ/Ort).
 
 Voraussetzung für Schritt 3: Google Chrome ist installiert. Das Skript kennt die
 üblichen Orte auf Windows und macOS; liegt Chrome woanders, den Pfad als `CHROME_PATH` setzen.

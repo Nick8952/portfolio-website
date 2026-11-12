@@ -66,8 +66,8 @@ export default function UeberMich() {
               ))}
             </div>
             <p className="mt-10 text-base">
-              <a href={person.github} target="_blank" rel="noopener noreferrer" className="link">
-                Code auf GitHub
+              <a href={person.linkedin} target="_blank" rel="noopener noreferrer" className="link">
+                {ueberMich.linkedinLabel}
                 <span className="sr-only"> (öffnet in neuem Tab)</span>
               </a>
             </p>

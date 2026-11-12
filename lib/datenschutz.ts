@@ -14,31 +14,35 @@ export type DatenschutzAbschnitt = {
   titel: string
   absaetze?: readonly string[]
   liste?: readonly string[]
+  /** Adresszeilen, gerendert als <address> (Impressum). */
+  adresse?: readonly string[]
 }
 
 export const datenschutz = {
   titel: 'Datenschutzerklärung',
-  stand: '11. November 2026',
+  stand: '12. November 2026',
   einleitung:
     'Hier steht, welche Personendaten ich bearbeite, wenn Sie diese Website besuchen, mir schreiben oder über eine Anzeige auf Facebook oder Instagram eine Anfrage senden. Grundlage ist das Schweizer Datenschutzgesetz (DSG).',
   abschnitte: [
     {
       titel: 'Verantwortlich',
       absaetze: [
-        'Verantwortlich für die Datenbearbeitung ist Nick Holzbecher, Websites für kleine Betriebe, Schweiz. Für alle Fragen zum Datenschutz erreichen Sie mich per E-Mail an holzbechernick@gmail.com.',
+        'Verantwortlich für die Datenbearbeitung ist Nick Holzbecher, 8952 Schlieren, Schweiz. Für alle Fragen zum Datenschutz erreichen Sie mich per E-Mail an holzbechernick@gmail.com.',
       ],
     },
     {
       titel: 'Besuch der Website',
       absaetze: [
         'Die Website wird bei Vercel Inc. (USA) betrieben, eine Kopie liegt bei GitHub Inc. (USA, GitHub Pages). Beim Aufruf verarbeiten diese Anbieter technisch notwendige Daten: IP-Adresse, Datum und Uhrzeit, aufgerufene Seite, Browser und Betriebssystem. Das dient dem sicheren und stabilen Betrieb. Wie lange diese Protokolle gespeichert werden, richtet sich nach den Bedingungen der Hosting-Anbieter.',
-        'Diese Website setzt keine Cookies, nutzt keine Statistik- oder Werbedienste und lädt keine Inhalte von Dritten nach. Die Schriften liegen auf dem eigenen Server.',
+        'Beim blossen Aufruf setzt die Website selbst keine Cookies und bindet keine Analyse-, Werbe-, Karten- oder Social-Media-Inhalte ein; die Schriften liegen auf dem eigenen Server. Erst beim Absenden des Formulars wird eine Verbindung zum unten genannten Formulardienst aufgebaut.',
+        'Ihre Wahl zwischen hellem und dunklem Design merkt sich Ihr Browser lokal (localStorage, Eintrag «design»). Nach aktuellem Stand wird diese Einstellung von der Website weder an mich noch an einen anderen Dienst übermittelt.',
+        'Die Website verlinkt auf mein Profil bei LinkedIn und auf die Website eines Kunden. Vor dem Anklicken wird keine Verbindung zu diesen Anbietern aufgebaut; beim Aufruf gelten deren Datenschutzbestimmungen, und Ihr Browser übermittelt ihnen die üblichen technischen Angaben wie die IP-Adresse.',
       ],
     },
     {
       titel: 'Anfrage über das Formular oder per E-Mail',
       absaetze: [
-        'Wenn Sie das Formular ausfüllen, werden Ihre Angaben (Name, E-Mail, Telefon, Betrieb, Website-Adresse, Nachricht) über den Dienst FormSubmit (formsubmit.co) an mein E-Mail-Postfach bei Google (Gmail) weitergeleitet. FormSubmit speichert Einsendungen nach eigenen Angaben bis zu 30 Tage. Schreiben Sie mir direkt, landet Ihre Nachricht ebenfalls in Gmail.',
+        'Wenn Sie das Formular ausfüllen, werden Ihre Angaben (Name, E-Mail, Telefon, Betrieb, Website-Adresse, Nachricht) über den Dienst FormSubmit (formsubmit.co, betrieben von Devro LABS) an mein E-Mail-Postfach bei Google (Gmail) weitergeleitet. FormSubmit nennt in seinen Datenschutzhinweisen weder Sitz noch Speicherort noch Speicherdauer. Deshalb senden Sie das Formular nur ab, wenn Sie dieser Weiterleitung ausdrücklich zustimmen (Kästchen vor dem Absenden); wer das vermeiden möchte, schreibt mir direkt per E-Mail — die Nachricht landet dann ebenfalls in Gmail.',
         'Ich verwende diese Angaben nur, um Ihre Anfrage zu beantworten und gegebenenfalls ein Angebot zu erstellen.',
       ],
     },
@@ -46,7 +50,7 @@ export const datenschutz = {
       titel: 'Anfrage über Facebook oder Instagram',
       absaetze: [
         'Ich schalte Anzeigen auf Facebook und Instagram. Wenn Sie dort das Anfrageformular ausfüllen, erhalte ich über Meta Platforms Ireland Ltd. (Irland) die Angaben, die Sie im Formular machen: Name, Firmenname, Telefonnummer, E-Mail und Ihre Antworten auf die Fragen (z. B. heutige Website, Ziel, Zeitpunkt, Budget, beste Anrufzeit).',
-        'Ich nutze diese Angaben nur, um Sie wie gewünscht per Telefon, SMS oder E-Mail zu kontaktieren und Ihre Anfrage zu bearbeiten. Für die Bearbeitung Ihrer Daten durch Meta selbst gilt die Datenschutzrichtlinie von Meta.',
+        'Ich nutze diese Angaben nur, um Sie wie gewünscht per Telefon, SMS oder E-Mail zu kontaktieren und Ihre Anfrage zu bearbeiten. Beim ersten Kontakt sage ich Ihnen, dass Ihre Angaben aus dem Formular auf Facebook oder Instagram stammen. Für die Bearbeitung Ihrer Daten durch Meta selbst gilt die Datenschutzrichtlinie von Meta.',
       ],
     },
     {
@@ -56,7 +60,7 @@ export const datenschutz = {
       ],
       liste: [
         'Hosting: Vercel Inc. und GitHub Inc. (USA)',
-        'Formular: FormSubmit (formsubmit.co)',
+        'Formular: FormSubmit (formsubmit.co, Devro LABS; Sitz nicht offengelegt)',
         'E-Mail und Ablage von Anfragen: Google LLC (USA, Gmail und gegebenenfalls Google Tabellen)',
         'Anzeigen und Anfrageformular: Meta Platforms Ireland Ltd. (Irland); konzernintern kann auch Meta Platforms, Inc. (USA) Daten bearbeiten',
         'Telefon und SMS: mein Mobilfunkanbieter',
@@ -65,19 +69,21 @@ export const datenschutz = {
     {
       titel: 'Bekanntgabe ins Ausland',
       absaetze: [
-        'Personendaten können in Irland (EU) und in den USA bearbeitet werden. Für Irland gilt nach Entscheid des Bundesrates ein angemessenes Datenschutzniveau. Übermittlungen an US-Anbieter, die unter dem Swiss-U.S. Data Privacy Framework zertifiziert sind, stützen sich darauf; bei anderen Anbietern auf die vom EDÖB anerkannten Standardvertragsklauseln mit den für die Schweiz nötigen Anpassungen. Wo beides nicht vorliegt (etwa beim Formulardienst FormSubmit), erfolgt die Bekanntgabe nur, weil sie unmittelbar mit der von Ihnen gewünschten Anfrage und einem möglichen Vertrag zusammenhängt (Art. 17 Abs. 1 Bst. b DSG). Wer das vermeiden möchte, schreibt mir direkt per E-Mail.',
+        'Personendaten können in Irland (EU) und in den USA bearbeitet werden. Für Irland gilt nach Entscheid des Bundesrates ein angemessenes Datenschutzniveau.',
+        'Vercel Inc., GitHub Inc., Google LLC und Meta Platforms, Inc. sind nach eigenen Angaben unter dem Swiss-U.S. Data Privacy Framework zertifiziert; darauf stützt sich die Übermittlung in die USA an diese Anbieter.',
+        'Für den Formulardienst FormSubmit (Devro LABS) sind Sitz, Speicherort und Garantien nicht bekannt. Diese Bekanntgabe erfolgt deshalb nur mit Ihrer ausdrücklichen Einwilligung, die Sie mit dem Kästchen vor dem Absenden des Formulars erteilen (Art. 17 Abs. 1 Bst. a DSG). Ohne diese Einwilligung schreiben Sie mir direkt per E-Mail.',
       ],
     },
     {
       titel: 'Wie lange ich Daten aufbewahre',
       absaetze: [
-        'Anfragen, aus denen kein Auftrag entsteht, lösche ich spätestens 12 Monate nach dem letzten Kontakt. Entsteht ein Auftrag, bewahre ich die nötigen Unterlagen so lange auf, wie es das Gesetz verlangt (für Geschäftsunterlagen in der Regel 10 Jahre).',
+        'Anfragen, aus denen kein Auftrag entsteht, lösche ich in meinen eigenen Kopien (Gmail, gegebenenfalls Google Tabellen) spätestens 12 Monate nach dem letzten Kontakt. Speicherfristen der eingesetzten Anbieter sind oben beschrieben, soweit sie bekannt sind. Entsteht ein Auftrag, bewahre ich die nötigen Unterlagen so lange auf, wie es das Gesetz verlangt (für Geschäftsunterlagen in der Regel 10 Jahre).',
       ],
     },
     {
       titel: 'Ihre Rechte',
       absaetze: [
-        'Sie können jederzeit Auskunft verlangen, welche Daten ich über Sie habe, diese berichtigen lassen und ihre Löschung verlangen, soweit keine gesetzliche Aufbewahrungspflicht entgegensteht. Sie können einer weiteren Kontaktaufnahme jederzeit widersprechen. Eine E-Mail an holzbechernick@gmail.com genügt.',
+        'Sie können jederzeit Auskunft verlangen, welche Daten ich über Sie habe, diese berichtigen lassen und ihre Löschung verlangen, soweit keine gesetzliche Aufbewahrungspflicht entgegensteht. Soweit die gesetzlichen Voraussetzungen erfüllt sind, können Sie zudem die Herausgabe oder Übertragung Ihrer Daten in einem gängigen elektronischen Format verlangen (Art. 28 DSG). Sie können einer weiteren Kontaktaufnahme jederzeit widersprechen. Eine E-Mail an holzbechernick@gmail.com genügt.',
         'Wenn Sie finden, dass ich Ihre Daten nicht korrekt bearbeite, können Sie sich an den Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB) wenden.',
       ],
     },

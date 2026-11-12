@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import Magnetic from '@/components/motion/Magnetic'
 import { useReduziert } from '@/components/motion/useSichtbar'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 import { hero, navigation, person } from '@/lib/content'
 import { cn } from '@/lib/utils'
 
@@ -92,8 +93,9 @@ export default function Nav() {
             ))}
           </ul>
 
-          <div className="flex items-center gap-3 md:gap-5">
+          <div className="flex items-center gap-2 md:gap-4">
             <Uhr />
+            <ThemeToggle />
 
             <Magnetic staerke={0.25} className="hidden md:block">
               <a href="#anfrage" className="btn btn--ink h-10 px-5 text-[0.9375rem]">
@@ -143,8 +145,10 @@ export default function Nav() {
             <div className="shell flex h-full flex-col">
               <div className="flex h-16 items-center justify-between">
                 <span className="font-display text-[1.0625rem] font-semibold">{person.name}</span>
-                <button
-                  ref={schliessenRef}
+                <span className="flex items-center gap-2">
+                  <ThemeToggle />
+                  <button
+                    ref={schliessenRef}
                   type="button"
                   onClick={schliessen}
                   className="inline-flex h-10 w-10 items-center justify-center rounded-pill border border-hairline"
@@ -161,7 +165,8 @@ export default function Nav() {
                   >
                     <path d="M5 5l10 10M15 5 5 15" />
                   </svg>
-                </button>
+                  </button>
+                </span>
               </div>
 
               <ul className="mt-6 divide-y divide-hairline border-y border-hairline">
@@ -231,7 +236,7 @@ function Uhr() {
 
   return (
     <p className="hidden items-baseline gap-2 sm:flex">
-      <span className="eyebrow">Schweiz</span>
+      <span className="eyebrow hidden md:inline">Schweiz</span>
       <span ref={ref} aria-hidden="true" className="font-mono text-sm tabular-nums text-ink">
         ––:––:––
       </span>

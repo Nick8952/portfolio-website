@@ -21,6 +21,8 @@ const OUT = path.resolve(process.argv[2] ?? 'pruefung')
 mkdirSync(OUT, { recursive: true })
 const PORT = 4173
 const BASE = process.env.BASE ?? `http://localhost:${PORT}/`
+// THEME=dark fotografiert das dunkle Design (Wahl wie vom Schalter gespeichert).
+const DUNKEL = process.env.THEME === 'dark'
 
 const server = spawn('python3', ['-m', 'http.server', String(PORT), '--directory', 'out'], { stdio: 'ignore' })
 await new Promise((r) => setTimeout(r, 1200))
@@ -36,6 +38,9 @@ async function lauf(name, vp, schritte) {
   page.on('requestfailed', (r) => fehler.push(`requestfailed: ${r.url().slice(-80)}`))
   page.on('response', (r) => r.status() >= 400 && fehler.push(`${r.status()}: ${r.url().slice(-80)}`))
   await page.setViewport(vp)
+  // Headless Chrome uebernimmt sonst die Systemeinstellung des Rechners (abends dunkel).
+  await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: DUNKEL ? 'dark' : 'light' }])
+  if (DUNKEL) await page.evaluateOnNewDocument(() => { try { localStorage.setItem('design', 'dark') } catch {} })
   await page.goto(BASE, { waitUntil: 'load', timeout: 60000 })
   await warten(1800)
   // Die ausgeblendeten Demo-Karten gehoeren mit zur Pruefung.
@@ -53,7 +58,7 @@ async function lauf(name, vp, schritte) {
     const y = Math.round((hoehe - vp.height) * (i / (schritte - 1)))
     await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), y)
     await warten(900)
-    await page.screenshot({ path: path.join(OUT, `${name}-${String(i).padStart(2, '0')}.jpg`), type: 'jpeg', quality: 70 })
+    await page.screenshot({ path: path.join(OUT, `${DUNKEL ? 'dunkel-' : ''}${name}-${String(i).padStart(2, '0')}.jpg`), type: 'jpeg', quality: 70 })
   }
   console.log(`${name}: hoehe ${hoehe}px, ueberlauf ${ueberlauf}px, meldungen ${fehler.length}`)
   for (const f of [...new Set(fehler)].slice(0, 12)) console.log('   ', f)

@@ -1,10 +1,11 @@
 import Link from 'next/link'
 
-import { footer, navigation, person } from '@/lib/content'
+import { footer, navigation, person, rechtliches, ueberMich } from '@/lib/content'
 
 /**
  * Der Fuss: links der Satz, der die Seite zusammenfasst, daneben die Ziele und
- * der Kontakt, unten eine Mono-Zeile. Keine Social-Icons — es gibt keine.
+ * der Kontakt (E-Mail, LinkedIn), unten Impressum, Datenschutz und die
+ * Mono-Zeile. Kein GitHub-Link: Besucher sind Betriebsinhaber, keine Entwickler.
  */
 export default function Footer() {
   return (
@@ -44,10 +45,18 @@ export default function Footer() {
               </a>
             </li>
             <li>
-              <a href={person.github} target="_blank" rel="noopener noreferrer" className="text-ink/80 transition-colors duration-200 ease-out hover:text-kobalt">
-                GitHub
+              <a
+                href={person.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-ink/80 transition-colors duration-200 ease-out hover:text-kobalt"
+              >
+                {ueberMich.linkedinLabel}
                 <span className="sr-only"> (öffnet in neuem Tab)</span>
               </a>
+            </li>
+            <li className="text-ink/70">
+              {person.adresse.plz} {person.adresse.ort}, {person.adresse.land}
             </li>
           </ul>
         </div>
@@ -56,11 +65,16 @@ export default function Footer() {
       <div className="border-t border-hairline">
         <div className="shell flex flex-col gap-3 py-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="eyebrow normal-case tracking-[0.05em]">{footer.technik}</p>
-          <p className="eyebrow tnum">
-            <Link href="/datenschutz/" className="transition-colors duration-200 ease-out hover:text-kobalt">
-              Datenschutz
-            </Link>
-            <span className="mx-3" aria-hidden="true">·</span>© {new Date().getFullYear()} {person.name}
+          <p className="eyebrow tnum flex flex-wrap items-center gap-x-3">
+            {rechtliches.map((r) => (
+              <Link key={r.href} href={r.href} className="transition-colors duration-200 ease-out hover:text-kobalt">
+                {r.label}
+              </Link>
+            ))}
+            <span aria-hidden="true">·</span>
+            <span>
+              © {new Date().getFullYear()} {person.name}
+            </span>
           </p>
         </div>
       </div>

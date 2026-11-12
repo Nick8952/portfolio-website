@@ -24,6 +24,12 @@ bleibt hell, zeigt nur Belegtes und hat statt eines Stock-Videos die eigene Arbe
 Die Screenshots der Websites sind die einzige weitere Farbe. Das ist Absicht:
 die Arbeit bringt die Farbe, das Layout nicht.
 
+**Dunkles Design** (`html[data-theme='dark']`, Schalter in der Nav, 12.11.2026): paper
+`#0B0B0C`, ink `#F5F5F5`, kobalt → `#6B8FF0` (Lift-Stufe, 6,4:1 auf Dunkel), kobalt-lift →
+`#1C50BE` (für Text auf der dann hellen Regelfall-Karte), muted `#A0A0A0`, hairline `#262629`,
+sunk `#141416`. Dieselben Komponenten, keine Sonderfälle — nur die iPhone-Statusleiste
+benutzt feste Schwarz/Weiss-Werte, weil sie über dem Screenshot liegt.
+
 ## Typografie
 
 - **Bricolage Grotesque** (variabel, `opsz`) — Headlines, `font-semibold`,
@@ -58,10 +64,14 @@ Hairline darüber. Section-Abstand `clamp(6rem, 12vw, 11rem)`.
   mitfährt (`useScroll` → `translateY`), dazu das iPhone; rechts Meta-Box, Titel,
   Text, vier Fakten mit Häkchen, Link, Hairline, drei Kennzahlen (Zahl Bricolage,
   Einheit muted, Etikett Mono).
-- **Demo-Karten:** Browserfenster auf eingelassener Bühne, iPhone unten links,
-  Mono-Meta «Branche · Ort · Jahr», Name, ein Satz, «Website öffnen ↗». Hover
-  (nur Maus): die Website scrollt im Fenster in 6,5 s nach unten (`100cqh`), beim
-  Verlassen zurück. Sechs sichtbar, «Weitere 4 anzeigen».
+- **Beispiel-Karten (Musterbetrieb):** Browserfenster auf eingelassener Bühne mit
+  `.example`-Adresse, iPhone unten links, Mono-Meta «Beispiel · Branche · Region»,
+  beschreibender Titel statt Firmenname, ein Satz, Mono-Zeile «Musterbetrieb · Name, Logo
+  und Fotos ersetzt». Kein Link. Hover (Maus) oder Antippen (Schalter mit aria-pressed):
+  die Website scrollt im Fenster in 6,5 s nach unten (`100cqh`), danach zurück. Die
+  Aufnahmen selbst sind anonymisiert (tools/anonymisieren.mjs): Name → «… Muster»,
+  Logo → schlichte Wortmarke, Fotos weichgezeichnet, Kontaktdaten → Musterangaben.
+  Sechs sichtbar, «Weitere 4 anzeigen».
 - **Erkennen:** drei dünne Ringe (`.orbit`, zwei drehen sich in 110/150 s),
   Headline mittig, fünf Glas-Pillen, die auf grossen Bildschirmen beim Scrollen
   (Section 170vh, Bühne klebt) nacheinander erscheinen; sonst im Fluss.
@@ -96,6 +106,12 @@ Mobil-Menü. Nie als Füllung ganzer Sections.
 
 Selektion Kobalt/Papier, Fokusring Kobalt 2px mit 3px Versatz, Caret Kobalt,
 Scrollbar dünn in Tinte/22 %, Link-Unterstrich aus `hairline` mit 0,22em Versatz.
+
+## Rechtsseiten
+
+Impressum und Datenschutz als schlichte Textseiten (`Rechtsseite.tsx`): Eyebrow «← Zur
+Startseite», H1, Stand, Einleitung, H2-Abschnitte, unten die andere Rechtsseite, E-Mail und
+©. Ohne Nav/Footer der Startseite, ohne JavaScript lesbar.
 
 ## Nicht tun
 

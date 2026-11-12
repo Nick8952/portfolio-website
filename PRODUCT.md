@@ -35,7 +35,7 @@ nimmt Anfragen entgegen. Erfolg = eine Anfrage über das Formular.
 **Demo zuerst, Entscheidung danach.** Nick baut die bestehende Website eines
 Betriebs auf eigenes Risiko als moderne Demo neu und schickt den Link — der Kunde
 sieht das Ergebnis, bevor er etwas zahlt. Kein Konzeptgespräch, kein Pflichtenheft,
-keine Vorabkosten. Dazu bewusste Einstiegspreise (rund ein Viertel bis ein Drittel
+unverbindlich. Dazu bewusste Einstiegspreise (rund ein Viertel bis ein Drittel
 unter Agenturniveau), offen begründet mit seiner Ausbildungssituation.
 
 ## Operating Context
@@ -62,6 +62,9 @@ unter Agenturniveau), offen begründet mit seiner Ausbildungssituation.
 - Preise öffentlich als Richtwerte: Start ab CHF 1'200, Website ab 2'500, Website+
   ab 3'600, Betrieb ab 19 pro Monat (Nutzerentscheid 2026-09-14, von 2'900/4'200 gesenkt).
 - Muss auf Handy einwandfrei funktionieren — Kunden öffnen den Link vom Telefon.
+- Schweizer Recht: Impressum (UWG), Datenschutzerklärung (revDSG, EU-tauglich formuliert),
+  keine Werbung mit fremden Namen/Logos ohne Einverständnis, keine Versprechen zu Vorleistung
+  oder Antwortfristen (Nick, 11.11.2026).
 
 ## Brand Commitments
 
@@ -78,24 +81,27 @@ unter Agenturniveau), offen begründet mit seiner Ausbildungssituation.
 
 **Referenz (Kunde, live):** Thai Restaurant Suwannaphum, Zürcherstrasse 31, 8952 Schlieren —
 www.suwannaphum.ch. Demo am 16.10.2026 ohne Auftrag gebaut, Website am 21.10.2026 unter
-der eigenen Domain live; keine Cookies, kein Banner; keine Vorabkosten für das Restaurant.
+der eigenen Domain live; keine Cookies, kein Banner; unverbindlich für das Restaurant.
 Das Restaurant wollte Nick auf *seiner* Website nicht als Gestalter nennen (22.10.2026) —
 die Nennung *hier* als Referenz ist Nicks Entscheid und mit dem Restaurant zu klären.
 
-Öffentlich erreichbare Demos (alle ohne Auftrag, geprüft 2026-11-10):
+Beispiele (ohne Auftrag entworfen, geprüft 2026-11-10) — auf der Seite **nur als Musterbetrieb**
+(Nicks Regel 11.11.2026: kein Einverständnis der Betriebe → kein Name, Logo, Foto, Kontakt, Link;
+neutrale Slugs in den Bild-URLs). Welche Demo hinter welchem Beispiel steht, weiss nur
+`tools/websites-source.mjs`; das Regelwerk zur Anonymisierung liegt gitignoriert in `tools/muster.mjs`.
 
-| Projekt | Branche | Ort | URL |
-|---|---|---|---|
-| Advokatur Kanonengasse | Anwaltskanzlei | Zürich, Kreis 4 | nick8952.github.io/advokatur-kanonengasse-demo |
-| Praxis am Zürichberg | Zahnarztpraxis | Zürich | nick8952.github.io/praxis-zuerichberg-website |
-| Casatex Zürich | Bodenleger | Zürich-Altstetten | nick8952.github.io/casatex-zuerich-demo |
-| New York Nails | Nagelstudio | Schlieren | nick8952.github.io/new-york-nails-schlieren-demo |
-| VITIS SportCenter | Racketsport-Center | Schlieren | nick8952.github.io/vitis-sportcenter-website |
-| Maler Attinger | Malerbetrieb | Zürich | nick8952.github.io/maler-attinger-website |
-| Styling Azzurro | Coiffeursalon | Zürich-Schwamendingen | nick8952.github.io/styling-azzurro-website |
-| Clean-Express | Reinigung | Birmensdorf ZH | nick8952.github.io/clean-express-website |
-| H&G Dienstleistungen | Hauswartung/Garten | Zufikon AG | nick8952.github.io/hg-dienstleistungen-website |
-| Altec Elektro | Elektro-Installationen | Zürich | nick8952.github.io/altec-elektro-demo |
+| Slug | Branche | Region |
+|---|---|---|
+| kanzlei | Anwaltskanzlei (sechs Sprachen) | Region Zürich |
+| zahnarzt | Zahnarztpraxis (zweisprachig) | Region Zürich |
+| bodenleger | Bodenleger | Region Zürich |
+| nagelstudio | Nagelstudio | Region Zürich |
+| sportcenter | Racketsport-Center | Region Zürich |
+| maler | Malerbetrieb | Region Zürich |
+| coiffeur | Coiffeursalon | Region Zürich |
+| reinigung | Reinigungsfirma | Region Zürich |
+| hauswartung | Hauswartung & Garten | Aargau |
+| elektro | Elektrobetrieb | Region Zürich |
 
 **Derzeit offline, nicht zeigen:** Gusto Campano (GitHub Pages aus, Vercel-Projekt gelöscht),
 Fahrschul-Center und FKM Fahrschule (GitLab-Projekte nicht mehr öffentlich). Nicht öffentlich:
@@ -104,7 +110,8 @@ Fahrschule Gimenez, fahrschule-barbara, -deck, -genial, Garage Klausner, Letzist
 CMS, geprüft 2026-11-10). Nicht zeigen, bis die Domain umgestellt ist.
 
 **Vorhanden:** Portraitfoto (`public/portrait.jpg`). Aufnahmen aller Websites (fünf WebP je
-Website, erzeugt mit `npm run screenshots`).
+Website, erzeugt mit `npm run screenshots`; Beispiele anonymisiert). Postadresse laut Nick:
+8952 Schlieren (Strasse fehlt). Nicht MwSt-pflichtig (Auskunft 11.11.2026). LinkedIn-Profil.
 **Fehlt, darf nicht erfunden werden:** Testimonials, Kundenlogos, Lehrbetrieb, Abschlussjahr.
 
 ## Product Principles
