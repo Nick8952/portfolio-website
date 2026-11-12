@@ -46,7 +46,7 @@ export const impressum = {
     {
       titel: 'Urheberrecht',
       absaetze: [
-        'Soweit nicht anders gekennzeichnet, stammen die eigenen Texte, Gestaltungen und Codebeiträge dieser Website und der gezeigten Entwürfe von Nick Holzbecher. Rechte an übernommenen Inhalten, Bildern, Namen, Marken und eingesetzten Drittbibliotheken verbleiben bei den jeweiligen Rechteinhabern. Eine Verwendung eigener Inhalte ohne schriftliche Zustimmung ist nicht gestattet.',
+        'Soweit nicht anders gekennzeichnet, stammen die eigenen Texte, Gestaltungen und Codebeiträge dieser Website und der gezeigten Entwürfe von Nick Holzbecher. Rechte an übernommenen Inhalten, Bildern, Namen, Marken und eingesetzten Drittbibliotheken verbleiben bei den jeweiligen Rechteinhabern. Eine darüber hinausgehende Verwendung eigener Inhalte bedarf meiner schriftlichen Zustimmung; vorbehalten bleiben gesetzlich erlaubte Nutzungen, insbesondere Eigengebrauch und Zitate (Art. 19 und 25 URG).',
       ],
     },
   ] satisfies readonly DatenschutzAbschnitt[],

@@ -33,7 +33,7 @@ export const datenschutz = {
     {
       titel: 'Besuch der Website',
       absaetze: [
-        'Die Website wird bei Vercel Inc. (USA) betrieben, eine Kopie liegt bei GitHub Inc. (USA, GitHub Pages). Beim Aufruf verarbeiten diese Anbieter technisch notwendige Daten: IP-Adresse, Datum und Uhrzeit, aufgerufene Seite, Browser und Betriebssystem. Das dient dem sicheren und stabilen Betrieb. Wie lange diese Protokolle gespeichert werden, richtet sich nach den Bedingungen der Hosting-Anbieter.',
+        'Die Website wird bei Vercel Inc. (USA) betrieben, eine Kopie liegt bei GitHub Inc. (USA, GitHub Pages). Beim Aufruf verarbeiten diese Anbieter technisch notwendige Daten: IP-Adresse, Datum und Uhrzeit, aufgerufene Seite, Browser und Betriebssystem. Das dient dem sicheren und stabilen Betrieb. Ich erhalte diese Protokolle nicht und speichere selbst keine; die Anbieter bewahren sie nach eigenen Angaben nur kurzzeitig auf und löschen sie danach (Einzelheiten stehen in den Datenschutzerklärungen von Vercel und GitHub).',
         'Beim blossen Aufruf setzt die Website selbst keine Cookies und bindet keine Analyse-, Werbe-, Karten- oder Social-Media-Inhalte ein; die Schriften liegen auf dem eigenen Server. Erst beim Absenden des Formulars wird eine Verbindung zum unten genannten Formulardienst aufgebaut.',
         'Ihre Wahl zwischen hellem und dunklem Design merkt sich Ihr Browser lokal (localStorage, Eintrag «design»). Nach aktuellem Stand wird diese Einstellung von der Website weder an mich noch an einen anderen Dienst übermittelt.',
         'Die Website verlinkt auf mein Profil bei LinkedIn und auf die Website eines Kunden. Vor dem Anklicken wird keine Verbindung zu diesen Anbietern aufgebaut; beim Aufruf gelten deren Datenschutzbestimmungen, und Ihr Browser übermittelt ihnen die üblichen technischen Angaben wie die IP-Adresse.',
@@ -69,15 +69,15 @@ export const datenschutz = {
     {
       titel: 'Bekanntgabe ins Ausland',
       absaetze: [
-        'Personendaten können in Irland (EU) und in den USA bearbeitet werden. Für Irland gilt nach Entscheid des Bundesrates ein angemessenes Datenschutzniveau.',
+        'Personendaten können in Irland (EU) und in den USA bearbeitet werden; beim Formulardienst FormSubmit ist der Staat nicht bekannt (siehe unten). Für Irland gilt nach Entscheid des Bundesrates ein angemessenes Datenschutzniveau.',
         'Vercel Inc., GitHub Inc., Google LLC und Meta Platforms, Inc. sind nach eigenen Angaben unter dem Swiss-U.S. Data Privacy Framework zertifiziert; darauf stützt sich die Übermittlung in die USA an diese Anbieter.',
-        'Für den Formulardienst FormSubmit (Devro LABS) sind Sitz, Speicherort und Garantien nicht bekannt. Diese Bekanntgabe erfolgt deshalb nur mit Ihrer ausdrücklichen Einwilligung, die Sie mit dem Kästchen vor dem Absenden des Formulars erteilen (Art. 17 Abs. 1 Bst. a DSG). Ohne diese Einwilligung schreiben Sie mir direkt per E-Mail.',
+        'Für den Formulardienst FormSubmit (Devro LABS) sind Sitz, Speicherort und Garantien nicht bekannt; ich kann den Empfängerstaat deshalb nicht nennen. Diese Bekanntgabe erfolgt nur mit Ihrer ausdrücklichen Einwilligung, die Sie mit dem Kästchen vor dem Absenden des Formulars erteilen (Art. 17 Abs. 1 Bst. a DSG). Ohne diese Einwilligung schreiben Sie mir direkt per E-Mail.',
       ],
     },
     {
       titel: 'Wie lange ich Daten aufbewahre',
       absaetze: [
-        'Anfragen, aus denen kein Auftrag entsteht, lösche ich in meinen eigenen Kopien (Gmail, gegebenenfalls Google Tabellen) spätestens 12 Monate nach dem letzten Kontakt. Speicherfristen der eingesetzten Anbieter sind oben beschrieben, soweit sie bekannt sind. Entsteht ein Auftrag, bewahre ich die nötigen Unterlagen so lange auf, wie es das Gesetz verlangt (für Geschäftsunterlagen in der Regel 10 Jahre).',
+        'Anfragen, aus denen kein Auftrag entsteht, lösche ich in meinen eigenen Kopien (Gmail, gegebenenfalls Google Tabellen) spätestens 12 Monate nach dem letzten Kontakt. Server-Protokolle der Hosting-Anbieter bewahren diese nur kurzzeitig auf (siehe «Besuch der Website»); Anfragen über Meta lösche ich dort, sobald ich sie übernommen habe, spätestens nach 90 Tagen. Entsteht ein Auftrag, bewahre ich die nötigen Unterlagen so lange auf, wie es das Gesetz verlangt (für Geschäftsunterlagen in der Regel 10 Jahre).',
       ],
     },
     {
@@ -85,6 +85,13 @@ export const datenschutz = {
       absaetze: [
         'Sie können jederzeit Auskunft verlangen, welche Daten ich über Sie habe, diese berichtigen lassen und ihre Löschung verlangen, soweit keine gesetzliche Aufbewahrungspflicht entgegensteht. Soweit die gesetzlichen Voraussetzungen erfüllt sind, können Sie zudem die Herausgabe oder Übertragung Ihrer Daten in einem gängigen elektronischen Format verlangen (Art. 28 DSG). Sie können einer weiteren Kontaktaufnahme jederzeit widersprechen. Eine E-Mail an holzbechernick@gmail.com genügt.',
         'Wenn Sie finden, dass ich Ihre Daten nicht korrekt bearbeite, können Sie sich an den Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB) wenden.',
+      ],
+    },
+    {
+      titel: 'Für Personen in der EU und im EWR',
+      absaetze: [
+        'Richte ich mich im Einzelfall an Personen in der EU oder im EWR, gilt zusätzlich die DSGVO. Rechtsgrundlagen sind dann: die Anbahnung und Durchführung eines Vertrags für Anfragen und Aufträge (Art. 6 Abs. 1 Bst. b DSGVO), mein berechtigtes Interesse an einem sicheren Betrieb der Website für die technischen Protokolle (Art. 6 Abs. 1 Bst. f DSGVO) und Ihre Einwilligung für den Versand über FormSubmit (Art. 6 Abs. 1 Bst. a DSGVO).',
+        'Zusätzlich zu den oben genannten Rechten können Sie die Einschränkung der Verarbeitung verlangen, einer Verarbeitung aufgrund berechtigter Interessen widersprechen, eine erteilte Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen und sich bei einer Datenschutz-Aufsichtsbehörde in der EU oder im EWR beschweren, etwa an Ihrem Wohnort.',
       ],
     },
     {
